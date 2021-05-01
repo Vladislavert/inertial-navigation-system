@@ -109,12 +109,12 @@ int main()
 
 	drawGraph(&time, &yAcceleration, &plotY,"acceleration Y", 0);
 	// drawLine(&time, 3*sqrt(dispersion_yAcceleration) + mean_yAcceleration, &plotY, "SD", 0);
-	drawLine(&time, mean_yAcceleration, &plotY, "mean", 0);
+	drawLine(&time, &mean_yAcceleration, &plotY, "mean", 0);
 	// drawLine(&time, -3*sqrt(dispersion_yAcceleration) + mean_yAcceleration, &plotY, "SD", 1);
 
 	drawGraph(&time, &zAcceleration, &plotZ,"acceleration Z", 0);
 	// drawLine(time, 3*sqrt(dispersion_zAcceleration) + mean_zAcceleration, &plotZ, "SD", 0);
-	drawLine(time, mean_zAcceleration, &plotZ, "mean", 0);
+	drawLine(&time, &mean_zAcceleration, &plotZ, "mean", 0);
 	// drawLine(time, -3*sqrt(dispersion_zAcceleration) + mean_zAcceleration, &plotZ, "SD", 1);
 
 	xAcceleration = xAccelerationFilter;
@@ -191,25 +191,26 @@ int main()
 		std::cout << "value veloucityY = " << yVeloucity[yVeloucity.size() - 2] << std::endl;
 	#endif
 
-	xCoordinate = integralEuler(time, xVeloucity);
-	yCoordinate = integralEuler(time, yVeloucity);
-	zCoordinate = integralEuler(time, zVeloucity);
+	// xCoordinate = integralEuler(time1, xVeloucity);
+	// yCoordinate = integralEuler(time1, yVeloucity);
+	// zCoordinate = integralEuler(time1, zVeloucity);
 
-	drawGraph(&time1, &xCoordinate, "coordinate X");
-	drawGraph(&time1, &yCoordinate, "coordinate Y");
-	drawGraph(&time1, &zCoordinate, "coordinate Z");
+	// drawGraph(&time1, &xCoordinate, "coordinate X");
+	// drawGraph(&time1, &yCoordinate, "coordinate Y");
+	// drawGraph(&time1, &zCoordinate, "coordinate Z");
 	
 
 	// расчитать мат ожидание и дисперсию
 
 }
 
-/*
-	расчёт ускорения силы тяжести
-
-	phi - широта
-	h 	- долгота
-*/
+/**
+ * @brief расчёт ускорения свободного падения
+ * 
+ * @param phi - широта
+ * @param h - высота
+ * @return ускорение свободного падения
+ */
 double	gravitationalAccelerationCalc(double phi, double h)
 {
 	double g;
