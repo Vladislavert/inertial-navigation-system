@@ -1,15 +1,16 @@
 #include "draw.hpp"
 
-/*
-	построение графиков
-
-	time 		- ось абсцисс
-	data 		- ось ординат
-	nameGraph	- наименование графика
-	palette		- палитра
-	lineWidth	- толщина линии
-*/
-void	drawGraph(Vec time, Vec data, std::string nameGraph, bool show, std::string palette, int lineWidth)
+/**
+ * @brief построение графиков по множеству точек
+ * 
+ * @param time - ось абсцисс
+ * @param data - ось ординат
+ * @param nameGraph - наименование графика
+ * @param show - отрисовка графика(true - отрисовать; false - не отрисовывать)
+ * @param palette - палитра
+ * @param lineWidth - толщина линии
+ */
+void	drawGraph(const Vec *time, const Vec *data, std::string nameGraph, bool show, std::string palette, int lineWidth)
 {
 	Plot plot;
 	    plot.legend()
@@ -17,26 +18,49 @@ void	drawGraph(Vec time, Vec data, std::string nameGraph, bool show, std::string
         .displayHorizontal()
         .displayExpandWidthBy(2);
 	plot.palette(palette);
-	plot.drawCurve(time, data).label(nameGraph).lineWidth(lineWidth);
+	plot.drawCurve(*time, *data).label(nameGraph).lineWidth(lineWidth);
 	// plot.drawCurve(time, data).lineWidth(lineWidth);
 
 	if (show == true)
     	plot.show();
 }
 
-void	drawGraph(Vec time, Vec data, Plot *plot, std::string nameGraph, bool show, std::string palette, int lineWidth)
+/**
+ * @brief построение графиков по множеству точек
+ * 
+ * @param time - ось абсцисс
+ * @param data - ось ординат
+ * @param plot - полотно, на котром происходит отрисовка графика
+ * @param nameGraph - наименование графика
+ * @param show - отрисовка графика(true - отрисовать; false - не отрисовывать)
+ * @param palette - палитра
+ * @param lineWidth - толщина линии
+ */
+void	drawGraph(const Vec *time, const Vec *data, Plot *plot, std::string nameGraph, bool show, std::string palette, int lineWidth)
 {
+// 	(*plot).xrange(0.0, time[time.size() - 1]);
+//    (*plot).yrange(-0.1, 0.1);
 	(*plot).legend()
         .atOutsideBottom()
         .displayHorizontal()
         .displayExpandWidthBy(2);
 	(*plot).palette(palette);
-	(*plot).drawCurve(time, data).label(nameGraph).lineWidth(lineWidth);
+	(*plot).drawCurve(*time, *data).label(nameGraph).lineWidth(lineWidth);
 	if (show == true)
     	(*plot).show();
 }
 
-void	drawLine(Vec time, double data, std::string nameGraph, bool show, std::string palette, int lineWidth)
+/**
+ * @brief построение линии по оси абсцисс
+ * 
+ * @param time - ось абсцисс
+ * @param data - ось ординат
+ * @param nameGraph - наименование графика
+ * @param show - отрисовка графика(true - отрисовать; false - не отрисовывать)
+ * @param palette - палитра
+ * @param lineWidth - толщина линии
+ */
+void	drawLine(const Vec *time, const double *data, std::string nameGraph, bool show, std::string palette, int lineWidth)
 {
 	Plot plot;
 	plot.legend()
@@ -44,22 +68,33 @@ void	drawLine(Vec time, double data, std::string nameGraph, bool show, std::stri
         .displayHorizontal()
         .displayExpandWidthBy(2);
 	plot.palette(palette);
-	Vec x = {time[0], time[time.size() - 1]};
-    Vec y = {data, data};
+	Vec x = {(*time)[0], (*time)[(*time).size() - 1]};
+    Vec y = {*data, *data};
 	plot.drawBrokenCurveWithPoints(x, y).label("broken lines");
 	if (show == true)
     	plot.show();
 }
 
-void	drawLine(Vec time, double data, Plot *plot, std::string nameGraph, bool show, std::string palette, int lineWidth)
+/**
+ * @brief построение линии по оси абсцисс
+ * 
+ * @param time - ось абсцисс
+ * @param data - ось ординат
+ * @param plot - полотно, на котром происходит отрисовка графика
+ * @param nameGraph - наименование графика
+ * @param show - отрисовка графика(true - отрисовать; false - не отрисовывать)
+ * @param palette - палитра
+ * @param lineWidth - толщина линии
+ */
+void	drawLine(const Vec *time, const double *data, Plot *plot, std::string nameGraph, bool show, std::string palette, int lineWidth)
 {
 	(*plot).legend()
         .atOutsideBottom()
         .displayHorizontal()
         .displayExpandWidthBy(2);
 	(*plot).palette(palette);
-	Vec x = {time[0], time[time.size() - 1]};
-    Vec y = {data, data};
+	Vec x = {(*time)[0], (*time)[(*time).size() - 1]};
+    Vec y = {*data, *data};
 	(*plot).drawCurve(x, y).label(nameGraph).lineWidth(lineWidth);
 	if (show == true)
     	(*plot).show();
