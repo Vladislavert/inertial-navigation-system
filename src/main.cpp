@@ -109,12 +109,12 @@ int main()
 
 	drawGraph(&time, &yAcceleration, &plotY,"acceleration Y", 0);
 	// drawLine(&time, 3*sqrt(dispersion_yAcceleration) + mean_yAcceleration, &plotY, "SD", 0);
-	// drawLine(&time, mean_yAcceleration, &plotY, "mean", 0);
+	drawLine(&time, mean_yAcceleration, &plotY, "mean", 0);
 	// drawLine(&time, -3*sqrt(dispersion_yAcceleration) + mean_yAcceleration, &plotY, "SD", 1);
 
 	drawGraph(&time, &zAcceleration, &plotZ,"acceleration Z", 0);
 	// drawLine(time, 3*sqrt(dispersion_zAcceleration) + mean_zAcceleration, &plotZ, "SD", 0);
-	// drawLine(time, mean_zAcceleration, &plotZ, "mean", 0);
+	drawLine(time, mean_zAcceleration, &plotZ, "mean", 0);
 	// drawLine(time, -3*sqrt(dispersion_zAcceleration) + mean_zAcceleration, &plotZ, "SD", 1);
 
 	xAcceleration = xAccelerationFilter;
