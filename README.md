@@ -3,5 +3,10 @@
 ---------------------
 Выполните сборку проекта:
 
-  make
+    make
+  
+To install it, run:
+
+    go get gopkg.in/yaml.v2
+
   
