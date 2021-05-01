@@ -7,6 +7,8 @@
 // #include <../eigen3/Eigen/Dense>
 #include <../libraries/eigen3/Eigen/Dense>
 
+#define DEBUG
+
 using namespace Eigen;
 
 const double g0 = 9.780327; // ускорение силы тяжести на экваторе
@@ -111,17 +113,19 @@ int main()
 	// drawLine(time, 3*sqrt(dispersion_xGravitAccel), plot1,"line");
 	// drawLine(time, -3*sqrt(dispersion_xGravitAccel), "line");
 
-	std::cout << "mean x = " << mean_xGravitAccel << " "
-			  << "dispersion x = "<< dispersion_xGravitAccel << " "
-			  << "3*sigma x = " << 3*sqrt(dispersion_xGravitAccel) << std::endl;
-	std::cout << "mean y = " << mean_yGravitAccel << " "
-			  << "dispersion y = " << dispersion_yGravitAccel << " "
-			  << "3*sigma x = " << 3*sqrt(dispersion_yGravitAccel) << std::endl;
-	std::cout << "mean z = " << mean_zGravitAccel << " "
-			  << "dispersion z = " << dispersion_zGravitAccel << " "
-			  << "3*sigma x = " << 3*sqrt(dispersion_zGravitAccel) << std::endl;
+	#ifndef DEBUG
+		std::cout << "mean x = " << mean_xGravitAccel << " "
+				<< "dispersion x = "<< dispersion_xGravitAccel << " "
+				<< "3*sigma x = " << 3*sqrt(dispersion_xGravitAccel) << std::endl;
+		std::cout << "mean y = " << mean_yGravitAccel << " "
+				<< "dispersion y = " << dispersion_yGravitAccel << " "
+				<< "3*sigma x = " << 3*sqrt(dispersion_yGravitAccel) << std::endl;
+		std::cout << "mean z = " << mean_zGravitAccel << " "
+				<< "dispersion z = " << dispersion_zGravitAccel << " "
+				<< "3*sigma x = " << 3*sqrt(dispersion_zGravitAccel) << std::endl;
 
-	std::cout << "g = " << g << std::endl;
+		std::cout << "g = " << g << std::endl;
+	#endif
 
 	// std::cout << "mean X" << mean_xGravitAccel << std::endl;
 	// std::cout << "dispersion X" << dispersion_xGravitAccel << std::endl;
@@ -169,7 +173,9 @@ int main()
 	drawGraph(time1, yVeloucity, "veloucity Y");
 	drawGraph(time1, zVeloucity, "veloucity Z");
 
-	std::cout << "value veloucityY = " << yVeloucity[yVeloucity.size() - 2] << std::endl;
+	#ifndef DEBUG
+		std::cout << "value veloucityY = " << yVeloucity[yVeloucity.size() - 2] << std::endl;
+	#endif
 
 	xCoordinate = integralEuler(time, xVeloucity);
 	yCoordinate = integralEuler(time, yVeloucity);
