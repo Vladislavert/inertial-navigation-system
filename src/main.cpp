@@ -23,6 +23,7 @@ int main()
 	std::string			nameFile;
 	vectString_t		str;
 	vectDouble2d_t		dataINS; // данные с БИНС
+
 		
 
 	std::cout << std::endl << "calculate trajectory..." << std::endl;
