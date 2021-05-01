@@ -25,7 +25,7 @@ int main()
 	vectDouble2d_t		dataINS; // данные с БИНС
 		
 
-	// std::cout << std::endl << "calculate trajectory..." << std::endl;
+	std::cout << std::endl << "calculate trajectory..." << std::endl;
 	std::cout << "__________________________________________" << std::endl;
 	// nameFile = DIR_RESOURCES + "Car_7Km.h.txt";
 	// nameFile = DIR_RESOURCES + "move Y(2 meters).txt";
