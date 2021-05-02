@@ -45,9 +45,11 @@ double	*getAngleMagnetometer(const double dataMagnetometer[2])
 	double *angleMagnetometr;
 
 	angleMagnetometr = new double[1];
-	angleMagnetometr[0] = std::atan2(dataMagnetometer[0], dataMagnetometer[1]);
-	if (angleMagnetometr[0] > 0)
-		angleMagnetometr[0] = (M_PI + (M_PI + angleMagnetometr[0])) * M_PI;
+	angleMagnetometr[0] = -std::atan2(dataMagnetometer[0], dataMagnetometer[1]);
+	if (angleMagnetometr[0] < 0)
+	{
+		angleMagnetometr[0] = M_PI + (M_PI + angleMagnetometr[0]);
+	}
 	return(angleMagnetometr);
 }
 

@@ -24,6 +24,13 @@ int main()
 	std::string			nameFile;
 	vectString_t		str;
 	vectDouble2d_t		dataINS; // данные с БИНС
+	const unsigned int	indxGyro = 6; // значение индекса под которым начинаются измерения гироскопа
+	const unsigned int	indxMagnet = 9; // значение индекса под которым начинаются измерения магнитометра
+	const unsigned int	indxAcc = 0; // значение индекса под которым начинаются измерения акселерометра
+	const unsigned int	indxTime = 24; // значение индекса под которым начинаются измерения акселерометра
+
+
+
 
 
 	std::cout << std::endl << "calculate trajectory..." << std::endl;
@@ -84,14 +91,14 @@ int main()
 
 
 	// начальная инициализация
-	xAcceleration[0] = dataINS[0][0];
-	yAcceleration[0] = dataINS[0][1];
-	zAcceleration[0] = -dataINS[0][2];
+	xAcceleration[0] = dataINS[0][indxAcc];
+	yAcceleration[0] = dataINS[0][indxAcc + 1];
+	zAcceleration[0] = -dataINS[0][indxAcc + 2];
 	for (unsigned int i = 0; i < 3; i++)
 	{
 		orientation[i] = 0;//dataINS[0][6 + i]; // начальная выставкка БИНС (углы ориентации ранвы 0)
 		angleGyroscope[i] = 0;
-		dataGyroscope[i] = dataINS[0][6 + i];
+		dataGyroscope[i] = dataINS[0][indxGyro + i];
 	}
 	// angleGyroscope[2] = 4.8127;
 	xOrientationVec[0] = dataINS[0][13];//orientation[0]*180/M_1_PI;//*180/M_1_PI;
@@ -108,23 +115,23 @@ int main()
 	dataAccelerometer[2] = zAcceleration[0];
 
 	for (unsigned int i = 0; i < 2; i++)
-		dataMagnetometer[i] = dataINS[0][9 + i];
+		dataMagnetometer[i] = dataINS[0][indxMagnet + i];
 	angleAccelerometer = getAngleFromAccelerometer(dataAccelerometer);
-	time[0] = dataINS[0][24] / 1000;
+	time[0] = dataINS[0][indxTime] / 1000;
 	for (size_t i = 1; i < dataINS.size(); i++)
 	{
-		time[i] = dataINS[i][24] / 1000;
+		time[i] = dataINS[i][indxTime] / 1000;
 		// std::cout << dataINS[i][24] << std::endl;
 		// xAcceleration[i] = dataINS[i][0];
-		yAcceleration[i] = dataINS[i][1];
-		zAcceleration[i] = -dataINS[i][2];
+		// yAcceleration[i] = dataINS[i][1];
+		// zAcceleration[i] = -dataINS[i][2];
 		for (unsigned int j = 0; j < 3; j++)
 		{
-			dataGyroscope[j] = dataINS[i][6 + j];
+			dataGyroscope[j] = dataINS[i][indxGyro + j];
 		}
 		// std::cout << "data gyroscope z = " << dataGyroscope[2] << std::endl;
 		for (unsigned int j = 0; j < 2; j++)
-			dataMagnetometer[j] = dataINS[i][9 + j];
+			dataMagnetometer[j] = dataINS[i][indxMagnet + j];
 		angleMagnetometer = getAngleMagnetometer(dataMagnetometer);
 		angleGyroscope = getAngleGyroscope(orientation, dataGyroscope, time[i] - time[i - 1]);
 		// angleGyroscope = getAngleGyroscope(angleGyroscope, dataGyroscope, time[i] - time[i - 1]);
