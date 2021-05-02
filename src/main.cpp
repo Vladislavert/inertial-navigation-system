@@ -34,7 +34,7 @@ int main()
 	const unsigned int	indxMagnet = 6; // значение индекса под которым начинаются измерения магнитометра
 	const unsigned int	indxAcc = 0; // значение индекса под которым начинаются измерения акселерометра
 	const unsigned int	indxTime = 12; // значение индекса под которым начинаются измерения времени
-	const unsigned int	idxOrient = 9; // значение индекса под которым начинаются измерения ориентации
+	const unsigned int	indxOrient = 9; // значение индекса под которым начинаются измерения ориентации
 
 
 
@@ -152,7 +152,7 @@ int main()
 		dataAccelerometer[2] = zAcceleration[i];
 		angleAccelerometer = getAngleFromAccelerometer(dataAccelerometer);
 		orientation = complementaryFilter(angleAccelerometer, angleGyroscope, angleMagnetometer);
-		xOrientationVec[i] = angleMagnetometer[0]*180/M_PI;
+		xOrientationVec[i] = orientation[0]*180/M_PI;
 		yOrientationVec[i] = orientation[1]*180/M_PI;
 		zOrientationVec[i] = orientation[2]*180/M_PI;
 		// xOrientationVec[i] = angleMagnetometer[0]*180/M_PI;//orientation[0]*180/M_PI;//angleGyroscope[0]*180/M_1_PI;
