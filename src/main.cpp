@@ -66,13 +66,15 @@ int main()
 	double	*dataGyroscopePast;
 	double	*angleMagnetometer;
 	double	*dataMagnetometer;
+	double	*orientation;
 
 	dataAccelerometer = new double[3];
 	angleAccelerometer = new double[2];
 	dataGyroscope = new double[3];
 	angleGyroscope = new double[3];
 	dataMagnetometer = new double[3];
-	angleMagnetometer = new double[3];
+	angleMagnetometer = new double[1];
+	orientation = new double[3];
 
 
 	// начальная инициализация
@@ -108,7 +110,7 @@ int main()
 		dataAccelerometer[1] = yAcceleration[i];
 		dataAccelerometer[2] = zAcceleration[i];
 		angleAccelerometer = getAngleFromAccelerometer(dataAccelerometer);
-		
+		orientation = complementaryFilter(angleAccelerometer, angleGyroscope, angleMagnetometer);
 	}
 
 	// --------------------------------------------реализация для проведения тестирования-------------------------------------------------------------------------------------

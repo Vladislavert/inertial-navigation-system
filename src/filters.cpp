@@ -52,6 +52,13 @@ Vec		HighPassFilter(Vec input, Vec time, double T)
 double	*complementaryFilter(double angleAccelerometer[2], double angleGyroscope[3], double angleMagnetometer[1])
 {
 	double *orientation;
+	double	wGyroscope = 0.98;
+	double	wAccelerometer = 1 - wGyroscope;
+	double	wMagnetometr = 1 - wGyroscope;
 
+	orientation = new double[3];
+	orientation[0] = wAccelerometer * angleAccelerometer[0] + wGyroscope * angleGyroscope[0];
+	orientation[1] = wAccelerometer * angleAccelerometer[1] + wGyroscope * angleGyroscope[1];
+	orientation[2] = wMagnetometr * angleMagnetometer[0] + wGyroscope * angleGyroscope[0];
 	return (orientation);
 }
