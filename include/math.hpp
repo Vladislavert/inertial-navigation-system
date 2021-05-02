@@ -5,5 +5,7 @@
 
 double	squaring(const double &argument);
 Vec		integralEuler(Vec time, Vec data);
+double	integralEuler(const double dataPast, const double dataCurrent, double dt);
+
 
 #endif

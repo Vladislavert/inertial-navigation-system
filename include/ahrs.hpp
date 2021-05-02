@@ -4,9 +4,9 @@
 #include "typesData.hpp"
 #include <math.hpp>
 
-double	*getAngleFromAccelerometer(double *dataAccelerometer);
-double	*getAngleGyroscope(const double *dataGyroscope);
-double	*getMagnetometer(const double *dataMagnetometer);
+double	*getAngleFromAccelerometer(const double dataAccelerometer[3]);
+double	*getAngleGyroscope(const double dataGyroscopePast[3], const double dataGyroscopeCurrent[3], const double dt);
+double	*getAngleMagnetometer(const double *dataMagnetometer);
 
 
 #endif

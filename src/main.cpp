@@ -41,7 +41,78 @@ int main()
 		file.close();
 		str.clear();
 	}
+	else
+		std::exit(0);
 
+	Vec		xAcceleration(dataINS.size()); 		// вектор значений ускорения свободного падения по оси X
+	Vec		yAcceleration(dataINS.size()); 		// вектор значений ускорения свободного падения по оси Y
+	Vec		zAcceleration(dataINS.size()); 		// вектор значений ускорения свободного падения по оси Z
+	Vec		time(dataINS.size());				// время в течение которого осуществляется замер
+
+	double	mean_xAcceleration; // математическое ожидание
+	double	dispersion_xAcceleration; // дисперсия
+	double	mean_yAcceleration; // математическое ожидание 
+	double	dispersion_yAcceleration; // дисперсия
+	double	mean_zAcceleration; // математическое ожидание 
+	double	dispersion_zAcceleration; // дисперсия
+	double	g; // ускорение силы тяжести
+
+	g = gravitationalAccelerationCalc(0.959931, 190);
+
+	double	*angleAccelerometer;
+	double	*dataAccelerometer;
+	double	*angleGyroscope;
+	double	*dataGyroscope;
+	double	*dataGyroscopePast;
+	double	*angleMagnetometer;
+	double	*dataMagnetometer;
+
+	dataAccelerometer = new double[3];
+	angleAccelerometer = new double[2];
+	dataGyroscope = new double[3];
+	angleGyroscope = new double[3];
+	dataMagnetometer = new double[3];
+	angleMagnetometer = new double[3];
+
+
+	// начальная инициализация
+	xAcceleration[0] = dataINS[0][0];
+	yAcceleration[0] = dataINS[0][1];
+	zAcceleration[0] = -dataINS[0][2];
+	for (unsigned int i = 0; i < 3; i++)
+	{
+		angleGyroscope[i] = dataINS[0][6 + i];
+	}
+	dataAccelerometer[0] = xAcceleration[0];
+	dataAccelerometer[1] = yAcceleration[0];
+	dataAccelerometer[2] = zAcceleration[0];
+	for (unsigned int i = 0; i < 2; i++)
+		dataMagnetometer[i] = dataINS[0][9 + i];
+	angleAccelerometer = getAngleFromAccelerometer(dataAccelerometer);
+	time[0] = dataINS[0][24] / 1000;
+	for (size_t i = 1; i < dataINS.size() - 1; i++)
+	{
+		time[i] = dataINS[i][24] / 1000;
+		xAcceleration[i] = dataINS[i][0];
+		yAcceleration[i] = dataINS[i][1];
+		zAcceleration[i] = -dataINS[i][2];
+		for (unsigned int j = 0; j < 3; j++)
+		{
+			dataGyroscope[j] = dataINS[0][6 + j];
+		}
+		for (unsigned int i = 0; i < 2; i++)
+			dataMagnetometer[i] = dataINS[0][9 + i];
+		angleMagnetometer = getAngleMagnetometer(dataMagnetometer);
+		angleGyroscope = getAngleGyroscope(angleGyroscope, dataGyroscope, time[i] - time[i - 1]);
+		dataAccelerometer[0] = xAcceleration[i];
+		dataAccelerometer[1] = yAcceleration[i];
+		dataAccelerometer[2] = zAcceleration[i];
+		angleAccelerometer = getAngleFromAccelerometer(dataAccelerometer);
+		
+	}
+
+	// --------------------------------------------реализация для проведения тестирования-------------------------------------------------------------------------------------
+	/*
 	Vec xAcceleration(dataINS.size()); 		// вектор значений ускорения свободного падения по оси X
 	Vec yAcceleration(dataINS.size()); 		// вектор значений ускорения свободного падения по оси Y
 	Vec zAcceleration(dataINS.size()); 		// вектор значений ускорения свободного падения по оси Z
@@ -67,14 +138,14 @@ int main()
 	dataAccelerometer = new double[3];
 	for (size_t i = 0; i < dataINS.size(); i++)
 	{
-			xAcceleration[i] = dataINS[i][0];
-			yAcceleration[i] = dataINS[i][1];
-			zAcceleration[i] = -dataINS[i][2] + g;
-			dataAccelerometer[0] = xAcceleration[i];
-			dataAccelerometer[1] = yAcceleration[i];
-			dataAccelerometer[2] = zAcceleration[i];
-			getAngleFromAccelerometer(dataAccelerometer);
-			time[i] = dataINS[i][24] / 1000;
+		xAcceleration[i] = dataINS[i][0];
+		yAcceleration[i] = dataINS[i][1];
+		zAcceleration[i] = -dataINS[i][2] + g;
+		dataAccelerometer[0] = xAcceleration[i];
+		dataAccelerometer[1] = yAcceleration[i];
+		dataAccelerometer[2] = zAcceleration[i];
+			// getAngleFromAccelerometer(dataAccelerometer);
+		time[i] = dataINS[i][24] / 1000;
 	}
 	
 
@@ -197,7 +268,7 @@ int main()
 
 	// drawGraph(&time1, &xCoordinate, "coordinate X");
 	// drawGraph(&time1, &yCoordinate, "coordinate Y");
-	// drawGraph(&time1, &zCoordinate, "coordinate Z");
+	// drawGraph(&time1, &zCoordinate, "coordinate Z");*/
 	
 
 	// расчитать мат ожидание и дисперсию

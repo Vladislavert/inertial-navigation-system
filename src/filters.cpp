@@ -49,7 +49,7 @@ Vec		HighPassFilter(Vec input, Vec time, double T)
  * @param angleMagnetometer данные об углах полученные с магнитометра
  * @return значение оценки ориентации(тангаж, крен, рысканье)
  */
-double	*complementaryFilter(double *angleAccelerometer, double *angleGyroscope, double *angleMagnetometer)
+double	*complementaryFilter(double angleAccelerometer[2], double angleGyroscope[3], double angleMagnetometer[1])
 {
 	double *orientation;
 

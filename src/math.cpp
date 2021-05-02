@@ -29,3 +29,19 @@ Vec		integralEuler(Vec time, Vec data)
 	}
 	return (result);
 }
+
+/**
+ * @brief интегррирование методом Эйлера
+ * 
+ * @param dataPast значение на предыдущем шаге
+ * @param dataCurrent значение на текущем шаге
+ * @param dt шаг интегрирования
+ * @return проинтегрпированное значение
+ */
+double	integralEuler(const double dataPast, const double dataCurrent, double dt)
+{
+	double result;
+
+	result = dataPast + dataCurrent * dt;
+	return (result);
+}
