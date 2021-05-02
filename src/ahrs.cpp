@@ -3,7 +3,7 @@
 /**
  * @brief вычисление углов ориентации на основе данных с акселерометра
  * 
- * @param dataAccelerometer - данные с акселерометра(кажущееся ускорение по связанным осям)
+ * @param dataAccelerometer данные с акселерометра(кажущееся ускорение по связанным осям)
  * @return углы ориентации(тангаж, крен)
  */
 double	*getAngleFromAccelerometer(double *dataAccelerometer)
@@ -18,8 +18,8 @@ double	*getAngleFromAccelerometer(double *dataAccelerometer)
 /**
  * @brief вычисление углов ориентации на основе данных с гироскопа
  * 
- * @param dataGyroscope - данные с гироскопа()
- * @return углы ориентации()
+ * @param dataGyroscope данные с гироскопа(угловая скорость вращения по трём связанным осям)
+ * @return углы ориентации(тангжа, крен, рысканье)
  */
 double	*getAngleGyroscope(const double *dataGyroscope)
 {
@@ -31,8 +31,8 @@ double	*getAngleGyroscope(const double *dataGyroscope)
 /**
  * @brief вычисление углов ориентации на основе данных с магнитометра
  * 
- * @param dataMagnetometer - данные с магнитометра()
- * @return углы ориентации()
+ * @param dataMagnetometer данные с магнитометра()
+ * @return углы ориентации(рысканье)
  */
 double	*getMagnetometer(const double *dataMagnetometer)
 {

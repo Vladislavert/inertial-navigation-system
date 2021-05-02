@@ -3,12 +3,12 @@
 /**
  * @brief построение графиков по множеству точек
  * 
- * @param time - ось абсцисс
- * @param data - ось ординат
- * @param nameGraph - наименование графика
- * @param show - отрисовка графика(true - отрисовать; false - не отрисовывать)
- * @param palette - палитра
- * @param lineWidth - толщина линии
+ * @param time ось абсцисс
+ * @param data ось ординат
+ * @param nameGraph наименование графика
+ * @param show отрисовка графика(true - отрисовать; false - не отрисовывать)
+ * @param palette палитра
+ * @param lineWidth толщина линии
  */
 void	drawGraph(const Vec *time, const Vec *data, std::string nameGraph, bool show, std::string palette, int lineWidth)
 {
@@ -28,13 +28,13 @@ void	drawGraph(const Vec *time, const Vec *data, std::string nameGraph, bool sho
 /**
  * @brief построение графиков по множеству точек
  * 
- * @param time - ось абсцисс
- * @param data - ось ординат
- * @param plot - полотно, на котром происходит отрисовка графика
- * @param nameGraph - наименование графика
- * @param show - отрисовка графика(true - отрисовать; false - не отрисовывать)
- * @param palette - палитра
- * @param lineWidth - толщина линии
+ * @param time ось абсцисс
+ * @param data ось ординат
+ * @param plot полотно, на котром происходит отрисовка графика
+ * @param nameGraph наименование графика
+ * @param show отрисовка графика(true - отрисовать; false - не отрисовывать)
+ * @param palette палитра
+ * @param lineWidth толщина линии
  */
 void	drawGraph(const Vec *time, const Vec *data, Plot *plot, std::string nameGraph, bool show, std::string palette, int lineWidth)
 {
@@ -53,12 +53,12 @@ void	drawGraph(const Vec *time, const Vec *data, Plot *plot, std::string nameGra
 /**
  * @brief построение линии по оси абсцисс
  * 
- * @param time - ось абсцисс
- * @param data - ось ординат
- * @param nameGraph - наименование графика
- * @param show - отрисовка графика(true - отрисовать; false - не отрисовывать)
- * @param palette - палитра
- * @param lineWidth - толщина линии
+ * @param time ось абсцисс
+ * @param data ось ординат
+ * @param nameGraph наименование графика
+ * @param show отрисовка графика(true - отрисовать; false - не отрисовывать)
+ * @param palette палитра
+ * @param lineWidth толщина линии
  */
 void	drawLine(const Vec *time, const double *data, std::string nameGraph, bool show, std::string palette, int lineWidth)
 {
@@ -78,13 +78,13 @@ void	drawLine(const Vec *time, const double *data, std::string nameGraph, bool s
 /**
  * @brief построение линии по оси абсцисс
  * 
- * @param time - ось абсцисс
- * @param data - ось ординат
- * @param plot - полотно, на котром происходит отрисовка графика
- * @param nameGraph - наименование графика
- * @param show - отрисовка графика(true - отрисовать; false - не отрисовывать)
- * @param palette - палитра
- * @param lineWidth - толщина линии
+ * @param time ось абсцисс
+ * @param data ось ординат
+ * @param plot полотно, на котром происходит отрисовка графика
+ * @param nameGraph наименование графика
+ * @param show отрисовка графика(true - отрисовать; false - не отрисовывать)
+ * @param palette палитра
+ * @param lineWidth толщина линии
  */
 void	drawLine(const Vec *time, const double *data, Plot *plot, std::string nameGraph, bool show, std::string palette, int lineWidth)
 {

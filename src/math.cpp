@@ -1,10 +1,23 @@
 #include "math.hpp"
 
+/**
+ * @brief возведение в квадрат
+ * 
+ * @param argument аргумент, который возводят в квадрат
+ * @return значение аргумента в квадрате
+ */
 double	squaring(const double &argument)
 {
 	return (argument * argument);
 }
 
+/**
+ * @brief интегрирование методом Эйлера
+ * 
+ * @param time элемент интегрирования
+ * @param data аргумент, который интегрируется
+ * @return проинтегрированные значения
+ */
 Vec		integralEuler(Vec time, Vec data)
 {
 	Vec result(time.size());

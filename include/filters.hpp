@@ -3,7 +3,8 @@
 
 #include "typesData.hpp"
 
-Vec		lowPassFilter(Vec out, Vec dt, double T);
+Vec		lowPassFilter(Vec input, Vec time, double T);
+Vec		HighPassFilter(Vec input, Vec time, double T);
 double	*complementaryFilter(double *angleAccelerometer, double *angleGyroscope, double *angleMagnetometer);
 
 #endif

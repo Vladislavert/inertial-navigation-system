@@ -1,8 +1,11 @@
 #include "calcProbabilityCharact.hpp"
 
-/*
-	расчёт математического ожидания дискретной СВ
-*/
+/**
+ * @brief расчёт математического ожидания дискретной случайной величины(СВ)
+ * 
+ * @param dataArray массив измерений
+ * @return математическое ожидание СВ
+ */
 double	meanCalculate(const Vec &dataArray)
 {
 	double mean;
@@ -13,9 +16,13 @@ double	meanCalculate(const Vec &dataArray)
 	return (mean);
 }
 
-/*
-	расчёт дисперсии дискретной СВ
-*/
+/**
+ * @brief расчёт дисперсии дискретной случайной величины(СВ)
+ * 
+ * @param dataArray массив измерений
+ * @param mean математическое ожидание
+ * @return дисперсия СВ
+ */
 double	dispersionCalculate(const Vec &dataArray, const double &mean)
 {
 	double dispersion;
