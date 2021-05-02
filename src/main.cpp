@@ -24,10 +24,17 @@ int main()
 	std::string			nameFile;
 	vectString_t		str;
 	vectDouble2d_t		dataINS; // данные с БИНС
-	const unsigned int	indxGyro = 6; // значение индекса под которым начинаются измерения гироскопа
-	const unsigned int	indxMagnet = 9; // значение индекса под которым начинаются измерения магнитометра
+	// для стандратного .csv файла
+	// const unsigned int	indxGyro = 6; // значение индекса под которым начинаются измерения гироскопа
+	// const unsigned int	indxMagnet = 9; // значение индекса под которым начинаются измерения магнитометра
+	// const unsigned int	indxAcc = 0; // значение индекса под которым начинаются измерения акселерометра
+	// const unsigned int	indxTime = 24; // значение индекса под которым начинаются измерения акселерометра
+	// изменённый файл .csv
+	const unsigned int	indxGyro = 3; // значение индекса под которым начинаются измерения гироскопа
+	const unsigned int	indxMagnet = 6; // значение индекса под которым начинаются измерения магнитометра
 	const unsigned int	indxAcc = 0; // значение индекса под которым начинаются измерения акселерометра
-	const unsigned int	indxTime = 24; // значение индекса под которым начинаются измерения акселерометра
+	const unsigned int	indxTime = 12; // значение индекса под которым начинаются измерения времени
+	const unsigned int	idxOrient = 9; // значение индекса под которым начинаются измерения ориентации
 
 
 
@@ -38,7 +45,9 @@ int main()
 	// nameFile = DIR_RESOURCES + "Car_7Km.h.txt";
 	// nameFile = DIR_RESOURCES + "move Y(2 meters).txt";
 	// nameFile = DIR_RESOURCES + "scooter.txt";
-	nameFile = DIR_RESOURCES + "orientation360_2_chear.csv";
+	// nameFile = DIR_RESOURCES + "orientation360_2_chear.csv";
+	nameFile = DIR_RESOURCES + "orientation360_2_chear (useful data).csv";
+
 	file.open(nameFile);
 
 	if (checkOpenFile(file))
