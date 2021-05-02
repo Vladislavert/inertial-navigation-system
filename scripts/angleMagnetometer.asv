@@ -1,0 +1,4 @@
+
+
+
+function angleAccelerometer =getAngleFromAccelerometer(dataAccelerometer)

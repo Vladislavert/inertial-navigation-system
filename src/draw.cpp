@@ -13,11 +13,32 @@
 void	drawGraph(const Vec *time, const Vec *data, std::string nameGraph, bool show, std::string palette, int lineWidth)
 {
 	Plot plot;
-	    plot.legend()
+	// plot.xrange(0.0, (*time)[(*time).size() - 1]);
+   	// plot.yrange(-0.1, 0.1);
+	plot.legend()
         .atOutsideBottom()
         .displayHorizontal()
         .displayExpandWidthBy(2);
-	plot.palette(palette);
+	// plot.palette(palette);
+	// plot.size(600, 600);
+	plot.drawCurve(*time, *data).label(nameGraph).lineWidth(lineWidth);
+	// plot.drawCurve(time, data).lineWidth(lineWidth);
+
+	if (show == true)
+    	plot.show();
+}
+
+void	drawGraph(const Vec *time, const vectDouble_t *data, std::string nameGraph, bool show, std::string palette, int lineWidth)
+{
+	Plot plot;
+	// plot.xrange(0.0, (*time)[(*time).size() - 1]);
+   	// plot.yrange(-0.1, 0.1);
+	plot.legend()
+        .atOutsideBottom()
+        .displayHorizontal()
+        .displayExpandWidthBy(2);
+	// plot.palette(palette);
+	// plot.size(600, 600);
 	plot.drawCurve(*time, *data).label(nameGraph).lineWidth(lineWidth);
 	// plot.drawCurve(time, data).lineWidth(lineWidth);
 

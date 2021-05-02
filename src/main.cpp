@@ -31,7 +31,7 @@ int main()
 	// nameFile = DIR_RESOURCES + "Car_7Km.h.txt";
 	// nameFile = DIR_RESOURCES + "move Y(2 meters).txt";
 	// nameFile = DIR_RESOURCES + "scooter.txt";
-	nameFile = DIR_RESOURCES + "musicGlobalCoordinate.csv";
+	nameFile = DIR_RESOURCES + "orientation360_2_chear.csv";
 	file.open(nameFile);
 
 	if (checkOpenFile(file))
@@ -48,6 +48,12 @@ int main()
 	Vec		yAcceleration(dataINS.size()); 		// вектор значений ускорения свободного падения по оси Y
 	Vec		zAcceleration(dataINS.size()); 		// вектор значений ускорения свободного падения по оси Z
 	Vec		time(dataINS.size());				// время в течение которого осуществляется замер
+	Vec		xOrientationVec(dataINS.size()); 		// вектор содержащий ориентацию по оси X(тангаж)
+	Vec		yOrientationVec(dataINS.size()); 		// вектор содержащий ориентацию по оси Y(крен)
+	Vec		zOrientationVec(dataINS.size()); 		// вектор содержащий ориентацию по оси Z(рысканье)
+
+
+
 
 	double	mean_xAcceleration; // математическое ожидание
 	double	dispersion_xAcceleration; // дисперсия
@@ -83,35 +89,68 @@ int main()
 	zAcceleration[0] = -dataINS[0][2];
 	for (unsigned int i = 0; i < 3; i++)
 	{
-		angleGyroscope[i] = dataINS[0][6 + i];
+		orientation[i] = 0;//dataINS[0][6 + i]; // начальная выставкка БИНС (углы ориентации ранвы 0)
+		angleGyroscope[i] = 0;
+		dataGyroscope[i] = dataINS[0][6 + i];
 	}
+	// angleGyroscope[2] = 4.8127;
+	xOrientationVec[0] = dataINS[0][13];//orientation[0]*180/M_1_PI;//*180/M_1_PI;
+	yOrientationVec[0] = dataINS[0][14];//dataGyroscope[1];//*180/M_1_PI;
+	zOrientationVec[0] = dataINS[0][12];//dataGyroscope[2];//*180/M_1_PI;
+	// xOrientationVec[0] = orientation[0];
+	// yOrientationVec[0] = orientation[1];
+	// zOrientationVec[0] = orientation[2];
+	// xOrientationVec[0] = angleGyroscope[0];
+	// yOrientationVec[0] = angleGyroscope[1];
+	// zOrientationVec[0] = angleGyroscope[2];
 	dataAccelerometer[0] = xAcceleration[0];
 	dataAccelerometer[1] = yAcceleration[0];
 	dataAccelerometer[2] = zAcceleration[0];
+
 	for (unsigned int i = 0; i < 2; i++)
 		dataMagnetometer[i] = dataINS[0][9 + i];
 	angleAccelerometer = getAngleFromAccelerometer(dataAccelerometer);
 	time[0] = dataINS[0][24] / 1000;
-	for (size_t i = 1; i < dataINS.size() - 1; i++)
+	for (size_t i = 1; i < dataINS.size(); i++)
 	{
 		time[i] = dataINS[i][24] / 1000;
-		xAcceleration[i] = dataINS[i][0];
+		// std::cout << dataINS[i][24] << std::endl;
+		// xAcceleration[i] = dataINS[i][0];
 		yAcceleration[i] = dataINS[i][1];
 		zAcceleration[i] = -dataINS[i][2];
 		for (unsigned int j = 0; j < 3; j++)
 		{
-			dataGyroscope[j] = dataINS[0][6 + j];
+			dataGyroscope[j] = dataINS[i][6 + j];
 		}
-		for (unsigned int i = 0; i < 2; i++)
-			dataMagnetometer[i] = dataINS[0][9 + i];
+		// std::cout << "data gyroscope z = " << dataGyroscope[2] << std::endl;
+		for (unsigned int j = 0; j < 2; j++)
+			dataMagnetometer[j] = dataINS[i][9 + j];
 		angleMagnetometer = getAngleMagnetometer(dataMagnetometer);
-		angleGyroscope = getAngleGyroscope(angleGyroscope, dataGyroscope, time[i] - time[i - 1]);
+		angleGyroscope = getAngleGyroscope(orientation, dataGyroscope, time[i] - time[i - 1]);
+		// angleGyroscope = getAngleGyroscope(angleGyroscope, dataGyroscope, time[i] - time[i - 1]);
+		std::cout << "orientation x = " << angleMagnetometer[0]<< std::endl;
+		// std::cout << "angle gyroscope x = " << time[i - 1] << std::endl; 
+
 		dataAccelerometer[0] = xAcceleration[i];
 		dataAccelerometer[1] = yAcceleration[i];
 		dataAccelerometer[2] = zAcceleration[i];
 		angleAccelerometer = getAngleFromAccelerometer(dataAccelerometer);
 		orientation = complementaryFilter(angleAccelerometer, angleGyroscope, angleMagnetometer);
+		xOrientationVec[i] = angleMagnetometer[0]*180/M_PI;
+		yOrientationVec[i] = orientation[1]*180/M_PI;
+		zOrientationVec[i] = orientation[2]*180/M_PI;
+		// xOrientationVec[i] = angleMagnetometer[0]*180/M_PI;//orientation[0]*180/M_PI;//angleGyroscope[0]*180/M_1_PI;
+		// yOrientationVec[i] = dataMagnetometer[1]*180/M_1_PI;//orientation[1]*180/M_PI;
+		// zOrientationVec[i] = angleMagnetometer[2]*180/M_1_PI;//orientation[2]*180/M_PI;
 	}
+	
+	drawGraph(&time, &xOrientationVec, "orientation X", 1);
+	// Plot plot;
+	// plot.drawCurve(time, xOrientationVec).label("test");
+	// plot.show();
+	// drawGraph(&time, &yOrientationVec, "orientation Y", 1);
+	drawGraph(&time, &zOrientationVec, "orientation Z", 1);
+
 
 	// --------------------------------------------реализация для проведения тестирования-------------------------------------------------------------------------------------
 	/*
