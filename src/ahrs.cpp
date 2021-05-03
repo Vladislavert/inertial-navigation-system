@@ -31,6 +31,7 @@ double	*getAngleGyroscope(const double dataGyroscopePast[3], const double dataGy
 	angleGyroscope = new double[3];
 	for (unsigned int i = 0; i < 3; i++)
 		angleGyroscope[i] = integralEuler(dataGyroscopePast[i], dataGyroscopeCurrent[i], dt);
+	angleGyroscope[2] = absRad(angleGyroscope[2]); 
 	return(angleGyroscope);
 }
 
@@ -46,10 +47,22 @@ double	*getAngleMagnetometer(const double dataMagnetometer[2])
 
 	angleMagnetometr = new double[1];
 	angleMagnetometr[0] = -std::atan2(dataMagnetometer[0], dataMagnetometer[1]);
-	if (angleMagnetometr[0] < 0)
-	{
-		angleMagnetometr[0] = M_PI + (M_PI + angleMagnetometr[0]);
-	}
+	angleMagnetometr[0] = absRad(angleMagnetometr[0]);
 	return(angleMagnetometr);
 }
 
+/**
+ * @brief перевод в диапазон от 0 до 2*pi 
+ * 
+ * @param rad значение в радианах(от 0 до pi/-pi)
+ * @return значение в радианах(от 0 до 2*pi)
+ */
+double	absRad(const double rad)
+{
+	if (rad < 0)
+		return(M_PI + (M_PI + rad));
+	else if (rad > 2*M_PI)
+		return (rad - 2*M_PI);
+	else
+		return (rad);
+}

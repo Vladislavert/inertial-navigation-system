@@ -109,7 +109,8 @@ int main()
 		angleGyroscope[i] = 0;
 		dataGyroscope[i] = dataINS[0][indxGyro + i];
 	}
-	// angleGyroscope[2] = 4.8127;
+	angleGyroscope[2] = dataINS[0][indxOrient]*M_PI/180;
+	orientation[2] = dataINS[0][indxOrient]*M_PI/180;
 	xOrientationVec[0] = dataINS[0][13];//orientation[0]*180/M_1_PI;//*180/M_1_PI;
 	yOrientationVec[0] = dataINS[0][14];//dataGyroscope[1];//*180/M_1_PI;
 	zOrientationVec[0] = dataINS[0][12];//dataGyroscope[2];//*180/M_1_PI;
@@ -142,7 +143,7 @@ int main()
 		for (unsigned int j = 0; j < 2; j++)
 			dataMagnetometer[j] = dataINS[i][indxMagnet + j];
 		angleMagnetometer = getAngleMagnetometer(dataMagnetometer);
-		angleGyroscope = getAngleGyroscope(orientation, dataGyroscope, time[i] - time[i - 1]);
+		angleGyroscope = getAngleGyroscope(angleGyroscope, dataGyroscope, time[i] - time[i - 1]);
 		// angleGyroscope = getAngleGyroscope(angleGyroscope, dataGyroscope, time[i] - time[i - 1]);
 		std::cout << "orientation x = " << angleMagnetometer[0]<< std::endl;
 		// std::cout << "angle gyroscope x = " << time[i - 1] << std::endl; 
@@ -151,8 +152,8 @@ int main()
 		dataAccelerometer[1] = yAcceleration[i];
 		dataAccelerometer[2] = zAcceleration[i];
 		angleAccelerometer = getAngleFromAccelerometer(dataAccelerometer);
-		orientation = complementaryFilter(angleAccelerometer, angleGyroscope, angleMagnetometer);
-		xOrientationVec[i] = orientation[0]*180/M_PI;
+		orientation = complementaryFilter(orientation , angleGyroscope, angleMagnetometer);
+		xOrientationVec[i] = angleMagnetometer[0]*180/M_PI;
 		yOrientationVec[i] = orientation[1]*180/M_PI;
 		zOrientationVec[i] = orientation[2]*180/M_PI;
 		// xOrientationVec[i] = angleMagnetometer[0]*180/M_PI;//orientation[0]*180/M_PI;//angleGyroscope[0]*180/M_1_PI;
@@ -164,7 +165,7 @@ int main()
 	// Plot plot;
 	// plot.drawCurve(time, xOrientationVec).label("test");
 	// plot.show();
-	// drawGraph(&time, &yOrientationVec, "orientation Y", 1);
+	drawGraph(&time, &yOrientationVec, "orientation Y", 1);
 	drawGraph(&time, &zOrientationVec, "orientation Z", 1);
 
 
