@@ -59,6 +59,9 @@ double	*complementaryFilter(double angleAccelerometer[2], double angleGyroscope[
 	orientation = new double[3];
 	orientation[0] = wAccelerometer * angleAccelerometer[0] + wGyroscope * angleGyroscope[0];
 	orientation[1] = wAccelerometer * angleAccelerometer[1] + wGyroscope * angleGyroscope[1];
-	orientation[2] = wMagnetometr * angleMagnetometer[0] + wGyroscope * angleGyroscope[2];
+	// проверить данные с магнетометра
+	// orientation[2] = wMagnetometr * angleMagnetometer[0] + wGyroscope * angleGyroscope[2];
+	orientation[2] = angleGyroscope[2];
+
 	return (orientation);
 }

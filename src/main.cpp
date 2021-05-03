@@ -46,7 +46,8 @@ int main()
 	// nameFile = DIR_RESOURCES + "move Y(2 meters).txt";
 	// nameFile = DIR_RESOURCES + "scooter.txt";
 	// nameFile = DIR_RESOURCES + "orientation360_2_chear.csv";
-	nameFile = DIR_RESOURCES + "orientation360_2_chear (useful data).csv";
+	// nameFile = DIR_RESOURCES + "orientation360_2_chear (useful data).csv";
+	nameFile = DIR_RESOURCES + "pitch.csv";
 
 	file.open(nameFile);
 
@@ -60,10 +61,13 @@ int main()
 	else
 		std::exit(0);
 
-	Vec		xAcceleration(dataINS.size()); 		// вектор значений ускорения свободного падения по оси X
-	Vec		yAcceleration(dataINS.size()); 		// вектор значений ускорения свободного падения по оси Y
-	Vec		zAcceleration(dataINS.size()); 		// вектор значений ускорения свободного падения по оси Z
-	Vec		time(dataINS.size());				// время в течение которого осуществляется замер
+	Vec		xAcceleration(dataINS.size()); 			// вектор значений ускорения свободного падения по оси X
+	Vec		yAcceleration(dataINS.size()); 			// вектор значений ускорения свободного падения по оси Y
+	Vec		zAcceleration(dataINS.size()); 			// вектор значений ускорения свободного падения по оси Z
+	Vec		xAccelerationFilter; 	// вектор значений ускорения свободного падения по оси X после фильтрации
+	Vec		yAccelerationFilter; 	// вектор значений ускорения свободного падения по оси Y после фильтрации
+	Vec		zAccelerationFilter; 	// вектор значений ускорения свободного падения по оси Z после фильтрации
+	Vec		time(dataINS.size());					// время в течение которого осуществляется замер
 	Vec		xOrientationVec(dataINS.size()); 		// вектор содержащий ориентацию по оси X(тангаж)
 	Vec		yOrientationVec(dataINS.size()); 		// вектор содержащий ориентацию по оси Y(крен)
 	Vec		zOrientationVec(dataINS.size()); 		// вектор содержащий ориентацию по оси Z(рысканье)
@@ -94,15 +98,21 @@ int main()
 	angleAccelerometer = new double[2];
 	dataGyroscope = new double[3];
 	angleGyroscope = new double[3];
-	dataMagnetometer = new double[3];
+	dataMagnetometer = new double[2];
 	angleMagnetometer = new double[1];
 	orientation = new double[3];
 
 
 	// начальная инициализация
-	xAcceleration[0] = dataINS[0][indxAcc];
-	yAcceleration[0] = dataINS[0][indxAcc + 1];
-	zAcceleration[0] = -dataINS[0][indxAcc + 2];
+	for (unsigned int i = 0; i < dataINS.size(); i++)
+	{
+		xAcceleration[i] = dataINS[i][indxAcc];
+		yAcceleration[i] = dataINS[i][indxAcc + 1];
+		zAcceleration[i] = -dataINS[i][indxAcc + 2];
+		time[i] = dataINS[i][indxTime];
+	}
+	
+
 	for (unsigned int i = 0; i < 3; i++)
 	{
 		orientation[i] = 0;//dataINS[0][6 + i]; // начальная выставкка БИНС (углы ориентации ранвы 0)
@@ -114,19 +124,22 @@ int main()
 	xOrientationVec[0] = dataINS[0][13];//orientation[0]*180/M_1_PI;//*180/M_1_PI;
 	yOrientationVec[0] = dataINS[0][14];//dataGyroscope[1];//*180/M_1_PI;
 	zOrientationVec[0] = dataINS[0][12];//dataGyroscope[2];//*180/M_1_PI;
+	xAccelerationFilter = lowPassFilter(xAcceleration, time, 0.02);
+	yAccelerationFilter = lowPassFilter(yAcceleration, time, 0.02);
+	zAccelerationFilter = lowPassFilter(zAcceleration, time, 0.02);
 	// xOrientationVec[0] = orientation[0];
 	// yOrientationVec[0] = orientation[1];
 	// zOrientationVec[0] = orientation[2];
 	// xOrientationVec[0] = angleGyroscope[0];
 	// yOrientationVec[0] = angleGyroscope[1];
 	// zOrientationVec[0] = angleGyroscope[2];
-	dataAccelerometer[0] = xAcceleration[0];
-	dataAccelerometer[1] = yAcceleration[0];
-	dataAccelerometer[2] = zAcceleration[0];
+	dataAccelerometer[0] = xAccelerationFilter[0];
+	dataAccelerometer[1] = yAccelerationFilter[0];
+	dataAccelerometer[2] = zAccelerationFilter[0];
 
 	for (unsigned int i = 0; i < 2; i++)
 		dataMagnetometer[i] = dataINS[0][indxMagnet + i];
-	angleAccelerometer = getAngleFromAccelerometer(dataAccelerometer);
+	angleAccelerometer = getAngleAccelerometer(dataAccelerometer);
 	time[0] = dataINS[0][indxTime] / 1000;
 	for (size_t i = 1; i < dataINS.size(); i++)
 	{
@@ -138,23 +151,28 @@ int main()
 		for (unsigned int j = 0; j < 3; j++)
 		{
 			dataGyroscope[j] = dataINS[i][indxGyro + j];
+			// dataAccelerometer[j] = dataINS[i][indxAcc + j];
 		}
+		dataAccelerometer[0] = xAccelerationFilter[i];
+		dataAccelerometer[1] = yAccelerationFilter[i];
+		dataAccelerometer[2] = zAccelerationFilter[i];
 		// std::cout << "data gyroscope z = " << dataGyroscope[2] << std::endl;
 		for (unsigned int j = 0; j < 2; j++)
 			dataMagnetometer[j] = dataINS[i][indxMagnet + j];
 		angleMagnetometer = getAngleMagnetometer(dataMagnetometer);
-		angleGyroscope = getAngleGyroscope(angleGyroscope, dataGyroscope, time[i] - time[i - 1]);
+		angleGyroscope = getAngleGyroscope(orientation, dataGyroscope, time[i] - time[i - 1]);
+		angleAccelerometer = getAngleAccelerometer(dataAccelerometer);
 		// angleGyroscope = getAngleGyroscope(angleGyroscope, dataGyroscope, time[i] - time[i - 1]);
 		std::cout << "orientation x = " << angleMagnetometer[0]<< std::endl;
 		// std::cout << "angle gyroscope x = " << time[i - 1] << std::endl; 
 
-		dataAccelerometer[0] = xAcceleration[i];
-		dataAccelerometer[1] = yAcceleration[i];
-		dataAccelerometer[2] = zAcceleration[i];
-		angleAccelerometer = getAngleFromAccelerometer(dataAccelerometer);
-		orientation = complementaryFilter(orientation , angleGyroscope, angleMagnetometer);
-		xOrientationVec[i] = angleMagnetometer[0]*180/M_PI;
-		yOrientationVec[i] = orientation[1]*180/M_PI;
+		// dataAccelerometer[0] = xAcceleration[i];
+		// dataAccelerometer[1] = yAcceleration[i];
+		// dataAccelerometer[2] = zAcceleration[i];
+		orientation = complementaryFilter(angleAccelerometer , angleGyroscope, angleMagnetometer);
+			// orientation = complementaryFilter(orientation , angleGyroscope, angleMagnetometer);
+		xOrientationVec[i] = angleAccelerometer[0]*180/M_PI;
+		yOrientationVec[i] = angleAccelerometer[1]*180/M_PI;
 		zOrientationVec[i] = orientation[2]*180/M_PI;
 		// xOrientationVec[i] = angleMagnetometer[0]*180/M_PI;//orientation[0]*180/M_PI;//angleGyroscope[0]*180/M_1_PI;
 		// yOrientationVec[i] = dataMagnetometer[1]*180/M_1_PI;//orientation[1]*180/M_PI;

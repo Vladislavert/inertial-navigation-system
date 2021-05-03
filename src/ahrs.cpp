@@ -6,7 +6,7 @@
  * @param dataAccelerometer данные с акселерометра(кажущееся ускорение по связанным осям)
  * @return углы ориентации(тангаж, крен)
  */
-double	*getAngleFromAccelerometer(const double dataAccelerometer[3])
+double	*getAngleAccelerometer(const double dataAccelerometer[3])
 {
 	double *angleAccelerometer;
 
