@@ -32,7 +32,10 @@
 % Pitch(Тангаж)
 % Roll(Крен)
 % R - матрица поворота
-% g - ускорение свободного падения в точке измерений
+% g - ускорение свободного падения в точке проведения измерений
+% psi - рысканье
+% theta - тангаж
+% gamma - крен
 
 % определение положение в WGS-84
 % 1. Накопить позицию по GPS(провести начальную выставку, в том числе БИНС)
@@ -62,12 +65,24 @@ g = 9.81439;
 % крен, рысканье, тангаж
 angl = [deg2rad(1.9878); deg2rad(320.0798); deg2rad(0.6876)];
 
-R = [cos(angl(3))*cos(angl(2)), sin(angl(1))*sin(angl(3))*cos(angl(2))-cos(angl(1))*sin(angl(2)), cos(angl(1))*sin(angl(3))*cos(angl(2))+sin(angl(1))*sin(angl(2));...
-     cos(angl(3))*sin(angl(2)), sin(angl(1))*sin(angl(3))*sin(angl(2))+cos(angl(1))*cos(angl(2)), cos(angl(1))*sin(angl(3))*sin(angl(2))-sin(angl(1))*cos(angl(2));...
-     -sin(angl(3))                                       , sin(angl(1))*cos(angl(3))                                        , cos(angl(1))*cos(angl(3))] ;
+% крен, тангаж, рысканье
+% angl = [0; deg2rad(320.0798); 0];
+
+
+% R = [cos(angl(3))*cos(angl(2)), sin(angl(1))*sin(angl(3))*cos(angl(2))-cos(angl(1))*sin(angl(2)), cos(angl(1))*sin(angl(3))*cos(angl(2))+sin(angl(1))*sin(angl(2));...
+%      cos(angl(3))*sin(angl(2)), sin(angl(1))*sin(angl(3))*sin(angl(2))+cos(angl(1))*cos(angl(2)), cos(angl(1))*sin(angl(3))*sin(angl(2))-sin(angl(1))*cos(angl(2));...
+%      -sin(angl(3))                                       , sin(angl(1))*cos(angl(3))                                        , cos(angl(1))*cos(angl(3))];
+
+% Матрица поворотов из методического пособия по дисциплине: 
+% «Аппаратные средства бортовых интегрированных систем летательных аппаратов»
+%                (под редакцией М.Н. Красильщикова)
+
+ R = [cos(angl(2))*cos(angl(3)), -cos(angl(1))*cos(angl(3))*sin(2) + sin(1)*sin(3),                  sin(angl(1))*cos(angl(3))*sin(angl(2))+cos(angl(1))*sin(angl(3));...
+      sin(angl(2))             ,               cos(angl(1))*cos(angl(2)),                           -sin(angl(1))*cos(angl(2))                                       ;...
+      -cos(angl(2))*sin(angl(3)), cos(angl(1))*sin(angl(3))*sin(angl(2))+sin(angl(1))*cos(angl(3)), -sin(angl(1))*sin(angl(3))*sin(angl(2))+cos(angl(1))*cos(angl(3))];
 
 Vector = [0; 0; g];
-Rotation = R*Vector
+Rotation = (R')*Vector
 
 plot3([0,Vector(1)],[0,Vector(2)],[0,Vector(3)])
 hold on
