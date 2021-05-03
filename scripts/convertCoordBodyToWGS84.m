@@ -63,26 +63,32 @@ g = 9.81439;
 % angl = [deg2rad(0.6876); deg2rad(-1.9878); deg2rad(320.0798)];
 
 % крен, рысканье, тангаж
-angl = [deg2rad(1.9878); deg2rad(320.0798); deg2rad(0.6876)];
+% angl = [deg2rad(1.9878); deg2rad(320.0798); deg2rad(0.6876)];
 
 % крен, тангаж, рысканье
-% angl = [0; deg2rad(320.0798); 0];
+angl = [deg2rad(1.9878); deg2rad(0.6876); deg2rad(320.0798)];
 
 
 % R = [cos(angl(3))*cos(angl(2)), sin(angl(1))*sin(angl(3))*cos(angl(2))-cos(angl(1))*sin(angl(2)), cos(angl(1))*sin(angl(3))*cos(angl(2))+sin(angl(1))*sin(angl(2));...
 %      cos(angl(3))*sin(angl(2)), sin(angl(1))*sin(angl(3))*sin(angl(2))+cos(angl(1))*cos(angl(2)), cos(angl(1))*sin(angl(3))*sin(angl(2))-sin(angl(1))*cos(angl(2));...
-%      -sin(angl(3))                                       , sin(angl(1))*cos(angl(3))                                        , cos(angl(1))*cos(angl(3))];
+%      -sin(angl(3))                                       , sin(angl(1))*cos(angl(3))            , cos(angl(1))*cos(angl(3))];
+
+% крен, тангаж, рысканье
+% Маррица составленная на основе углов Тейта-Брайана
+R = [cos(angl(3))*cos(angl(2)),                                        -cos(angl(2))*sin(angl(3)),                                       sin(angl(2));...
+     sin(angl(1))*sin(angl(2))*cos(angl(3))-cos(angl(1))*sin(angl(3)), -sin(angl(1))*sin(angl(2))*sin(angl(3))+cos(angl(1))*cos(angl(3)), sin(angl(1))*cos(angl(2));...
+     -cos(angl(1))*sin(angl(2))*cos(angl(3))+sin(angl(1))*sin(angl(3)) , cos(angl(1))*sin(angl(2))*sin(angl(3))+sin(angl(1))*cos(angl(3)), cos(angl(1))*cos(angl(2))];
 
 % Матрица поворотов из методического пособия по дисциплине: 
 % «Аппаратные средства бортовых интегрированных систем летательных аппаратов»
 %                (под редакцией М.Н. Красильщикова)
 
- R = [cos(angl(2))*cos(angl(3)), -cos(angl(1))*cos(angl(3))*sin(2) + sin(1)*sin(3),                  sin(angl(1))*cos(angl(3))*sin(angl(2))+cos(angl(1))*sin(angl(3));...
-      sin(angl(2))             ,               cos(angl(1))*cos(angl(2)),                           -sin(angl(1))*cos(angl(2))                                       ;...
-      -cos(angl(2))*sin(angl(3)), cos(angl(1))*sin(angl(3))*sin(angl(2))+sin(angl(1))*cos(angl(3)), -sin(angl(1))*sin(angl(3))*sin(angl(2))+cos(angl(1))*cos(angl(3))];
+%  R = [cos(angl(2))*cos(angl(3)), -cos(angl(1))*cos(angl(3))*sin(2) + sin(1)*sin(3),                  sin(angl(1))*cos(angl(3))*sin(angl(2))+cos(angl(1))*sin(angl(3));...
+%       sin(angl(2))             ,               cos(angl(1))*cos(angl(2)),                           -sin(angl(1))*cos(angl(2))                                       ;...
+%       -cos(angl(2))*sin(angl(3)), cos(angl(1))*sin(angl(3))*sin(angl(2))+sin(angl(1))*cos(angl(3)), -sin(angl(1))*sin(angl(3))*sin(angl(2))+cos(angl(1))*cos(angl(3))];
 
 Vector = [0; 0; g];
-Rotation = (R')*Vector
+Rotation = (R)*Vector
 
 plot3([0,Vector(1)],[0,Vector(2)],[0,Vector(3)])
 hold on
