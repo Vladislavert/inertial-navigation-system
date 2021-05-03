@@ -10,7 +10,7 @@ INC_DIR = ./include
 
 OBJ_DIR	= ./obj/
 
-SRCS	= $(SRC_DIR)main.cpp $(SRC_DIR)convert.cpp $(SRC_DIR)inputData.cpp $(SRC_DIR)readFile.cpp $(SRC_DIR)filters.cpp \
+SRCS	= $(SRC_DIR)mainTest.cpp $(SRC_DIR)convert.cpp $(SRC_DIR)inputData.cpp $(SRC_DIR)readFile.cpp $(SRC_DIR)filters.cpp \
 		  $(SRC_DIR)calcProbabilityCharact.cpp $(SRC_DIR)math.cpp $(SRC_DIR)draw.cpp $(SRC_DIR)ahrs.cpp
  
 OBJS	= $(patsubst $(SRC_DIR)%.cpp, $(OBJ_DIR)%.o, $(SRCS))
