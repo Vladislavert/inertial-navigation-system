@@ -29,27 +29,24 @@
 /**
  * @brief фильтр нижних частот(ФНЧ)
  * 
- * @param input входные данные
+ * @param input входные данные для фильтрации
  * @param time время
  * @param T постоянная времени
- * @return отфильтрованные данные
  */
-Vec	lowPassFilter(Vec input, Vec time, double T)
+void			lowPassFilter(vectDouble_t *input, const vectDouble_t *time, const double T)
 {
-	Vec output(input.size());
 	double alpha;
 	double dt;
 	
-	dt = time[1] - time[0];
+	dt = (*time)[1] - (*time)[0];
 	alpha = dt/(T + dt);
-	output[0] = alpha * input[0];
-	for	(size_t i = 1; i < input.size() - 1; i++)
+	(*input)[0] = alpha * (*input)[0];
+	for	(size_t i = 1; i < (*input).size() - 1; i++)
 	{
-		dt = time[i + 1] - time[i];
+		dt = (*time)[i + 1] - (*time)[i];
 		alpha = dt/(T + dt);
-		output[i] = alpha * input[i] + (1 - alpha) * output[i - 1];
+		(*input)[i] = alpha * (*input)[i] + (1 - alpha) * (*input)[i - 1];
 	}
-	return (output);
 }
 
 /**
@@ -60,9 +57,9 @@ Vec	lowPassFilter(Vec input, Vec time, double T)
  * @param T постоянная времени
  * @return отфильтрованные даннные
  */
-Vec		HighPassFilter(Vec input, Vec time, double T)
+vectDouble_t	highPassFilter(const vectDouble_t *input, const vectDouble_t *time, const double T)
 {
-	Vec output(input.size());
+	vectDouble_t output((*input).size());
 
 	return (output);
 }
@@ -75,7 +72,7 @@ Vec		HighPassFilter(Vec input, Vec time, double T)
  * @param angleMagnetometer данные об углах полученные с магнитометра
  * @return значение оценки ориентации(тангаж, крен, рысканье)
  */
-double	*complementaryFilter(double angleAccelerometer[2], double angleGyroscope[3], double angleMagnetometer[1])
+double		*complementaryFilter(double angleAccelerometer[2], double angleGyroscope[3], double angleMagnetometer[1])
 {
 	double *orientation;
 	double	wGyroscope = 0.98;

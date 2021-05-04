@@ -27,24 +27,15 @@
 #include "estimatePositionWGS.hpp"
 
 /**
- * @brief 
- * 
- * @param dataIMU 
- * @param dataGNSS 
- * @param time 
- * @return 
- */
-
-/**
  * @brief оценка позиции в геоцентрической СК(WGS-84)
  * 
  * @param coordinateGeoElipse координаты точки старта в геоцентрической эллипсоидальной СК
- * @param dataIMU данные с БИНС(акселерометр(X, Y, Z), гироскоп(X, Y, Z), магнетометр(X, Y))
+ * @param dataIMU данные с БИНС(акселерометр(X, Y, Z), гироскоп(X, Y, Z), магнетометр(X, Y)). Фильтруются внутри функции
  * @param dataGNSS данные с ГНСС приёмника в WGS-84(широта, долгота, высота)
  * @param dataTime время с начала замера данных с датчиков
  * @return координаты в геоцентрической СК(WGS-84)(X, Y, Z)
  */
-vectDouble2d_t	estimatePositionWGS(const vectDouble2d_t *dataIMU, const vectDouble2d_t *dataGNSS, const vectDouble_t *dataTime)
+vectDouble2d_t	estimatePositionWGS(vectDouble2d_t *dataIMU, const vectDouble2d_t *dataGNSS, const vectDouble_t *dataTime)
 {
 	vectDouble2d_t		resCoordinateWGS; // результат оценки положения в ГСК
 	vectDouble_t		startCoordinateGeoNormal; // координаты начала стартовой СК в геоцентрической нормальной СК
@@ -57,6 +48,10 @@ vectDouble2d_t	estimatePositionWGS(const vectDouble2d_t *dataIMU, const vectDoub
 	temp.push_back(0);
 	temp.push_back(0);
 	temp.push_back(0.12);
+	// фильтрация данных с БИНС
+	// lowPassFilter(&(*dataIMU)[0], dataTime, 0.02);
+	// определение ориентации с помощью Attitude and Heading Reference System(AHRS)
+	orientation = getOrientation(dataIMU, dataTime);
 	orientation.push_back(temp);
 	matrixRotation = rotationMatrix(orientation[0]);
 	acceleration = matrixRotation * gravityAcceleration;

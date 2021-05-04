@@ -31,9 +31,10 @@
 #include "filters.hpp"
 #include "rotationMatrix.hpp"
 #include "coordinateTransform.hpp"
+#include "estimatePositionWGS.hpp"
 #include "calcProbabilityCharact.hpp"
 #include "gravitationalAccelerationCalc.hpp"
 
-vectDouble2d_t	estimatePositionWGS(const vectDouble2d_t *dataIMU, const vectDouble2d_t *dataGNSS, const vectDouble_t *dataTime);	
+vectDouble2d_t	estimatePositionWGS(vectDouble2d_t *dataIMU, const vectDouble2d_t *dataGNSS, const vectDouble_t *dataTime);	
 
 #endif

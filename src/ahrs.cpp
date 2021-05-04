@@ -27,6 +27,20 @@
 #include "ahrs.hpp"
 
 /**
+ * @brief расчёт ориентации
+ * 
+ * @param dataIMU данные с БИНС(акселерометр(X, Y, Z), гироскоп(X, Y, Z), магнетометр(X, Y))
+ * @param dataTime время с начала замера данных с датчиков
+ * @return ориентация(тангаж, крен, рысканье)
+ */
+vectDouble2d_t	getOrientation(const vectDouble2d_t *dataIMU, const vectDouble_t *dataTime)
+{
+	vectDouble2d_t resOrientation;
+
+	return (resOrientation);
+}
+
+/**
  * @brief вычисление углов ориентации на основе данных с акселерометра
  * 
  * @param dataAccelerometer данные с акселерометра(кажущееся ускорение по связанным осям)

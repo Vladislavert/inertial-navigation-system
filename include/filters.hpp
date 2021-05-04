@@ -29,8 +29,8 @@
 
 #include "typesData.hpp"
 
-Vec		lowPassFilter(Vec input, Vec time, double T);
-Vec		HighPassFilter(Vec input, Vec time, double T);
-double	*complementaryFilter(double angleAccelerometer[2], double angleGyroscope[3], double angleMagnetometer[1]);
+void			lowPassFilter(vectDouble_t *input, const vectDouble_t *time, const double T);
+vectDouble_t	highPassFilter(const vectDouble_t *input, const vectDouble_t *time, const double T);
+double			*complementaryFilter(double angleAccelerometer[2], double angleGyroscope[3], double angleMagnetometer[1]);
 
 #endif
