@@ -33,14 +33,11 @@
 // #include <../eigen3/Eigen/Dense>
 #include <../libraries/eigen3/Eigen/Dense>
 #include "ahrs.hpp"
+#include "gravitationalAccelerationCalc.hpp"
 
 #define DEBUG
 
 using namespace Eigen;
-
-const double g0 = 9.780327; // ускорение силы тяжести на экваторе
-
-double	gravitationalAccelerationCalc(double phi, double h);
 
 int main()
 {
@@ -97,9 +94,6 @@ int main()
 	Vec		xOrientationVec(dataINS.size()); 		// вектор содержащий ориентацию по оси X(тангаж)
 	Vec		yOrientationVec(dataINS.size()); 		// вектор содержащий ориентацию по оси Y(крен)
 	Vec		zOrientationVec(dataINS.size()); 		// вектор содержащий ориентацию по оси Z(рысканье)
-
-
-
 
 	double	mean_xAcceleration; // математическое ожидание
 	double	dispersion_xAcceleration; // дисперсия
@@ -376,20 +370,3 @@ int main()
 	// расчитать мат ожидание и дисперсию
 
 }
-
-/**
- * @brief расчёт ускорения свободного падения
- * 
- * @param phi - широта
- * @param h - высота
- * @return ускорение свободного падения
- */
-double	gravitationalAccelerationCalc(double phi, double h)
-{
-	double g;
-
-	g = g0 * (1 + 0.0053024 * squaring(std::sin(phi)) - 0.0000058 * squaring(std::sin(squaring(phi)))) - (3.686 / 1000000) * h;
-
-	return (g);
-}
-
