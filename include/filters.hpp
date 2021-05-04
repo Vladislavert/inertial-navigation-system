@@ -31,6 +31,6 @@
 
 void			lowPassFilter(vectDouble_t *input, const vectDouble_t *time, const double T);
 vectDouble_t	highPassFilter(const vectDouble_t *input, const vectDouble_t *time, const double T);
-double			*complementaryFilter(double angleAccelerometer[2], double angleGyroscope[3], double angleMagnetometer[1]);
+vectDouble_t	complementaryFilter(const vectDouble_t *angleAccelerometer, const vectDouble_t *angleGyroscope, const vectDouble_t *angleMagnetometer);
 
 #endif

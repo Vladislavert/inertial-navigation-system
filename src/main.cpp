@@ -57,7 +57,7 @@ int main()
 	vectDouble2d_t		dataSensors; // данные с датчиков
 	vectDouble2d_t		positionWGS; // оценка позиции в WGS84(X, Y, Z)
 
-	nameFile = DIR_RESOURCES + "pitch.csv";
+	nameFile = DIR_RESOURCES + "orientation360_2_chear (useful data).csv";
 	file.open(nameFile);
 	if (checkOpenFile(file))
 	{

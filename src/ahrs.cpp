@@ -33,10 +33,40 @@
  * @param dataTime время с начала замера данных с датчиков
  * @return ориентация(тангаж, крен, рысканье)
  */
-vectDouble2d_t	getOrientation(const vectDouble2d_t *dataIMU, const vectDouble_t *dataTime)
+vectDouble2d_t	getOrientation(const vectDouble_t initOrientation, const vectDouble2d_t *dataIMU, const vectDouble_t *dataTime)
 {
-	vectDouble2d_t resOrientation;
+	vectDouble2d_t	resOrientation; // углы ориентации(тангаж, крен, рысканье)
+	vectDouble_t	dataAccelerometer; // данные с акселерометра
+	vectDouble_t	dataGyroscopePast;
+	vectDouble_t	dataGyroscopeCurrent; // данные с гироскопа на нынешнем шаге
+	vectDouble_t	dataMagnetometer; // данные с магнетометра
+	vectDouble_t	angleAccelerometer; // углы, получаемые с акселерометра
+	vectDouble_t	angleGyroscope; // углы получаемы с гироскопа
+	vectDouble_t	angleMagnetometer; // углы получаемые с магнитометра
 
+	for (unsigned int j = 0; j < 3; j++)
+	{
+		dataAccelerometer.push_back((*dataIMU)[0][j]);
+		dataGyroscopePast.push_back((*dataIMU)[0][j + 3]);
+		if (j < 2)
+			dataMagnetometer.push_back((*dataIMU)[0][j + 6]);
+	}
+	resOrientation.push_back(dataGyroscopePast);
+	angleAccelerometer = getAngleAccelerometer(&dataAccelerometer);
+	for	(unsigned int i = 1; i < (*dataIMU).size(); i++)
+	{
+		for (unsigned int j = 0; j < 3; j++)
+		{
+			dataAccelerometer.push_back((*dataIMU)[i][j]);
+			dataGyroscopeCurrent.push_back((*dataIMU)[i][j + 3]);
+			if (j < 2)
+				dataMagnetometer.push_back((*dataIMU)[i][j + 6]);
+		}
+		angleAccelerometer = getAngleAccelerometer(&dataAccelerometer);
+		angleMagnetometer = getAngleMagnetometer(&dataMagnetometer);
+		angleGyroscope = getAngleGyroscope(&(resOrientation[i - 1]), &dataGyroscopeCurrent, (*dataTime)[i] - (*dataTime)[i - 1]);
+		resOrientation.push_back(complementaryFilter(&angleAccelerometer , &angleGyroscope, &angleMagnetometer));	
+	}
 	return (resOrientation);
 }
 
@@ -46,13 +76,12 @@ vectDouble2d_t	getOrientation(const vectDouble2d_t *dataIMU, const vectDouble_t 
  * @param dataAccelerometer данные с акселерометра(кажущееся ускорение по связанным осям)
  * @return углы ориентации(тангаж, крен)
  */
-double	*getAngleAccelerometer(const double dataAccelerometer[3])
+vectDouble_t	getAngleAccelerometer(const vectDouble_t *dataAccelerometer)
 {
-	double *angleAccelerometer;
+	vectDouble_t	angleAccelerometer;
 
-	angleAccelerometer = new double[2];
 	for (unsigned int i = 0; i < 2; i++)
-		angleAccelerometer[i] = std::atan2(dataAccelerometer[i], dataAccelerometer[2]);
+		angleAccelerometer.push_back(std::atan2((*dataAccelerometer)[i], (*dataAccelerometer)[2]));
 	return (angleAccelerometer);
 }
 
@@ -64,14 +93,13 @@ double	*getAngleAccelerometer(const double dataAccelerometer[3])
  * @param time шаг между замерами
  * @return углы ориентации(тангжа, крен, рысканье) 
  */
-double	*getAngleGyroscope(const double dataGyroscopePast[3], const double dataGyroscopeCurrent[3], const double dt)
+vectDouble_t	getAngleGyroscope(const vectDouble_t *dataGyroscopePast, const vectDouble_t *dataGyroscopeCurrent, const double dt)
 {
-	double *angleGyroscope;
+	vectDouble_t	angleGyroscope;
 
-	angleGyroscope = new double[3];
-	for (unsigned int i = 0; i < 3; i++)
-		angleGyroscope[i] = integralEuler(dataGyroscopePast[i], dataGyroscopeCurrent[i], dt);
-	angleGyroscope[2] = absRad(angleGyroscope[2]); 
+	for (unsigned int i = 0; i < 2; i++)
+		angleGyroscope.push_back(integralEuler((*dataGyroscopePast)[i], (*dataGyroscopeCurrent)[i], dt));
+	angleGyroscope.push_back(absRad(integralEuler((*dataGyroscopePast)[2], (*dataGyroscopeCurrent)[2], dt))); 
 	return(angleGyroscope);
 }
 
@@ -81,13 +109,11 @@ double	*getAngleGyroscope(const double dataGyroscopePast[3], const double dataGy
  * @param dataMagnetometer данные с магнитометра(измерения по осям X, Y)
  * @return рысканье
  */
-double	*getAngleMagnetometer(const double dataMagnetometer[2])
+vectDouble_t	getAngleMagnetometer(const vectDouble_t *dataMagnetometer)
 {
-	double *angleMagnetometr;
+	vectDouble_t	angleMagnetometr;
 
-	angleMagnetometr = new double[1];
-	angleMagnetometr[0] = -std::atan2(dataMagnetometer[0], dataMagnetometer[1]);
-	angleMagnetometr[0] = absRad(angleMagnetometr[0]);
+	angleMagnetometr.push_back(absRad(-std::atan2((*dataMagnetometer)[0], (*dataMagnetometer)[1])));
 	return(angleMagnetometr);
 }
 

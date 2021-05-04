@@ -51,9 +51,9 @@ vectDouble2d_t	estimatePositionWGS(vectDouble2d_t *dataIMU, const vectDouble2d_t
 	// фильтрация данных с БИНС
 	// lowPassFilter(&(*dataIMU)[0], dataTime, 0.02);
 	// определение ориентации с помощью Attitude and Heading Reference System(AHRS)
-	orientation = getOrientation(dataIMU, dataTime);
 	orientation.push_back(temp);
 	matrixRotation = rotationMatrix(orientation[0]);
+	getOrientation(orientation[0], dataIMU, dataTime);
 	acceleration = matrixRotation * gravityAcceleration;
 	// перевод из эллипсоидальной геоцентрической СК(ГСК) в прямоугольную ГСК
 	// начальная выставка, для получения координат стартовой СК в геоцентрической СК(WGS-84)

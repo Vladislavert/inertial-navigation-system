@@ -72,19 +72,18 @@ vectDouble_t	highPassFilter(const vectDouble_t *input, const vectDouble_t *time,
  * @param angleMagnetometer данные об углах полученные с магнитометра
  * @return значение оценки ориентации(тангаж, крен, рысканье)
  */
-double		*complementaryFilter(double angleAccelerometer[2], double angleGyroscope[3], double angleMagnetometer[1])
+vectDouble_t	complementaryFilter(const vectDouble_t *angleAccelerometer, const vectDouble_t *angleGyroscope, const vectDouble_t *angleMagnetometer)
 {
-	double *orientation;
-	double	wGyroscope = 0.98;
-	double	wAccelerometer = 1 - wGyroscope;
-	double	wMagnetometr = 1 - wGyroscope;
+	vectDouble_t orientation;
+	double		wGyroscope = 0.98;
+	double		wAccelerometer = 1 - wGyroscope;
+	double		wMagnetometr = 1 - wGyroscope;
 
-	orientation = new double[3];
-	orientation[0] = wAccelerometer * angleAccelerometer[0] + wGyroscope * angleGyroscope[0];
-	orientation[1] = wAccelerometer * angleAccelerometer[1] + wGyroscope * angleGyroscope[1];
+	orientation.push_back(wAccelerometer * (*angleAccelerometer)[0] + wGyroscope * (*angleGyroscope)[0]);
+	orientation.push_back(wAccelerometer * (*angleAccelerometer)[1] + wGyroscope * (*angleGyroscope)[1]);
 	// проверить данные с магнетометра
 	// orientation[2] = wMagnetometr * angleMagnetometer[0] + wGyroscope * angleGyroscope[2];
-	orientation[2] = angleGyroscope[2];
+	orientation.push_back((*angleGyroscope)[2]);
 
 	return (orientation);
 }
