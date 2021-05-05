@@ -37,7 +37,7 @@ typedef std::vector<double>								vectDouble_t;
 typedef std::vector<std::vector<double>>				vectDouble2d_t;
 typedef std::vector<std::vector<std::vector<double>>>	vectDouble3d_t;
 typedef std::vector<std::string> 						vectString_t;
-typedef std::vector<sciplot::Plot>					vectPlot_t;
+typedef std::vector<sciplot::Plot>						vectPlot_t;
 typedef std::vector<std::vector<sciplot::PlotXD>>		vectPlot2d_t;
 
 #endif
