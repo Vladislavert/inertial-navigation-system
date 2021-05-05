@@ -78,6 +78,9 @@ vectDouble2d_t	estimatePositionWGS(vectDouble2d_t *dataIMU, const vectDouble2d_t
 		vectDouble_t		xOrientation;
 		vectDouble_t		yOrientation;
 		vectDouble_t		zOrientation;
+		Plot				plotOrientationX;
+		Plot				plotOrientationY;
+		Plot				plotOrientationZ;
 		for	(unsigned int i = 0; i < orientation.size(); i++)
 		{
 			for (unsigned int j = 0; j < orientation[i].size(); j++)
@@ -110,7 +113,7 @@ vectDouble2d_t	estimatePositionWGS(vectDouble2d_t *dataIMU, const vectDouble2d_t
 	positionVecY = integralEuler(dataTime, &veloucityVecY);
 	positionVecZ = integralEuler(dataTime, &veloucityVecZ);
 	#ifdef DEBUG
-		drawGraph(dataTime, &positionVecX, "xPosition");
+		drawGraph(dataTime, &positionVecX, &plotOrientationX, "xPosition");
 		drawGraph(dataTime, &positionVecY, "yPosition");
 		drawGraph(dataTime, &positionVecZ, "zPosition");
 	#endif

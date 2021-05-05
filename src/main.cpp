@@ -57,7 +57,7 @@ int main()
 	vectDouble_t		zPositionWGS;
 
 	// nameFile = DIR_RESOURCES + "orientation360_2_chear (useful data).csv";
-	nameFile = DIR_RESOURCES + "RotationZ_360.csv";
+	nameFile = DIR_RESOURCES + "Move(orientation_30, 6 meters).csv";
 	file.open(nameFile);
 	if (checkOpenFile(file))
 	{
