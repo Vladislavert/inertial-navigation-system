@@ -31,8 +31,8 @@
 #include "typesData.hpp"
 #include "cmath"
 
-double	squaring(const double &argument);
-Vec		integralEuler(Vec time, Vec data);
-double	integralEuler(const double dataPast, const double dataCurrent, double dt);
+double			squaring(const double &argument);
+vectDouble_t	integralEuler(const vectDouble_t *time, const vectDouble_t *data);
+double			integralEuler(const double dataPast, const double dataCurrent, double dt);
 
 #endif

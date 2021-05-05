@@ -44,14 +44,14 @@ double	squaring(const double &argument)
  * @param data аргумент, который интегрируется
  * @return проинтегрированные значения
  */
-Vec		integralEuler(Vec time, Vec data)
+vectDouble_t	integralEuler(const vectDouble_t *time, const vectDouble_t *data)
 {
-	Vec result(time.size());
+	vectDouble_t	result((*time).size());
 
-	result[0] = data[0] * (time[1] - time[0]);
-	for (size_t i = 1; i < time.size() - 1; i++)
+	result[0] = (*data)[0] * ((*time)[1] - (*time)[0]);
+	for (size_t i = 1; i < (*time).size() - 1; i++)
 	{
-		result[i] += result[i - 1] + (data[i] * (time[i + 1] - time[i]));
+		result[i] += result[i - 1] + ((*data)[i] * ((*time)[i + 1] - (*time)[i]));
 	}
 	return (result);
 }
@@ -64,7 +64,7 @@ Vec		integralEuler(Vec time, Vec data)
  * @param dt шаг интегрирования
  * @return проинтегрпированное значение
  */
-double	integralEuler(const double dataPast, const double dataCurrent, double dt)
+double		integralEuler(const double dataPast, const double dataCurrent, double dt)
 {
 	double result;
 

@@ -29,6 +29,7 @@
 /**
  * @brief расчёт ориентации
  * 
+ * @param initOrientation начальное значение ориентации
  * @param dataIMU данные с БИНС(акселерометр(X, Y, Z), гироскоп(X, Y, Z), магнетометр(X, Y))
  * @param dataTime время с начала замера данных с датчиков
  * @return ориентация(тангаж, крен, рысканье)
@@ -55,6 +56,8 @@ vectDouble2d_t	getOrientation(const vectDouble_t initOrientation, const vectDoub
 	angleAccelerometer = getAngleAccelerometer(&dataAccelerometer);
 	for	(unsigned int i = 1; i < (*dataIMU).size(); i++)
 	{
+		dataAccelerometer.clear();
+		dataMagnetometer.clear();
 		for (unsigned int j = 0; j < 3; j++)
 		{
 			dataAccelerometer.push_back((*dataIMU)[i][j]);
@@ -65,7 +68,12 @@ vectDouble2d_t	getOrientation(const vectDouble_t initOrientation, const vectDoub
 		angleAccelerometer = getAngleAccelerometer(&dataAccelerometer);
 		angleMagnetometer = getAngleMagnetometer(&dataMagnetometer);
 		angleGyroscope = getAngleGyroscope(&(resOrientation[i - 1]), &dataGyroscopeCurrent, (*dataTime)[i] - (*dataTime)[i - 1]);
-		resOrientation.push_back(complementaryFilter(&angleAccelerometer , &angleGyroscope, &angleMagnetometer));	
+		resOrientation.push_back(complementaryFilter(&angleAccelerometer , &angleGyroscope, &angleMagnetometer));
+		dataGyroscopeCurrent.clear();
+		angleAccelerometer.clear();
+		angleMagnetometer.clear();
+		angleGyroscope.clear();
+
 	}
 	return (resOrientation);
 }

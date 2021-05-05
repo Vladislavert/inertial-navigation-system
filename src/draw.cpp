@@ -54,7 +54,7 @@ void	drawGraph(const Vec *time, const Vec *data, std::string nameGraph, bool sho
     	plot.show();
 }
 
-void	drawGraph(const Vec *time, const vectDouble_t *data, std::string nameGraph, bool show, std::string palette, int lineWidth)
+void	drawGraph(const vectDouble_t *time, const vectDouble_t *data, std::string nameGraph, bool show, std::string palette, int lineWidth)
 {
 	Plot plot;
 	// plot.xrange(0.0, (*time)[(*time).size() - 1]);

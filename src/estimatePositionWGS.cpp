@@ -26,6 +26,13 @@
 
 #include "estimatePositionWGS.hpp"
 
+#define DEBUG
+
+#ifdef DEBUG
+	#include "iostream"
+	#include "draw.hpp"
+#endif
+
 /**
  * @brief оценка позиции в геоцентрической СК(WGS-84)
  * 
@@ -39,12 +46,25 @@ vectDouble2d_t	estimatePositionWGS(vectDouble2d_t *dataIMU, const vectDouble2d_t
 {
 	vectDouble2d_t		resCoordinateWGS; // результат оценки положения в ГСК
 	vectDouble_t		startCoordinateGeoNormal; // координаты начала стартовой СК в геоцентрической нормальной СК
-	Eigen::Vector3d		acceleration;
+	Eigen::Vector3d		acceleration; // ускорение
+	vectDouble_t		accelerationVecX; // ускорение по оси X
+	vectDouble_t		accelerationVecY; // ускорение по оси Y
+	vectDouble_t		accelerationVecZ; // ускорение по оси Z
+	vectDouble_t		veloucityVecX; // ускорение по оси X
+	vectDouble_t		veloucityVecY; // ускорение по оси Y
+	vectDouble_t		veloucityVecZ; // ускорение по оси Z
+	vectDouble_t		positionVecX; // ускорение по оси X
+	vectDouble_t		positionVecY; // ускорение по оси Y
+	vectDouble_t		positionVecZ; // ускорение по оси Z
+	Eigen::Vector3d		apparentAcceleration; // кажущееся ускорение
 	vectDouble2d_t		orientation;
 	vectDouble_t		temp;
-	Eigen::Vector3d		gravityAcceleration(0, 0, 9.81);
+	Eigen::Vector3d		gravityAcceleration;
 	Eigen::Matrix3d		matrixRotation;
+	double				g;
 
+	g = gravitationalAccelerationCalc(0.959931, 230);
+	gravityAcceleration << 0, 0, g;
 	temp.push_back(0);
 	temp.push_back(0);
 	temp.push_back(0.12);
@@ -53,8 +73,47 @@ vectDouble2d_t	estimatePositionWGS(vectDouble2d_t *dataIMU, const vectDouble2d_t
 	// определение ориентации с помощью Attitude and Heading Reference System(AHRS)
 	orientation.push_back(temp);
 	matrixRotation = rotationMatrix(orientation[0]);
-	getOrientation(orientation[0], dataIMU, dataTime);
-	acceleration = matrixRotation * gravityAcceleration;
+	orientation = getOrientation(orientation[0], dataIMU, dataTime);
+	#ifdef DEBUG
+		vectDouble_t		xOrientation;
+		vectDouble_t		yOrientation;
+		vectDouble_t		zOrientation;
+		for	(unsigned int i = 0; i < orientation.size(); i++)
+		{
+			for (unsigned int j = 0; j < orientation[i].size(); j++)
+			{
+				std::cout << orientation[i][j] << " ";		
+			}
+			std::cout << std::endl;
+			xOrientation.push_back(orientation[i][0]);
+			yOrientation.push_back(orientation[i][1]);
+			zOrientation.push_back(orientation[i][2]);
+		}
+		drawGraph(dataTime, &xOrientation, "xOrientation");
+		drawGraph(dataTime, &yOrientation, "yOrientation");
+		drawGraph(dataTime, &zOrientation, "zOrientation");
+	#endif
+	for	(unsigned int i = 0; i < (*dataIMU).size(); i++)
+	{
+		apparentAcceleration << (*dataIMU)[i][0], (*dataIMU)[i][1], (*dataIMU)[i][2];
+		orientation = getOrientation(orientation[i], dataIMU, dataTime);
+		matrixRotation = rotationMatrix(orientation[i]);
+		acceleration = apparentAcceleration - (matrixRotation * gravityAcceleration);
+		accelerationVecX.push_back(acceleration[0]);
+		accelerationVecY.push_back(acceleration[1]);
+		accelerationVecZ.push_back(acceleration[2]);
+	}
+	veloucityVecX = integralEuler(dataTime, &accelerationVecX);
+	veloucityVecY = integralEuler(dataTime, &accelerationVecY);
+	veloucityVecZ = integralEuler(dataTime, &accelerationVecZ);
+	positionVecX = integralEuler(dataTime, &veloucityVecX);
+	positionVecY = integralEuler(dataTime, &veloucityVecY);
+	positionVecZ = integralEuler(dataTime, &veloucityVecZ);
+	#ifdef DEBUG
+		drawGraph(dataTime, &positionVecX, "xPosition");
+		drawGraph(dataTime, &positionVecY, "yPosition");
+		drawGraph(dataTime, &positionVecZ, "zPosition");
+	#endif
 	// перевод из эллипсоидальной геоцентрической СК(ГСК) в прямоугольную ГСК
 	// начальная выставка, для получения координат стартовой СК в геоцентрической СК(WGS-84)
 	startCoordinateGeoNormal = convertGeoElipseToGeoNormal(&(*dataGNSS)[0]); // передавать значения полученные в результате начальной выставки(средние значения)

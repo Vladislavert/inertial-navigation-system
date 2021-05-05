@@ -36,10 +36,6 @@
 	#include "iostream"
 #endif
 
-#define DEBUG
-
-using namespace Eigen;
-
 const unsigned int	indxGyro = 3; // значение индекса под которым начинаются измерения гироскопа
 const unsigned int	indxMagnet = 6; // значение индекса под которым начинаются измерения магнитометра
 const unsigned int	indxAcc = 0; // значение индекса под которым начинаются измерения акселерометра 
@@ -56,8 +52,12 @@ int main()
 	vectString_t		str;
 	vectDouble2d_t		dataSensors; // данные с датчиков
 	vectDouble2d_t		positionWGS; // оценка позиции в WGS84(X, Y, Z)
+	vectDouble_t		xPositionWGS;
+	vectDouble_t		yPositionWGS;
+	vectDouble_t		zPositionWGS;
 
-	nameFile = DIR_RESOURCES + "orientation360_2_chear (useful data).csv";
+	// nameFile = DIR_RESOURCES + "orientation360_2_chear (useful data).csv";
+	nameFile = DIR_RESOURCES + "RotationZ_360.csv";
 	file.open(nameFile);
 	if (checkOpenFile(file))
 	{
@@ -87,10 +87,27 @@ int main()
 		for (unsigned int j = 0; j < 3; j++)
 			temp.push_back(0);
 		dataGNSS.push_back(temp);
-		dataTime.push_back(dataSensors[i][indxTime]);
+		dataTime.push_back(dataSensors[i][indxTime] / 1000);
 		temp.clear();
 	}
-	estimatePositionWGS(&dataIMU, &dataGNSS, &dataTime);
+	positionWGS = estimatePositionWGS(&dataIMU, &dataGNSS, &dataTime);
+	#ifdef DEBUG
+		for	(unsigned int i = 0; i < positionWGS.size(); i++)
+		{
+			for (unsigned int j = 0; j < positionWGS[i].size(); j++)
+			{
+				std::cout << positionWGS[i][j] << " ";
+				
+			}
+			xPositionWGS.push_back(positionWGS[i][0]);
+			yPositionWGS.push_back(positionWGS[i][1]);
+			zPositionWGS.push_back(positionWGS[i][2]);
+			std::cout << std::endl;
+		}		
+	#endif
+	// drawGraph(&dataTime, &xPositionWGS, "xPosition");
+	// drawGraph(&dataTime, &yPositionWGS, "yPosition");
+	// drawGraph(&dataTime, &zPositionWGS, "zPosition");
 }
 
 
