@@ -1,6 +1,6 @@
 CC		= g++
 
-NAME	= test
+NAME	= estimatePositionWGS
 
 SRC_DIR	= ./src/
 

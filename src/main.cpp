@@ -30,7 +30,7 @@
 #include <../libraries/eigen3/Eigen/Dense>
 #include "estimatePositionWGS.hpp"
 
-#define DEBUG
+// #define DEBUG
 
 #ifdef DEBUG
 	#include "iostream"
@@ -47,6 +47,10 @@ const unsigned int	indxOrient = 9; // значение индекса под к�
 int main()
 {
 	const std::string	DIR_RESOURCES = "./resource/";
+	vectPlot2d_t		PlotXYZ(3);
+	Plot				plotX;
+	Plot				plotY;
+	Plot				plotZ;
 	std::ifstream		file;
 	std::string			nameFile;
 	vectString_t		str;
@@ -105,9 +109,23 @@ int main()
 			std::cout << std::endl;
 		}		
 	#endif
-	// drawGraph(&dataTime, &xPositionWGS, "xPosition");
-	// drawGraph(&dataTime, &yPositionWGS, "yPosition");
-	// drawGraph(&dataTime, &zPositionWGS, "zPosition");
+	for	(unsigned int i = 0; i < positionWGS.size(); i++)
+	{
+		xPositionWGS.push_back(positionWGS[i][0]);
+		yPositionWGS.push_back(positionWGS[i][1]);
+		zPositionWGS.push_back(positionWGS[i][2]);
+	}
+
+	drawGraph(&dataTime, &xPositionWGS, &plotX, "xPosition", 0);
+	drawGraph(&dataTime, &yPositionWGS, &plotY, "yPosition", 0);
+	drawGraph(&dataTime, &zPositionWGS, &plotZ, "zPosition", 0);
+	PlotXYZ[0].push_back(plotX);
+	PlotXYZ[1].push_back(plotY);
+	PlotXYZ[2].push_back(plotZ);
+
+	Figure fig = PlotXYZ;
+	fig.size(600, 600);
+	fig.show();
 }
 
 

@@ -83,7 +83,7 @@ void	drawGraph(const vectDouble_t *time, const vectDouble_t *data, std::string n
  * @param palette палитра
  * @param lineWidth толщина линии
  */
-void	drawGraph(const Vec *time, const Vec *data, Plot *plot, std::string nameGraph, bool show, std::string palette, int lineWidth)
+void	drawGraph(const vectDouble_t *time, const vectDouble_t *data, Plot *plot, std::string nameGraph, bool show, std::string palette, int lineWidth)
 {
 // 	(*plot).xrange(0.0, time[time.size() - 1]);
 //    (*plot).yrange(-0.1, 0.1);

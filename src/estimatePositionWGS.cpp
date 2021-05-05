@@ -26,7 +26,7 @@
 
 #include "estimatePositionWGS.hpp"
 
-#define DEBUG
+// #define DEBUG
 
 #ifdef DEBUG
 	#include "iostream"
@@ -121,5 +121,14 @@ vectDouble2d_t	estimatePositionWGS(vectDouble2d_t *dataIMU, const vectDouble2d_t
 	// перевод из связанной СК(ССК) в связанные нормальные оси(СНС), с помощью матрицы поворотов, для опеределения позиции в стартовой СК
 	// определение позиции путём интегрирования данных с акселерометра, а также коррекция позиции с помощью ГНСС
 	// перевод из стартовой СК в ГСК
+	for (unsigned int i = 0; i < positionVecX.size(); i++)
+	{		
+		temp.clear();
+		temp.push_back(positionVecX[i]);
+		temp.push_back(positionVecY[i]);
+		temp.push_back(positionVecZ[i]);
+		resCoordinateWGS.push_back(temp);
+	}
+	
 	return (resCoordinateWGS);
 }
