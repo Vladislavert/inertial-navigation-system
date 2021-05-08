@@ -32,7 +32,7 @@
  * @param dataArray массив измерений
  * @return математическое ожидание СВ
  */
-double	meanCalculate(const Vec &dataArray)
+double	meanCalculate(const vectDouble_t &dataArray)
 {
 	double mean;
 
@@ -49,7 +49,7 @@ double	meanCalculate(const Vec &dataArray)
  * @param mean математическое ожидание
  * @return дисперсия СВ
  */
-double	dispersionCalculate(const Vec &dataArray, const double &mean)
+double	dispersionCalculate(const vectDouble_t &dataArray, const double &mean)
 {
 	double dispersion;
 

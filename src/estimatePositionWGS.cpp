@@ -26,7 +26,7 @@
 
 #include "estimatePositionWGS.hpp"
 
-#define DEBUG
+// #define DEBUG
 
 #ifdef DEBUG
 	#include "iostream"
@@ -37,7 +37,7 @@
  * @brief оценка позиции в геоцентрической СК(WGS-84)
  * 
  * @param coordinateGeoElipse координаты точки старта в геоцентрической эллипсоидальной СК
- * @param dataIMU данные с БИНС(акселерометр(X, Y, Z), гироскоп(X, Y, Z), магнетометр(X, Y)). Фильтруются внутри функции
+ * @param dataIMU данные с БИНС(акселерометр(X, Y, Z), гироскоп(X, Y, Z), магнитометр(X, Y)). Фильтруются внутри функции
  * @param dataGNSS данные с ГНСС приёмника в WGS-84(широта, долгота, высота)
  * @param dataTime время с начала замера данных с датчиков
  * @return координаты в геоцентрической СК(WGS-84)(X, Y, Z)
@@ -63,7 +63,7 @@ vectDouble2d_t	estimatePositionWGS(vectDouble2d_t *dataIMU, const vectDouble2d_t
 	Eigen::Matrix3d		matrixRotation;
 	double				g;
 
-	g = gravitationalAccelerationCalc(0.959931, 230);
+	g = gravitationalAccelerationCalc(55.813984, 230);
 	gravityAcceleration << 0, 0, g;
 	temp.push_back(0);
 	temp.push_back(0);
@@ -81,6 +81,8 @@ vectDouble2d_t	estimatePositionWGS(vectDouble2d_t *dataIMU, const vectDouble2d_t
 		Plot				plotOrientationX;
 		Plot				plotOrientationY;
 		Plot				plotOrientationZ;
+		vectPlot2d_t		plotOrientationXYZ(3);
+
 		for	(unsigned int i = 0; i < orientation.size(); i++)
 		{
 			for (unsigned int j = 0; j < orientation[i].size(); j++)
@@ -92,16 +94,24 @@ vectDouble2d_t	estimatePositionWGS(vectDouble2d_t *dataIMU, const vectDouble2d_t
 			yOrientation.push_back(orientation[i][1]);
 			zOrientation.push_back(orientation[i][2]);
 		}
-		drawGraph(dataTime, &xOrientation, "xOrientation");
-		drawGraph(dataTime, &yOrientation, "yOrientation");
-		drawGraph(dataTime, &zOrientation, "zOrientation");
+		drawGraph(dataTime, &xOrientation, &plotOrientationX, "xOrientation", 0);
+		drawGraph(dataTime, &yOrientation, &plotOrientationY, "yOrientation", 0);
+		drawGraph(dataTime, &zOrientation, &plotOrientationZ, "zOrientation", 0);
+		plotOrientationXYZ[0].push_back(plotOrientationX);
+		plotOrientationXYZ[1].push_back(plotOrientationY);
+		plotOrientationXYZ[2].push_back(plotOrientationZ);
+		Figure				figOrientation = plotOrientationXYZ;
+
+		figOrientation.size(600, 600);
+		figOrientation.show();
 	#endif
 	for	(unsigned int i = 0; i < (*dataIMU).size(); i++)
 	{
 		apparentAcceleration << (*dataIMU)[i][0], (*dataIMU)[i][1], (*dataIMU)[i][2];
 		orientation = getOrientation(orientation[i], dataIMU, dataTime);
 		matrixRotation = rotationMatrix(orientation[i]);
-		acceleration = apparentAcceleration - (matrixRotation * gravityAcceleration);
+		// acceleration = apparentAcceleration - (matrixRotation * gravityAcceleration);
+		acceleration = (matrixRotation.inverse() * apparentAcceleration) - gravityAcceleration;
 		accelerationVecX.push_back(acceleration[0]);
 		accelerationVecY.push_back(acceleration[1]);
 		accelerationVecZ.push_back(acceleration[2]);
@@ -113,9 +123,22 @@ vectDouble2d_t	estimatePositionWGS(vectDouble2d_t *dataIMU, const vectDouble2d_t
 	positionVecY = integralEuler(dataTime, &veloucityVecY);
 	positionVecZ = integralEuler(dataTime, &veloucityVecZ);
 	#ifdef DEBUG
-		drawGraph(dataTime, &positionVecX, &plotOrientationX, "xPosition");
-		drawGraph(dataTime, &positionVecY, "yPosition");
-		drawGraph(dataTime, &positionVecZ, "zPosition");
+		Plot				plotPositionX;
+		Plot				plotPositionY;
+		Plot				plotPositionZ;
+		vectPlot2d_t		plotPositionXYZ(3);
+
+		drawGraph(dataTime, &positionVecX, &plotPositionX, "xPosition", 0);
+		drawGraph(dataTime, &positionVecY, &plotPositionY, "yPosition", 0);
+		drawGraph(dataTime, &positionVecZ, &plotPositionZ, "zPosition", 0);
+		plotPositionXYZ[0].push_back(plotPositionX);
+		plotPositionXYZ[1].push_back(plotPositionY);
+		plotPositionXYZ[2].push_back(plotPositionZ);
+		Figure				figPosition = plotPositionXYZ;
+
+		figPosition.size(600, 600);
+		figPosition.show();
+		
 	#endif
 	// перевод из эллипсоидальной геоцентрической СК(ГСК) в прямоугольную ГСК
 	// начальная выставка, для получения координат стартовой СК в геоцентрической СК(WGS-84)

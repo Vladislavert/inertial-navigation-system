@@ -88,6 +88,7 @@ vectDouble_t	getAngleAccelerometer(const vectDouble_t *dataAccelerometer)
 {
 	vectDouble_t	angleAccelerometer;
 
+	// for (unsigned int i = 0; i < 2; i++)
 	for (unsigned int i = 0; i < 2; i++)
 		angleAccelerometer.push_back(std::atan2((*dataAccelerometer)[i], (*dataAccelerometer)[2]));
 	return (angleAccelerometer);
