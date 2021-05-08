@@ -67,7 +67,7 @@ g = 9.81439;
 
 % angl = [deg2rad(-2.4863); deg2rad(-0.9722); deg2rad(322.3634)];
 % angl = [-0.023647000000000001; -0.014255; -0.003852];
-angl = [0; 0; -0.003852];
+angl = [0; -0.003852; 0];
 
 
 % крен, тангаж, рысканье
@@ -93,11 +93,11 @@ R = [cos(angl(2))*cos(angl(3)), sin(angl(1))*sin(angl(2))*cos(angl(3))-cos(angl(
 % 
 %  R = [cos(angl(2))*cos(angl(3)), -cos(angl(1))*cos(angl(3))*sin(2) + sin(1)*sin(3),                  sin(angl(1))*cos(angl(3))*sin(angl(2))+cos(angl(1))*sin(angl(3));...
 %       sin(angl(2))             ,               cos(angl(1))*cos(angl(2)),                           -sin(angl(1))*cos(angl(2))                                       ;...
-%       -cos(angl(2))*sin(angl(3)), cos(angl(1))*sin(angl(3))*sin(angl(2))+sin(angl(1))*cos(angl(3)), -sin(angl(1))*sin(angl(3))*sin(angl(2))+cos(angl(1))*cos(angl(3))];
+%       -cos(angl(2))*sin(angl(3)), cos(angl(1))*sin(angl(3))*sin(angl(2+sin(angl(1))*cos(angl(3)), -sin(angl(1))*sin(angl(3))*sin(angl(2))+cos(angl(1))*cos(angl(3))];
 
-VectorAccel = [0; 0; g];
-Vector = [0.105348; 0.43575799999999998; 9.7087839999999996];
-Rotation = (inv(R))*Vector - VectorAccel
+Vector = [0; 0; g];
+% Vector = [0.105348; 0.43575799999999998; 9.7087839999999996];
+Rotation = ((R))*Vector %- VectorAccel
 
 plot3([0,Vector(1)],[0,Vector(2)],[0,Vector(3)])
 hold on

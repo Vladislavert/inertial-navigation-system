@@ -36,7 +36,7 @@ vectDouble_t	convertGeoElipseToGeoNormal(const vectDouble_t *coordinateGeoElipse
 {
 	vectDouble_t	coordinateGeoNormal((*coordinateGeoElipse).size());
 	double			N;
-	
+	// добавить перевод из градусов в радианы
 	N = a / sqrt((1 - squaring(e) * squaring(sin((*coordinateGeoElipse)[0]))));
 	coordinateGeoNormal[0] = (N + (*coordinateGeoElipse)[2]) * cos((*coordinateGeoElipse)[0]) * cos((*coordinateGeoElipse)[1]);
 	coordinateGeoNormal[1] = (N + (*coordinateGeoElipse)[2]) * cos((*coordinateGeoElipse)[0]) * sin((*coordinateGeoElipse)[1]);

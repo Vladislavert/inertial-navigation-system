@@ -26,6 +26,12 @@
 
 #include "initialExhibition.hpp"
 
+#define DEBUG
+
+#ifdef DEBUG
+	#include "draw.hpp"
+#endif
+
 /**
  * @brief Корректирует данные с учётом математичесокго ожиание и дисперсии
  * 
@@ -70,5 +76,4 @@ void	getCorrectData(vectDouble2d_t &dataIMU, const vectDouble2d_t &dataInitIMU)
 			dataIMU[i][j] = dataIMU[i][indxGyro + j] - meanGyro[j];
 		}
 	}
-	
 }

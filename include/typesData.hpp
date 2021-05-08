@@ -40,4 +40,20 @@ typedef std::vector<std::string> 						vectString_t;
 typedef std::vector<sciplot::PlotXD>					vectPlot_t;
 typedef std::vector<std::vector<sciplot::PlotXD>>		vectPlot2d_t;
 
+template <class T>
+struct vector3d
+{
+	vector3d(T x, T y, T z)
+	{
+		this->x = x;
+		this->y = y;
+		this->z = z;
+	}
+	vector3d(){}
+	T x;
+	T y;
+	T z;
+};
+
+
 #endif

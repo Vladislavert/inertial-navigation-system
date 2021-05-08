@@ -67,7 +67,7 @@ int main()
 
 	// nameFile = DIR_RESOURCES + "orientation360_2_chear (useful data).csv";
 	nameFile = DIR_RESOURCES + "Move(orientation_30, 6 meters).csv";
-	nameFileInitExhibition = DIR_RESOURCES + "InitCondition1.csv";
+	nameFileInitExhibition = DIR_RESOURCES + "initCondition.csv";
 	file.open(nameFile);
 	fileInit.open(nameFileInitExhibition);
 	if (checkOpenFile(file) && checkOpenFile(fileInit))
@@ -80,7 +80,6 @@ int main()
 		inputData(str, dataSensorsInit, 1);
 		fileInit.close();
 		str.clear();
-		
 	}
 	else
 	{
@@ -122,41 +121,24 @@ int main()
 		temp.clear();
 	}
 	#ifdef DEBUG
-		vectDouble2d_t 		dataIMUTranspose(dataIMUInit[0].size()); // данные с БИНС(акселерометр(X, Y, Z), гироскоп(X, Y, Z), магнетометр(X, Y))
-		meanAcc = new double[3];
-		dispersionAcc = new double[3];
-		meanGyro = new double[3];
-		dispersionGyro = new double[3];
+		Plot				plotPositionX;
+		Plot				plotPositionY;
+		Plot				plotPositionZ;
+		Plot				plotVeloucityX;
+		Plot				plotVeloucityY;
+		Plot				plotVeloucityZ;
+		vectPlot2d_t		plotPositionXYZ(3);
+		vectPlot2d_t		plotVeloucityXYZ(3);
 
-		for	(unsigned int i = 0; i < dataIMUInit[0].size(); i++)
-		{
-			for (unsigned int j = 0; j < dataIMUInit.size(); j++)
-			{
-				dataIMUTranspose[i].push_back(dataIMUInit[j][i]);
-			}	
-		}
-		
-		for	(unsigned int i = 0; i < 3; i++)
-		{
-			meanAcc[i] = meanCalculate(dataIMUTranspose[i]);
-		}
-		for	(unsigned int i = 0; i < 3; i++)
-		{
-			meanGyro[i] = meanCalculate(dataIMUTranspose[3 + i]);
-		}
-		for	(unsigned int i = 0; i < 3; i++)
-		{
-			dispersionAcc[i] = dispersionCalculate(dataIMUTranspose[i], meanAcc[i]);
-			dispersionGyro[i] = dispersionCalculate(dataIMUTranspose[3 + i], meanGyro[i]);
-		}
-		for	(unsigned int i = 0; i < 3; i++)
-		{
-			std::cout << "value meanAcc[" << i << "] = " << meanAcc[i] << "\t| ";
-			std::cout << "value meanGyro[" << i << "] = " << meanGyro[i] << "\t| ";
-			std::cout << "value dispersionAcc[" << i << "] = " << meanAcc[i] << "\t| ";
-			std::cout << "value dispersionGyro[" << i << "] = " << meanGyro[i] << "\t| ";
-			std::cout << std::endl;
-		}
+		drawGraph(dataTime, &positionVecX, &plotPositionX, "xPosition", 0);
+		drawGraph(dataTime, &positionVecY, &plotPositionY, "yPosition", 0);
+		drawGraph(dataTime, &positionVecZ, &plotPositionZ, "zPosition", 0);
+		plotPositionXYZ[0].push_back(plotPositionX);
+		plotPositionXYZ[1].push_back(plotPositionY);
+		plotPositionXYZ[2].push_back(plotPositionZ);
+		Figure				figPosition = plotPositionXYZ;
+		figPosition.size(600, 600);
+		figPosition.show();
 	#endif
 	getCorrectData(dataIMU, dataIMUInit);
 	positionWGS = estimatePositionWGS(&dataIMU, &dataGNSS, &dataTime);

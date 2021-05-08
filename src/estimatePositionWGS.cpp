@@ -26,7 +26,7 @@
 
 #include "estimatePositionWGS.hpp"
 
-// #define DEBUG
+#define DEBUG
 
 #ifdef DEBUG
 	#include "iostream"
@@ -44,32 +44,36 @@
  */
 vectDouble2d_t	estimatePositionWGS(vectDouble2d_t *dataIMU, const vectDouble2d_t *dataGNSS, const vectDouble_t *dataTime)
 {
-	vectDouble2d_t		resCoordinateWGS; // результат оценки положения в ГСК
-	vectDouble_t		startCoordinateGeoNormal; // координаты начала стартовой СК в геоцентрической нормальной СК
-	Eigen::Vector3d		acceleration; // ускорение
-	vectDouble_t		accelerationVecX; // ускорение по оси X
-	vectDouble_t		accelerationVecY; // ускорение по оси Y
-	vectDouble_t		accelerationVecZ; // ускорение по оси Z
-	vectDouble_t		veloucityVecX; // ускорение по оси X
-	vectDouble_t		veloucityVecY; // ускорение по оси Y
-	vectDouble_t		veloucityVecZ; // ускорение по оси Z
-	vectDouble_t		positionVecX; // ускорение по оси X
-	vectDouble_t		positionVecY; // ускорение по оси Y
-	vectDouble_t		positionVecZ; // ускорение по оси Z
-	Eigen::Vector3d		apparentAcceleration; // кажущееся ускорение
-	vectDouble2d_t		orientation;
-	vectDouble_t		temp;
-	Eigen::Vector3d		gravityAcceleration;
-	Eigen::Matrix3d		matrixRotation;
-	double				g;
+	vectDouble2d_t			resCoordinateWGS; // результат оценки положения в ГСК
+	vectDouble2d_t 			dataIMUTranspose((*dataIMU)[0].size()); // данные с БИНС(акселерометр(X, Y, Z), гироскоп(X, Y, Z), магнетометр(X, Y))
+	vectDouble_t			startCoordinateGeoNormal; // координаты начала стартовой СК в геоцентрической нормальной СК
+	Eigen::Vector3d			acceleration; // ускорение
+	vector3d<vectDouble_t>	accelerationVec;
+	vector3d<vectDouble_t>	veloucityVec;
+	vector3d<vectDouble_t>	positionVec;
+	Eigen::Vector3d			apparentAcceleration; // кажущееся ускорение
+	vectDouble2d_t			orientation;
+	vectDouble_t			temp;
+	Eigen::Vector3d			gravityAcceleration;
+	Eigen::Matrix3d			matrixRotation;
+	double					g;
 
+
+	// for	(unsigned int i = 0; i < (*dataIMU)[0].size(); i++)
+	// 	for (unsigned int j = 0; j < (*dataIMU).size(); j++)
+	// 		dataIMUTranspose[i].push_back((*dataIMU)[j][i]);
 	g = gravitationalAccelerationCalc(55.813984, 230);
 	gravityAcceleration << 0, 0, g;
 	temp.push_back(0);
 	temp.push_back(0);
 	temp.push_back(0.12);
 	// фильтрация данных с БИНС
-	// lowPassFilter(&(*dataIMU)[0], dataTime, 0.02);
+	// lowPassFilter(&dataIMUTranspose[0], dataTime, 0.02);
+	// lowPassFilter(&dataIMUTranspose[1], dataTime, 0.02);
+	// lowPassFilter(&dataIMUTranspose[2], dataTime, 0.02);
+	// for	(unsigned int i = 0; i < (*dataIMU).size(); i++)
+	// 	for (unsigned int j = 0; j < (*dataIMU)[i].size(); j++)
+	// 		(*dataIMU)[i][j] = dataIMUTranspose[j][i];
 	// определение ориентации с помощью Attitude and Heading Reference System(AHRS)
 	orientation.push_back(temp);
 	matrixRotation = rotationMatrix(orientation[0]);
@@ -112,32 +116,47 @@ vectDouble2d_t	estimatePositionWGS(vectDouble2d_t *dataIMU, const vectDouble2d_t
 		matrixRotation = rotationMatrix(orientation[i]);
 		// acceleration = apparentAcceleration - (matrixRotation * gravityAcceleration);
 		acceleration = (matrixRotation.inverse() * apparentAcceleration) - gravityAcceleration;
-		accelerationVecX.push_back(acceleration[0]);
-		accelerationVecY.push_back(acceleration[1]);
-		accelerationVecZ.push_back(acceleration[2]);
+		accelerationVec.x.push_back(acceleration[0]);
+		accelerationVec.y.push_back(acceleration[1]);
+		accelerationVec.z.push_back(acceleration[2]);
 	}
-	veloucityVecX = integralEuler(dataTime, &accelerationVecX);
-	veloucityVecY = integralEuler(dataTime, &accelerationVecY);
-	veloucityVecZ = integralEuler(dataTime, &accelerationVecZ);
-	positionVecX = integralEuler(dataTime, &veloucityVecX);
-	positionVecY = integralEuler(dataTime, &veloucityVecY);
-	positionVecZ = integralEuler(dataTime, &veloucityVecZ);
+	veloucityVec.x = integralEuler(dataTime, &accelerationVec.x);
+	veloucityVec.y = integralEuler(dataTime, &accelerationVec.y);
+	veloucityVec.z = integralEuler(dataTime, &accelerationVec.z);
+	positionVec.x = integralEuler(dataTime, &veloucityVec.x);
+	positionVec.y = integralEuler(dataTime, &veloucityVec.y);
+	positionVec.z = integralEuler(dataTime, &veloucityVec.z);
 	#ifdef DEBUG
 		Plot				plotPositionX;
 		Plot				plotPositionY;
 		Plot				plotPositionZ;
+		Plot				plotVeloucityX;
+		Plot				plotVeloucityY;
+		Plot				plotVeloucityZ;
 		vectPlot2d_t		plotPositionXYZ(3);
+		vectPlot2d_t		plotVeloucityXYZ(3);
 
-		drawGraph(dataTime, &positionVecX, &plotPositionX, "xPosition", 0);
-		drawGraph(dataTime, &positionVecY, &plotPositionY, "yPosition", 0);
-		drawGraph(dataTime, &positionVecZ, &plotPositionZ, "zPosition", 0);
+		drawGraph(dataTime, &positionVec.x, &plotPositionX, "xPosition", 0);
+		drawGraph(dataTime, &positionVec.y, &plotPositionY, "yPosition", 0);
+		drawGraph(dataTime, &positionVec.z, &plotPositionZ, "zPosition", 0);
 		plotPositionXYZ[0].push_back(plotPositionX);
 		plotPositionXYZ[1].push_back(plotPositionY);
 		plotPositionXYZ[2].push_back(plotPositionZ);
 		Figure				figPosition = plotPositionXYZ;
-
 		figPosition.size(600, 600);
 		figPosition.show();
+
+		drawGraph(dataTime, &accelerationVec.x, &plotVeloucityX, "xAcceleration", 0);
+		drawGraph(dataTime, &accelerationVec.y, &plotVeloucityY, "yAcceleration", 0);
+		drawGraph(dataTime, &accelerationVec.z, &plotVeloucityZ, "zAcceleration", 0);
+		plotVeloucityXYZ[0].push_back(plotVeloucityX);
+		plotVeloucityXYZ[1].push_back(plotVeloucityY);
+		plotVeloucityXYZ[2].push_back(plotVeloucityZ);
+		Figure				figVeloucity = plotVeloucityXYZ;
+		figVeloucity.size(600, 600);
+		figVeloucity.show();
+
+
 		
 	#endif
 	// перевод из эллипсоидальной геоцентрической СК(ГСК) в прямоугольную ГСК
