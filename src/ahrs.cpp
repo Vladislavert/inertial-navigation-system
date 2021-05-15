@@ -38,7 +38,7 @@ vectDouble2d_t	getOrientation(const vectDouble_t initOrientation, const vectDoub
 {
 	vectDouble2d_t	resOrientation; // углы ориентации(тангаж, крен, рысканье)
 	vectDouble_t	dataAccelerometer; // данные с акселерометра
-	vectDouble_t	dataGyroscopePast;
+	vectDouble_t	dataGyroscopePast; // данные с гироскопа на предыдущем шаге
 	vectDouble_t	dataGyroscopeCurrent; // данные с гироскопа на нынешнем шаге
 	vectDouble_t	dataMagnetometer; // данные с магнетометра
 	vectDouble_t	angleAccelerometer; // углы, получаемые с акселерометра

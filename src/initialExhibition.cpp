@@ -30,6 +30,7 @@
 
 #ifdef DEBUG
 	#include "draw.hpp"
+	#include "iostream"
 #endif
 
 /**
@@ -37,43 +38,55 @@
  * 
  * @param dataIMU данные с БИНС(акселерометр(X, Y, Z), гироскоп(X, Y, Z), магнетометр(X, Y))
  * @param dataInitIMU данные с БИНС(акселерометр(X, Y, Z), гироскоп(X, Y, Z), магнетометр(X, Y)) для начальной выставки
+ * @param g ускорение свободного падения во время начальной выставки
  */
-void	getCorrectData(vectDouble2d_t &dataIMU, const vectDouble2d_t &dataInitIMU)
+void	getCorrectData(vectDouble2d_t &dataIMU, const vectDouble2d_t &dataInitIMU, const double g)
 {
 	vectDouble2d_t 		dataIMUTranspose(dataInitIMU[0].size()); // данные с БИНС(акселерометр(X, Y, Z), гироскоп(X, Y, Z), магнетометр(X, Y))
 	const unsigned int	indxGyro = 3; // значение индекса под которым начинаются измерения гироскопа
-	const unsigned int	indxAcc = 0; // значение индекса под которым начинаются измерения акселерометра 
-	double				*meanAcc;
-	double				*dispersionAcc;
-	double				*meanGyro;
-	double				*dispersionGyro;
+	const unsigned int	indxAcc = 0; // значение индекса под которым начинаются измерения акселерометра
+	const unsigned int	quantityAxes = 3; // количество осей по которым производятся измерения
+	double				*meanAcc; // математическое ожидание акселерометра по трём связанным осям
+	double				*dispersionAcc; // дисперсия данных с акселерометра по трём связанным осям
+	double				*threeCovAcc; // 3*sigma акселерометра по трём связанным осям
+	double				*meanGyro; // математическое ожидание гироскопа по трём связанным осям
+	double				*dispersionGyro; // дисперсия данных с гироскопа по трём связанным осям
+	double				*threeCovGyro; // 3*sigma гироскопа по трём связанным осям
 
-	meanAcc = new double[3];
-	dispersionAcc = new double[3];
-	meanGyro = new double[3];
-	dispersionGyro = new double[3];
+	meanAcc = new double[quantityAxes];
+	dispersionAcc = new double[quantityAxes];
+	threeCovAcc = new double[quantityAxes];
+	meanGyro = new double[quantityAxes];
+	dispersionGyro = new double[quantityAxes];
+	threeCovGyro = new double[quantityAxes];
 	for	(unsigned int i = 0; i < dataInitIMU[0].size(); i++)
 		for (unsigned int j = 0; j < dataInitIMU.size(); j++)
 			dataIMUTranspose[i].push_back(dataInitIMU[j][i]);
-	for	(unsigned int i = 0; i < 3; i++)
+	for	(unsigned int i = 0; i < quantityAxes; i++)
+		meanAcc[i] = meanCalculate(dataIMUTranspose[indxAcc + i]);
+	for	(unsigned int i = 0; i < quantityAxes; i++)
+		meanGyro[i] = meanCalculate(dataIMUTranspose[indxGyro + i]);
+	for	(unsigned int i = 0; i < quantityAxes; i++)
 	{
-		meanAcc[i] = meanCalculate(dataIMUTranspose[i]);
+		dispersionAcc[i] = dispersionCalculate(dataIMUTranspose[indxAcc + i], meanAcc[i]);
+		dispersionGyro[i] = dispersionCalculate(dataIMUTranspose[indxGyro + i], meanGyro[i]);
 	}
-	for	(unsigned int i = 0; i < 3; i++)
+	for (unsigned int i = 0; i < quantityAxes; i++)
 	{
-		meanGyro[i] = meanCalculate(dataIMUTranspose[3 + i]);
-	}
-	for	(unsigned int i = 0; i < 3; i++)
-	{
-		dispersionAcc[i] = dispersionCalculate(dataIMUTranspose[i], meanAcc[i]);
-		dispersionGyro[i] = dispersionCalculate(dataIMUTranspose[3 + i], meanGyro[i]);
+		threeCovAcc[i] = 3 * sqrt(dispersionAcc[i]);
+		threeCovGyro[i] = 3 * sqrt(dispersionGyro[i]);
 	}
 	for (unsigned int i = 0; i < dataIMU.size(); i++)
-	{
-		for (unsigned int j = 0; j < 3; j++)
+		for (unsigned int j = 0; j < quantityAxes; j++)
 		{
-			dataIMU[i][j] = dataIMU[i][indxAcc + j] - meanAcc[j];
-			dataIMU[i][j] = dataIMU[i][indxGyro + j] - meanGyro[j];
+			if (j == quantityAxes - 1)
+				dataIMU[i][indxAcc + j] = dataIMU[i][indxAcc + j] - (meanAcc[j] - g);
+			else
+				dataIMU[i][indxAcc + j] = dataIMU[i][indxAcc + j] - meanAcc[j];
+			dataIMU[i][indxGyro + j] = dataIMU[i][indxGyro + j] - meanGyro[j];
+			if (dataIMU[i][indxAcc + j] < threeCovAcc[j] && dataIMU[i][indxAcc + j] > -threeCovAcc[j])
+				dataIMU[i][indxAcc + j] = 0;
+			if (dataIMU[i][indxGyro + j] < threeCovGyro[j] && dataIMU[i][indxGyro + j] > -threeCovGyro[j])
+				dataIMU[i][indxGyro + j] = 0;
 		}
-	}
 }

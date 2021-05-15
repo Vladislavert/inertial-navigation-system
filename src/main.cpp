@@ -32,7 +32,7 @@
 #include "calcProbabilityCharact.hpp"
 #include "initialExhibition.hpp"
 
-// #define DEBUG
+#define DEBUG
 
 #ifdef DEBUG
 	#include "iostream"
@@ -64,10 +64,12 @@ int main()
 	double				*dispersionAcc;
 	double				*meanGyro;
 	double				*dispersionGyro;
+	double				g;
 
 	// nameFile = DIR_RESOURCES + "orientation360_2_chear (useful data).csv";
 	nameFile = DIR_RESOURCES + "Move(orientation_30, 6 meters).csv";
-	nameFileInitExhibition = DIR_RESOURCES + "initCondition.csv";
+	// nameFile = DIR_RESOURCES + "RotationZ_360.csv";
+	nameFileInitExhibition = DIR_RESOURCES + "initCondition2.csv";
 	file.open(nameFile);
 	fileInit.open(nameFileInitExhibition);
 	if (checkOpenFile(file) && checkOpenFile(fileInit))
@@ -91,28 +93,20 @@ int main()
 	vectDouble2d_t 		dataIMUInit; // данные с БИНС(акселерометр(X, Y, Z), гироскоп(X, Y, Z), магнетометр(X, Y)) для начальной выставки
 	vectDouble2d_t		dataGNSS; // данные с ГНСС(широта, долгота, высота)
 	vectDouble_t		dataTime; // время с начала замера данных с датчиков
+	vectDouble_t		dataTimeInit; // время с начала замера данных с датчиков
 	vectDouble_t		temp; // временый вектор, для заполнения
 	vectDouble_t		tempInit; // временый вектор, для заполнения данных начальной выставки
 
 	for	(unsigned int i = 0; i < dataSensors.size(); i++)
 	{
 		for (unsigned int j = 0; j < 3; j++)
-		{
 			temp.push_back(dataSensors[i][indxAcc + j]);
-			tempInit.push_back(dataSensorsInit[i][indxAcc + j]);
-		}
 		for (unsigned int j = 0; j < 3; j++)
-		{
 			temp.push_back(dataSensors[i][indxGyro + j]);
-			tempInit.push_back(dataSensorsInit[i][indxGyro + j]);
-		}
+
 		for (unsigned int j = 0; j < 2; j++)
-		{
 			temp.push_back(dataSensors[i][indxMagnet + j]);
-			tempInit.push_back(dataSensorsInit[i][indxMagnet + j]);
-		}
 		dataIMU.push_back(temp);
-		dataIMUInit.push_back(tempInit);
 		temp.clear();
 		for (unsigned int j = 0; j < 3; j++)
 			temp.push_back(0);
@@ -120,27 +114,81 @@ int main()
 		dataTime.push_back(dataSensors[i][indxTime] / 1000);
 		temp.clear();
 	}
+	for	(unsigned int i = 0; i < dataSensorsInit.size(); i++)
+	{
+		for (unsigned int j = 0; j < 3; j++)
+			tempInit.push_back(dataSensorsInit[i][indxAcc + j]);
+		for (unsigned int j = 0; j < 3; j++)
+			tempInit.push_back(dataSensorsInit[i][indxGyro + j]);
+		for (unsigned int j = 0; j < 2; j++)
+			tempInit.push_back(dataSensorsInit[i][indxMagnet + j]);
+		dataIMUInit.push_back(tempInit);
+		tempInit.clear();
+		dataTimeInit.push_back(dataSensorsInit[i][indxTime] / 1000);
+		tempInit.clear();
+	}
 	#ifdef DEBUG
+		vectDouble2d_t 		dataIMUTranspose(dataIMU[0].size()); // данные с БИНС(акселерометр(X, Y, Z), гироскоп(X, Y, Z), магнетометр(X, Y))
+		vectDouble2d_t 		dataIMUTransposeInit(dataIMUInit[0].size()); // данные с БИНС(акселерометр(X, Y, Z), гироскоп(X, Y, Z), магнетометр(X, Y))
 		Plot				plotPositionX;
 		Plot				plotPositionY;
 		Plot				plotPositionZ;
-		Plot				plotVeloucityX;
-		Plot				plotVeloucityY;
-		Plot				plotVeloucityZ;
+		Plot				plotPositionXInit;
+		Plot				plotPositionYInit;
+		Plot				plotPositionZInit;				
 		vectPlot2d_t		plotPositionXYZ(3);
-		vectPlot2d_t		plotVeloucityXYZ(3);
+		vectPlot2d_t		plotPositionXYZInit(3);
 
-		drawGraph(dataTime, &positionVecX, &plotPositionX, "xPosition", 0);
-		drawGraph(dataTime, &positionVecY, &plotPositionY, "yPosition", 0);
-		drawGraph(dataTime, &positionVecZ, &plotPositionZ, "zPosition", 0);
+		for	(unsigned int i = 0; i < dataIMU[0].size(); i++)
+			for (unsigned int j = 0; j < dataIMU.size(); j++)
+				dataIMUTranspose[i].push_back(dataIMU[j][i]);
+
+		for	(unsigned int i = 0; i < dataIMUInit[0].size(); i++)
+			for (unsigned int j = 0; j < dataIMUInit.size(); j++)
+				dataIMUTransposeInit[i].push_back(dataIMUInit[j][i]);
+
+		drawGraph(&dataTime, &dataIMUTranspose[0], &plotPositionX, "xAccelerationNotFilters", 0);
+		drawGraph(&dataTime, &dataIMUTranspose[1], &plotPositionY, "yAccelerationNotFilters", 0);
+		drawGraph(&dataTime, &dataIMUTranspose[2], &plotPositionZ, "zAccelerationNotFilters", 0);
 		plotPositionXYZ[0].push_back(plotPositionX);
 		plotPositionXYZ[1].push_back(plotPositionY);
 		plotPositionXYZ[2].push_back(plotPositionZ);
 		Figure				figPosition = plotPositionXYZ;
 		figPosition.size(600, 600);
 		figPosition.show();
+
+		drawGraph(&dataTimeInit, &dataIMUTransposeInit[0], &plotPositionXInit, "xAccelerationNotFiltersInit", 0);
+		drawGraph(&dataTimeInit, &dataIMUTransposeInit[1], &plotPositionYInit, "yAccelerationNotFiltersInit", 0);
+		drawGraph(&dataTimeInit, &dataIMUTransposeInit[2], &plotPositionZInit, "zAccelerationNotFiltersInit", 0);
+		plotPositionXYZInit[0].push_back(plotPositionXInit);
+		plotPositionXYZInit[1].push_back(plotPositionYInit);
+		plotPositionXYZInit[2].push_back(plotPositionZInit);
+		Figure				figPositionInit = plotPositionXYZInit;
+		figPositionInit.size(600, 600);
+		figPositionInit.show();
 	#endif
-	getCorrectData(dataIMU, dataIMUInit);
+	g = gravitationalAccelerationCalc(55.813984, 230); // данные для начальной выставки
+	getCorrectData(dataIMU, dataIMUInit, g);
+	#ifdef DEBUG
+		vectDouble2d_t 		dataIMUTranspose1(dataIMU[0].size()); // данные с БИНС(акселерометр(X, Y, Z), гироскоп(X, Y, Z), магнетометр(X, Y))
+		Plot				plotPositionX1;
+		Plot				plotPositionY1;
+		Plot				plotPositionZ1;
+		vectPlot2d_t		plotPositionXYZ1(3);
+
+		for	(unsigned int i = 0; i < dataIMU[0].size(); i++)
+			for (unsigned int j = 0; j < dataIMU.size(); j++)
+			dataIMUTranspose1[i].push_back(dataIMU[j][i]);
+		drawGraph(&dataTime, &dataIMUTranspose1[0], &plotPositionX1, "xAccelerationFilters", 0);
+		drawGraph(&dataTime, &dataIMUTranspose1[1], &plotPositionY1, "yAccelerationFilters", 0);
+		drawGraph(&dataTime, &dataIMUTranspose1[2], &plotPositionZ1, "zAccelerationFilters", 0);
+		plotPositionXYZ1[0].push_back(plotPositionX1);
+		plotPositionXYZ1[1].push_back(plotPositionY1);
+		plotPositionXYZ1[2].push_back(plotPositionZ1);
+		Figure				figPosition1 = plotPositionXYZ1;
+		figPosition1.size(600, 600);
+		figPosition1.show();
+	#endif
 	positionWGS = estimatePositionWGS(&dataIMU, &dataGNSS, &dataTime);
 	#ifdef DEBUG
 		for	(unsigned int i = 0; i < positionWGS.size(); i++)

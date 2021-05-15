@@ -27,9 +27,10 @@
 #ifndef INITIALEXHIBITION_HPP
 #define INITIALEXHIBITION_HPP
 
+#include "math.hpp"
 #include "typesData.hpp"
 #include "calcProbabilityCharact.hpp"
 
-void	getCorrectData(vectDouble2d_t &dataIMU, const vectDouble2d_t &dataInitIMU);
+void	getCorrectData(vectDouble2d_t &dataIMU, const vectDouble2d_t &dataInitIMU, double g);
 
 #endif

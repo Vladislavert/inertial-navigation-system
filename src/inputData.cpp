@@ -26,8 +26,6 @@
 
 #include "inputData.hpp"
 
-// #include <iostream>
-
 /**
  * @brief парсер для данных из файлов, записанных в vector<string>
  * 
