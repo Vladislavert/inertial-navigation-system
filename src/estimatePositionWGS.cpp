@@ -1,8 +1,8 @@
 /* *************************************************************************************************** */
-/* 	|Author: Vladislavert         |ssssssssssssssso++——+++osssssssssssssssssssssssssssssssssssssssss|  */
-/* 	|e-mail: chuvarevan@mail.ru   |yyyysoooooo..   /   |    ./yyyyyyyyyyosshhhhhyyyyyyyyyyyyyyyyyyyy|  */
-/* 	|_____________________________|yyyyyyysssso////  /syyyyyyyyyyyyyyy0    /yhhhhhyyyyyyyyyyyyyyyyyy|  */
-/*	|ssysyyyyysssyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyso+   /ssyyyyyyyyyyyyso    0yhhhhhhhhyhyyyyyyyyyyyyyy|  */
+/* 	|Author: Vladislavert              |sssssssssso++——+++osssssssssssssssssssssssssssssssssssssssss|  */
+/* 	|e-mail: chuvarevan@mail.ru        |oooooo..   /   |    ./yyyyyyyyyyosshhhhhyyyyyyyyyyyyyyyyyyyy|  */
+/* 	|estimatePositionWGS.cpp           |yysssso////  /syyyyyyyyyyyyyyy0    /yhhhhhyyyyyyyyyyyyyyyyyy|  */
+/*	|__________________________________|yyyyyyyso+   /ssyyyyyyyyyyyyso    0yhhhhhhhhyhyyyyyyyyyyyyyy|  */
 /*	|syyyyyys+.     ++osy      ...sssoosssssssoo+ +o/osssyyyyso+//s/ /oyyyhyhhhhhhhyyyyyyyyyyyyyyyyy|  */
 /*	|syyyyyysooo+/::/+/  ++++oooo+++ooooosssssshhyyyyyooo+//+oo++/ /:os+++++++++++++yyhhhyyyyyyyyyyy|  */
 /*	|ssssyyyyyys+/    ///////yyyyyys:--::/syo+//:/::::::/ooo+///  /oys\.          /ossyyyyyyyyyy'sss|  */
@@ -37,39 +37,43 @@
  * @brief оценка позиции в геоцентрической СК(WGS-84)
  * 
  * @param coordinateGeoElipse координаты точки старта в геоцентрической эллипсоидальной СК
- * @param dataIMU данные с БИНС(акселерометр(X, Y, Z), гироскоп(X, Y, Z), магнетометр(X, Y)). Фильтруются внутри функции
+ * @param dataIMU данные с БИНС(акселерометр(X, Y, Z), гироскоп(X, Y, Z), магнитометр(X, Y)). Фильтруются внутри функции
  * @param dataGNSS данные с ГНСС приёмника в WGS-84(широта, долгота, высота)
  * @param dataTime время с начала замера данных с датчиков
  * @return координаты в геоцентрической СК(WGS-84)(X, Y, Z)
  */
 vectDouble2d_t	estimatePositionWGS(vectDouble2d_t *dataIMU, const vectDouble2d_t *dataGNSS, const vectDouble_t *dataTime)
 {
-	vectDouble2d_t		resCoordinateWGS; // результат оценки положения в ГСК
-	vectDouble_t		startCoordinateGeoNormal; // координаты начала стартовой СК в геоцентрической нормальной СК
-	Eigen::Vector3d		acceleration; // ускорение
-	vectDouble_t		accelerationVecX; // ускорение по оси X
-	vectDouble_t		accelerationVecY; // ускорение по оси Y
-	vectDouble_t		accelerationVecZ; // ускорение по оси Z
-	vectDouble_t		veloucityVecX; // ускорение по оси X
-	vectDouble_t		veloucityVecY; // ускорение по оси Y
-	vectDouble_t		veloucityVecZ; // ускорение по оси Z
-	vectDouble_t		positionVecX; // ускорение по оси X
-	vectDouble_t		positionVecY; // ускорение по оси Y
-	vectDouble_t		positionVecZ; // ускорение по оси Z
-	Eigen::Vector3d		apparentAcceleration; // кажущееся ускорение
-	vectDouble2d_t		orientation;
-	vectDouble_t		temp;
-	Eigen::Vector3d		gravityAcceleration;
-	Eigen::Matrix3d		matrixRotation;
-	double				g;
+	vectDouble2d_t			resCoordinateWGS; // результат оценки положения в ГСК
+	vectDouble2d_t 			dataIMUTranspose((*dataIMU)[0].size()); // данные с БИНС(акселерометр(X, Y, Z), гироскоп(X, Y, Z), магнетометр(X, Y))
+	vectDouble_t			startCoordinateGeoNormal; // координаты начала стартовой СК в геоцентрической нормальной СК
+	Eigen::Vector3d			acceleration; // ускорение
+	vector3d<vectDouble_t>	accelerationVec;
+	vector3d<vectDouble_t>	veloucityVec;
+	vector3d<vectDouble_t>	positionVec;
+	Eigen::Vector3d			apparentAcceleration; // кажущееся ускорение
+	vectDouble2d_t			orientation;
+	vectDouble_t			temp;
+	Eigen::Vector3d			gravityAcceleration;
+	Eigen::Matrix3d			matrixRotation;
+	double					g;
 
-	g = gravitationalAccelerationCalc(0.959931, 230);
+
+	// for	(unsigned int i = 0; i < (*dataIMU)[0].size(); i++)
+	// 	for (unsigned int j = 0; j < (*dataIMU).size(); j++)
+	// 		dataIMUTranspose[i].push_back((*dataIMU)[j][i]);
+	g = gravitationalAccelerationCalc(55.813984, 230);
 	gravityAcceleration << 0, 0, g;
 	temp.push_back(0);
 	temp.push_back(0);
 	temp.push_back(0.12);
 	// фильтрация данных с БИНС
-	// lowPassFilter(&(*dataIMU)[0], dataTime, 0.02);
+	// lowPassFilter(&dataIMUTranspose[0], dataTime, 0.02);
+	// lowPassFilter(&dataIMUTranspose[1], dataTime, 0.02);
+	// lowPassFilter(&dataIMUTranspose[2], dataTime, 0.02);
+	// for	(unsigned int i = 0; i < (*dataIMU).size(); i++)
+	// 	for (unsigned int j = 0; j < (*dataIMU)[i].size(); j++)
+	// 		(*dataIMU)[i][j] = dataIMUTranspose[j][i];
 	// определение ориентации с помощью Attitude and Heading Reference System(AHRS)
 	orientation.push_back(temp);
 	matrixRotation = rotationMatrix(orientation[0]);
@@ -78,41 +82,75 @@ vectDouble2d_t	estimatePositionWGS(vectDouble2d_t *dataIMU, const vectDouble2d_t
 		vectDouble_t		xOrientation;
 		vectDouble_t		yOrientation;
 		vectDouble_t		zOrientation;
+		Plot				plotOrientationX;
+		Plot				plotOrientationY;
+		Plot				plotOrientationZ;
+		vectPlot2d_t		plotOrientationXYZ(3);
+
 		for	(unsigned int i = 0; i < orientation.size(); i++)
 		{
-			for (unsigned int j = 0; j < orientation[i].size(); j++)
-			{
-				std::cout << orientation[i][j] << " ";		
-			}
-			std::cout << std::endl;
-			xOrientation.push_back(orientation[i][0]);
-			yOrientation.push_back(orientation[i][1]);
-			zOrientation.push_back(orientation[i][2]);
+			xOrientation.push_back(radToDeg(orientation[i][0]));
+			yOrientation.push_back(radToDeg(orientation[i][1]));
+			zOrientation.push_back(radToDeg(orientation[i][2]));
 		}
-		drawGraph(dataTime, &xOrientation, "xOrientation");
-		drawGraph(dataTime, &yOrientation, "yOrientation");
-		drawGraph(dataTime, &zOrientation, "zOrientation");
+		drawGraph(dataTime, &xOrientation, &plotOrientationX, "xOrientation", 0);
+		drawGraph(dataTime, &yOrientation, &plotOrientationY, "yOrientation", 0);
+		drawGraph(dataTime, &zOrientation, &plotOrientationZ, "zOrientation", 0);
+		plotOrientationXYZ[0].push_back(plotOrientationX);
+		plotOrientationXYZ[1].push_back(plotOrientationY);
+		plotOrientationXYZ[2].push_back(plotOrientationZ);
+		Figure				figOrientation = plotOrientationXYZ;
+
+		figOrientation.size(600, 600);
+		figOrientation.show();
 	#endif
 	for	(unsigned int i = 0; i < (*dataIMU).size(); i++)
 	{
 		apparentAcceleration << (*dataIMU)[i][0], (*dataIMU)[i][1], (*dataIMU)[i][2];
-		orientation = getOrientation(orientation[i], dataIMU, dataTime);
+		// orientation = getOrientation(orientation[i], dataIMU, dataTime);
 		matrixRotation = rotationMatrix(orientation[i]);
-		acceleration = apparentAcceleration - (matrixRotation * gravityAcceleration);
-		accelerationVecX.push_back(acceleration[0]);
-		accelerationVecY.push_back(acceleration[1]);
-		accelerationVecZ.push_back(acceleration[2]);
+		// acceleration = apparentAcceleration - (matrixRotation * gravityAcceleration);
+		acceleration = (matrixRotation.inverse() * apparentAcceleration) - gravityAcceleration;
+		accelerationVec.x.push_back(acceleration[0]);
+		accelerationVec.y.push_back(acceleration[1]);
+		accelerationVec.z.push_back(acceleration[2]);
 	}
-	veloucityVecX = integralEuler(dataTime, &accelerationVecX);
-	veloucityVecY = integralEuler(dataTime, &accelerationVecY);
-	veloucityVecZ = integralEuler(dataTime, &accelerationVecZ);
-	positionVecX = integralEuler(dataTime, &veloucityVecX);
-	positionVecY = integralEuler(dataTime, &veloucityVecY);
-	positionVecZ = integralEuler(dataTime, &veloucityVecZ);
+	veloucityVec.x = integralEuler(dataTime, &accelerationVec.x);
+	veloucityVec.y = integralEuler(dataTime, &accelerationVec.y);
+	veloucityVec.z = integralEuler(dataTime, &accelerationVec.z);
+	positionVec.x = integralEuler(dataTime, &veloucityVec.x);
+	positionVec.y = integralEuler(dataTime, &veloucityVec.y);
+	positionVec.z = integralEuler(dataTime, &veloucityVec.z);
 	#ifdef DEBUG
-		drawGraph(dataTime, &positionVecX, "xPosition");
-		drawGraph(dataTime, &positionVecY, "yPosition");
-		drawGraph(dataTime, &positionVecZ, "zPosition");
+		Plot				plotPositionX;
+		Plot				plotPositionY;
+		Plot				plotPositionZ;
+		Plot				plotVeloucityX;
+		Plot				plotVeloucityY;
+		Plot				plotVeloucityZ;
+		vectPlot2d_t		plotPositionXYZ(3);
+		vectPlot2d_t		plotVeloucityXYZ(3);
+
+		drawGraph(dataTime, &positionVec.x, &plotPositionX, "xPosition", 0);
+		drawGraph(dataTime, &positionVec.y, &plotPositionY, "yPosition", 0);
+		drawGraph(dataTime, &positionVec.z, &plotPositionZ, "zPosition", 0);
+		plotPositionXYZ[0].push_back(plotPositionX);
+		plotPositionXYZ[1].push_back(plotPositionY);
+		plotPositionXYZ[2].push_back(plotPositionZ);
+		Figure				figPosition = plotPositionXYZ;
+		figPosition.size(600, 600);
+		figPosition.show();
+
+		drawGraph(dataTime, &accelerationVec.x, &plotVeloucityX, "xAcceleration", 0);
+		drawGraph(dataTime, &accelerationVec.y, &plotVeloucityY, "yAcceleration", 0);
+		drawGraph(dataTime, &accelerationVec.z, &plotVeloucityZ, "zAcceleration", 0);
+		plotVeloucityXYZ[0].push_back(plotVeloucityX);
+		plotVeloucityXYZ[1].push_back(plotVeloucityY);
+		plotVeloucityXYZ[2].push_back(plotVeloucityZ);
+		Figure				figVeloucity = plotVeloucityXYZ;
+		figVeloucity.size(600, 600);
+		figVeloucity.show();
+
 	#endif
 	// перевод из эллипсоидальной геоцентрической СК(ГСК) в прямоугольную ГСК
 	// начальная выставка, для получения координат стартовой СК в геоцентрической СК(WGS-84)
@@ -121,12 +159,12 @@ vectDouble2d_t	estimatePositionWGS(vectDouble2d_t *dataIMU, const vectDouble2d_t
 	// перевод из связанной СК(ССК) в связанные нормальные оси(СНС), с помощью матрицы поворотов, для опеределения позиции в стартовой СК
 	// определение позиции путём интегрирования данных с акселерометра, а также коррекция позиции с помощью ГНСС
 	// перевод из стартовой СК в ГСК
-	for (unsigned int i = 0; i < positionVecX.size(); i++)
+	for (unsigned int i = 0; i < positionVec.x.size(); i++)
 	{		
 		temp.clear();
-		temp.push_back(positionVecX[i]);
-		temp.push_back(positionVecY[i]);
-		temp.push_back(positionVecZ[i]);
+		temp.push_back(positionVec.x[i]);
+		temp.push_back(positionVec.y[i]);
+		temp.push_back(positionVec.z[i]);
 		resCoordinateWGS.push_back(temp);
 	}
 	

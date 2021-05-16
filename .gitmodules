@@ -1,3 +1,6 @@
 [submodule "libraries/sciplot"]
 	path = libraries/sciplot
 	url = https://github.com/sciplot/sciplot.git
+[submodule "libraries/yaml-cpp"]
+	path = libraries/yaml-cpp
+	url = https://github.com/jbeder/yaml-cpp

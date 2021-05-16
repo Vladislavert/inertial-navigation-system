@@ -1,8 +1,8 @@
 /* *************************************************************************************************** */
-/* 	|Author: Vladislavert         |ssssssssssssssso++——+++osssssssssssssssssssssssssssssssssssssssss|  */
-/* 	|e-mail: chuvarevan@mail.ru   |yyyysoooooo..   /   |    ./yyyyyyyyyyosshhhhhyyyyyyyyyyyyyyyyyyyy|  */
-/* 	|_____________________________|yyyyyyysssso////  /syyyyyyyyyyyyyyy0    /yhhhhhyyyyyyyyyyyyyyyyyy|  */
-/*	|ssysyyyyysssyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyso+   /ssyyyyyyyyyyyyso    0yhhhhhhhhyhyyyyyyyyyyyyyy|  */
+/* 	|Author: Vladislavert              |sssssssssso++——+++osssssssssssssssssssssssssssssssssssssssss|  */
+/* 	|e-mail: chuvarevan@mail.ru        |oooooo..   /   |    ./yyyyyyyyyyosshhhhhyyyyyyyyyyyyyyyyyyyy|  */
+/* 	|main.cpp                          |yysssso////  /syyyyyyyyyyyyyyy0    /yhhhhhyyyyyyyyyyyyyyyyyy|  */
+/*	|__________________________________|yyyyyyyso+   /ssyyyyyyyyyyyyso    0yhhhhhhhhyhyyyyyyyyyyyyyy|  */
 /*	|syyyyyys+.     ++osy      ...sssoosssssssoo+ +o/osssyyyyso+//s/ /oyyyhyhhhhhhhyyyyyyyyyyyyyyyyy|  */
 /*	|syyyyyysooo+/::/+/  ++++oooo+++ooooosssssshhyyyyyooo+//+oo++/ /:os+++++++++++++yyhhhyyyyyyyyyyy|  */
 /*	|ssssyyyyyys+/    ///////yyyyyys:--::/syo+//:/::::::/ooo+///  /oys\.          /ossyyyyyyyyyy'sss|  */
@@ -24,108 +24,12 @@
 /*	╚╝╚╝╚═══╩═══╩══╩══╩══╩╝╚╩═══╝yyysssssooooo++++++//:---:/++oosssssysss+: osyhhhyhhyyhyyyyyyyyyyyy|  */
 /* *************************************************************************************************** */
 
-#include "inputData.hpp"
-#include "readFile.hpp"
-#include "draw.hpp"
-#include <../libraries/eigen3/Eigen/Dense>
-#include "estimatePositionWGS.hpp"
-
-// #define DEBUG
-
-#ifdef DEBUG
-	#include "iostream"
-#endif
-
-const unsigned int	indxGyro = 3; // значение индекса под которым начинаются измерения гироскопа
-const unsigned int	indxMagnet = 6; // значение индекса под которым начинаются измерения магнитометра
-const unsigned int	indxAcc = 0; // значение индекса под которым начинаются измерения акселерометра 
-const unsigned int	indxTime = 12; // значение индекса под которым начинаются измерения времени
-const unsigned int	indxOrient = 9; // значение индекса под которым начинаются измерения ориентации
-// const unsigned int	indxGNSS = 9; // значение индекса под которым начинаются измерения позиции по ГНСС
-
+#include "applicationStart.hpp"
 
 int main()
 {
-	const std::string	DIR_RESOURCES = "./resource/";
-	vectPlot2d_t		PlotXYZ(3);
-	Plot				plotX;
-	Plot				plotY;
-	Plot				plotZ;
-	std::ifstream		file;
-	std::string			nameFile;
-	vectString_t		str;
-	vectDouble2d_t		dataSensors; // данные с датчиков
-	vectDouble2d_t		positionWGS; // оценка позиции в WGS84(X, Y, Z)
-	vectDouble_t		xPositionWGS;
-	vectDouble_t		yPositionWGS;
-	vectDouble_t		zPositionWGS;
-
-	// nameFile = DIR_RESOURCES + "orientation360_2_chear (useful data).csv";
-	nameFile = DIR_RESOURCES + "RotationZ_360.csv";
-	file.open(nameFile);
-	if (checkOpenFile(file))
-	{
-		readStrFile(file, str);
-		inputData(str, dataSensors, 1);
-		file.close();
-		str.clear();
-	}
-	else
-		std::exit(0);
-	// запись данных с сенсоров из общего вектора в вектор соответсвующие типу датчик
-	vectDouble2d_t 		dataIMU; // данные с БИНС(акселерометр(X, Y, Z), гироскоп(X, Y, Z), магнетометр(X, Y))
-	vectDouble2d_t		dataGNSS; // данные с ГНСС(широта, долгота, высота)
-	vectDouble_t		dataTime; // время с начала замера данных с датчиков
-	vectDouble_t		temp; // временый вектор, для заполнения
-
-	for	(unsigned int i = 0; i < dataSensors.size(); i++)
-	{
-		for (unsigned int j = 0; j < 3; j++)
-			temp.push_back(dataSensors[i][indxAcc + j]);
-		for (unsigned int j = 0; j < 3; j++)	
-			temp.push_back(dataSensors[i][indxGyro + j]);
-		for (unsigned int j = 0; j < 2; j++)
-			temp.push_back(dataSensors[i][indxMagnet + j]);
-		dataIMU.push_back(temp);
-		temp.clear();
-		for (unsigned int j = 0; j < 3; j++)
-			temp.push_back(0);
-		dataGNSS.push_back(temp);
-		dataTime.push_back(dataSensors[i][indxTime] / 1000);
-		temp.clear();
-	}
-	positionWGS = estimatePositionWGS(&dataIMU, &dataGNSS, &dataTime);
-	#ifdef DEBUG
-		for	(unsigned int i = 0; i < positionWGS.size(); i++)
-		{
-			for (unsigned int j = 0; j < positionWGS[i].size(); j++)
-			{
-				std::cout << positionWGS[i][j] << " ";
-				
-			}
-			xPositionWGS.push_back(positionWGS[i][0]);
-			yPositionWGS.push_back(positionWGS[i][1]);
-			zPositionWGS.push_back(positionWGS[i][2]);
-			std::cout << std::endl;
-		}		
-	#endif
-	for	(unsigned int i = 0; i < positionWGS.size(); i++)
-	{
-		xPositionWGS.push_back(positionWGS[i][0]);
-		yPositionWGS.push_back(positionWGS[i][1]);
-		zPositionWGS.push_back(positionWGS[i][2]);
-	}
-
-	drawGraph(&dataTime, &xPositionWGS, &plotX, "xPosition", 0);
-	drawGraph(&dataTime, &yPositionWGS, &plotY, "yPosition", 0);
-	drawGraph(&dataTime, &zPositionWGS, &plotZ, "zPosition", 0);
-	PlotXYZ[0].push_back(plotX);
-	PlotXYZ[1].push_back(plotY);
-	PlotXYZ[2].push_back(plotZ);
-
-	Figure fig = PlotXYZ;
-	fig.size(600, 600);
-	fig.show();
+	applicationStart();
+	return (0);
 }
 
 

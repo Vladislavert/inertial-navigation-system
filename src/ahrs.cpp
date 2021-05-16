@@ -1,8 +1,8 @@
 /* *************************************************************************************************** */
-/* 	|Author: Vladislavert         |ssssssssssssssso++——+++osssssssssssssssssssssssssssssssssssssssss|  */
-/* 	|e-mail: chuvarevan@mail.ru   |yyyysoooooo..   /   |    ./yyyyyyyyyyosshhhhhyyyyyyyyyyyyyyyyyyyy|  */
-/* 	|_____________________________|yyyyyyysssso////  /syyyyyyyyyyyyyyy0    /yhhhhhyyyyyyyyyyyyyyyyyy|  */
-/*	|ssysyyyyysssyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyso+   /ssyyyyyyyyyyyyso    0yhhhhhhhhyhyyyyyyyyyyyyyy|  */
+/* 	|Author: Vladislavert              |sssssssssso++——+++osssssssssssssssssssssssssssssssssssssssss|  */
+/* 	|e-mail: chuvarevan@mail.ru        |oooooo..   /   |    ./yyyyyyyyyyosshhhhhyyyyyyyyyyyyyyyyyyyy|  */
+/* 	|ahrs.cpp                          |yysssso////  /syyyyyyyyyyyyyyy0    /yhhhhhyyyyyyyyyyyyyyyyyy|  */
+/*	|__________________________________|yyyyyyyso+   /ssyyyyyyyyyyyyso    0yhhhhhhhhyhyyyyyyyyyyyyyy|  */
 /*	|syyyyyys+.     ++osy      ...sssoosssssssoo+ +o/osssyyyyso+//s/ /oyyyhyhhhhhhhyyyyyyyyyyyyyyyyy|  */
 /*	|syyyyyysooo+/::/+/  ++++oooo+++ooooosssssshhyyyyyooo+//+oo++/ /:os+++++++++++++yyhhhyyyyyyyyyyy|  */
 /*	|ssssyyyyyys+/    ///////yyyyyys:--::/syo+//:/::::::/ooo+///  /oys\.          /ossyyyyyyyyyy'sss|  */
@@ -38,7 +38,7 @@ vectDouble2d_t	getOrientation(const vectDouble_t initOrientation, const vectDoub
 {
 	vectDouble2d_t	resOrientation; // углы ориентации(тангаж, крен, рысканье)
 	vectDouble_t	dataAccelerometer; // данные с акселерометра
-	vectDouble_t	dataGyroscopePast;
+	vectDouble_t	dataGyroscopePast; // данные с гироскопа на предыдущем шаге
 	vectDouble_t	dataGyroscopeCurrent; // данные с гироскопа на нынешнем шаге
 	vectDouble_t	dataMagnetometer; // данные с магнетометра
 	vectDouble_t	angleAccelerometer; // углы, получаемые с акселерометра
@@ -88,6 +88,7 @@ vectDouble_t	getAngleAccelerometer(const vectDouble_t *dataAccelerometer)
 {
 	vectDouble_t	angleAccelerometer;
 
+	// for (unsigned int i = 0; i < 2; i++)
 	for (unsigned int i = 0; i < 2; i++)
 		angleAccelerometer.push_back(std::atan2((*dataAccelerometer)[i], (*dataAccelerometer)[2]));
 	return (angleAccelerometer);

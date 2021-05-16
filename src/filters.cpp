@@ -1,8 +1,8 @@
 /* *************************************************************************************************** */
-/* 	|Author: Vladislavert         |ssssssssssssssso++——+++osssssssssssssssssssssssssssssssssssssssss|  */
-/* 	|e-mail: chuvarevan@mail.ru   |yyyysoooooo..   /   |    ./yyyyyyyyyyosshhhhhyyyyyyyyyyyyyyyyyyyy|  */
-/* 	|_____________________________|yyyyyyysssso////  /syyyyyyyyyyyyyyy0    /yhhhhhyyyyyyyyyyyyyyyyyy|  */
-/*	|ssysyyyyysssyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyso+   /ssyyyyyyyyyyyyso    0yhhhhhhhhyhyyyyyyyyyyyyyy|  */
+/* 	|Author: Vladislavert              |sssssssssso++——+++osssssssssssssssssssssssssssssssssssssssss|  */
+/* 	|e-mail: chuvarevan@mail.ru        |oooooo..   /   |    ./yyyyyyyyyyosshhhhhyyyyyyyyyyyyyyyyyyyy|  */
+/* 	|filters.cpp                       |yysssso////  /syyyyyyyyyyyyyyy0    /yhhhhhyyyyyyyyyyyyyyyyyy|  */
+/*	|__________________________________|yyyyyyyso+   /ssyyyyyyyyyyyyso    0yhhhhhhhhyhyyyyyyyyyyyyyy|  */
 /*	|syyyyyys+.     ++osy      ...sssoosssssssoo+ +o/osssyyyyso+//s/ /oyyyhyhhhhhhhyyyyyyyyyyyyyyyyy|  */
 /*	|syyyyyysooo+/::/+/  ++++oooo+++ooooosssssshhyyyyyooo+//+oo++/ /:os+++++++++++++yyhhhyyyyyyyyyyy|  */
 /*	|ssssyyyyyys+/    ///////yyyyyys:--::/syo+//:/::::::/ooo+///  /oys\.          /ossyyyyyyyyyy'sss|  */
@@ -57,12 +57,12 @@ void			lowPassFilter(vectDouble_t *input, const vectDouble_t *time, const double
  * @param T постоянная времени
  * @return отфильтрованные даннные
  */
-vectDouble_t	highPassFilter(const vectDouble_t *input, const vectDouble_t *time, const double T)
-{
-	vectDouble_t output((*input).size());
+// vectDouble_t	highPassFilter(const vectDouble_t *input, const vectDouble_t *time, const double T)
+// {
+// 	vectDouble_t output((*input).size());
 
-	return (output);
-}
+// 	return (output);
+// }
 
 /**
  * @brief комплементарный фильтр
@@ -82,7 +82,7 @@ vectDouble_t	complementaryFilter(const vectDouble_t *angleAccelerometer, const v
 	orientation.push_back(wAccelerometer * (*angleAccelerometer)[0] + wGyroscope * (*angleGyroscope)[0]);
 	orientation.push_back(wAccelerometer * (*angleAccelerometer)[1] + wGyroscope * (*angleGyroscope)[1]);
 	// проверить данные с магнетометра
-	// orientation[2] = wMagnetometr * angleMagnetometer[0] + wGyroscope * angleGyroscope[2];
+	// orientation[2] = wMagnetometr * (*angleMagnetometer)[0] + wGyroscope * (*angleGyroscope)[2];
 	orientation.push_back((*angleGyroscope)[2]);
 
 	return (orientation);

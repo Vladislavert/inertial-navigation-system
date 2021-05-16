@@ -65,30 +65,39 @@ g = 9.81439;
 % крен, рысканье, тангаж
 % angl = [deg2rad(1.9878); deg2rad(320.0798); deg2rad(0.6876)];
 
+% angl = [deg2rad(-2.4863); deg2rad(-0.9722); deg2rad(322.3634)];
+% angl = [-0.023647000000000001; -0.014255; -0.003852];
+angl = [0; -0.003852; 0];
+
+
 % крен, тангаж, рысканье
-angl = [deg2rad(1.9878); deg2rad(0.6876); deg2rad(320.0798)];
+% angl = [deg2rad(1.9878); deg2rad(0.6876); deg2rad(320.0798)];
 
-
+R = [cos(angl(2))*cos(angl(3)), sin(angl(1))*sin(angl(2))*cos(angl(3))-cos(angl(1))*sin(angl(3)), cos(angl(1))*sin(angl(2))*cos(angl(3))+sin(angl(1))*sin(angl(3));...
+     cos(angl(2))*sin(angl(3)), sin(angl(1))*sin(angl(2))*sin(angl(3))+cos(angl(1))*cos(angl(3)), cos(angl(1))*sin(angl(2))*sin(angl(3))-sin(angl(1))*cos(angl(3));...
+     -sin(angl(2))                                       , sin(angl(1))*cos(angl(2))            , cos(angl(1))*cos(angl(2))];
+% 
 % R = [cos(angl(3))*cos(angl(2)), sin(angl(1))*sin(angl(3))*cos(angl(2))-cos(angl(1))*sin(angl(2)), cos(angl(1))*sin(angl(3))*cos(angl(2))+sin(angl(1))*sin(angl(2));...
 %      cos(angl(3))*sin(angl(2)), sin(angl(1))*sin(angl(3))*sin(angl(2))+cos(angl(1))*cos(angl(2)), cos(angl(1))*sin(angl(3))*sin(angl(2))-sin(angl(1))*cos(angl(2));...
 %      -sin(angl(3))                                       , sin(angl(1))*cos(angl(3))            , cos(angl(1))*cos(angl(3))];
 
 % крен, тангаж, рысканье
 % Маррица составленная на основе углов Тейта-Брайана
-R = [cos(angl(3))*cos(angl(2)),                                        -cos(angl(2))*sin(angl(3)),                                       sin(angl(2));...
-     sin(angl(1))*sin(angl(2))*cos(angl(3))-cos(angl(1))*sin(angl(3)), -sin(angl(1))*sin(angl(2))*sin(angl(3))+cos(angl(1))*cos(angl(3)), sin(angl(1))*cos(angl(2));...
-     -cos(angl(1))*sin(angl(2))*cos(angl(3))+sin(angl(1))*sin(angl(3)) , cos(angl(1))*sin(angl(2))*sin(angl(3))+sin(angl(1))*cos(angl(3)), cos(angl(1))*cos(angl(2))];
+% R = [cos(angl(3))*cos(angl(2)),                                        -cos(angl(2))*sin(angl(3)),                                       sin(angl(2));...
+%      sin(angl(1))*sin(angl(2))*cos(angl(3))-cos(angl(1))*sin(angl(3)), -sin(angl(1))*sin(angl(2))*sin(angl(3))+cos(angl(1))*cos(angl(3)), sin(angl(1))*cos(angl(2));...
+%      -cos(angl(1))*sin(angl(2))*cos(angl(3))+sin(angl(1))*sin(angl(3)) , cos(angl(1))*sin(angl(2))*sin(angl(3))+sin(angl(1))*cos(angl(3)), cos(angl(1))*cos(angl(2))];
 
 % Матрица поворотов из методического пособия по дисциплине: 
 % «Аппаратные средства бортовых интегрированных систем летательных аппаратов»
 %                (под редакцией М.Н. Красильщикова)
-
+% 
 %  R = [cos(angl(2))*cos(angl(3)), -cos(angl(1))*cos(angl(3))*sin(2) + sin(1)*sin(3),                  sin(angl(1))*cos(angl(3))*sin(angl(2))+cos(angl(1))*sin(angl(3));...
 %       sin(angl(2))             ,               cos(angl(1))*cos(angl(2)),                           -sin(angl(1))*cos(angl(2))                                       ;...
-%       -cos(angl(2))*sin(angl(3)), cos(angl(1))*sin(angl(3))*sin(angl(2))+sin(angl(1))*cos(angl(3)), -sin(angl(1))*sin(angl(3))*sin(angl(2))+cos(angl(1))*cos(angl(3))];
+%       -cos(angl(2))*sin(angl(3)), cos(angl(1))*sin(angl(3))*sin(angl(2+sin(angl(1))*cos(angl(3)), -sin(angl(1))*sin(angl(3))*sin(angl(2))+cos(angl(1))*cos(angl(3))];
 
 Vector = [0; 0; g];
-Rotation = (R)*Vector
+% Vector = [0.105348; 0.43575799999999998; 9.7087839999999996];
+Rotation = ((R))*Vector %- VectorAccel
 
 plot3([0,Vector(1)],[0,Vector(2)],[0,Vector(3)])
 hold on

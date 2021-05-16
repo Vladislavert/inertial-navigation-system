@@ -1,8 +1,8 @@
 /* *************************************************************************************************** */
-/* 	|Author: Vladislavert         |ssssssssssssssso++——+++osssssssssssssssssssssssssssssssssssssssss|  */
-/* 	|e-mail: chuvarevan@mail.ru   |yyyysoooooo..   /   |    ./yyyyyyyyyyosshhhhhyyyyyyyyyyyyyyyyyyyy|  */
-/* 	|_____________________________|yyyyyyysssso////  /syyyyyyyyyyyyyyy0    /yhhhhhyyyyyyyyyyyyyyyyyy|  */
-/*	|ssysyyyyysssyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyso+   /ssyyyyyyyyyyyyso    0yhhhhhhhhyhyyyyyyyyyyyyyy|  */
+/* 	|Author: Vladislavert              |sssssssssso++——+++osssssssssssssssssssssssssssssssssssssssss|  */
+/* 	|e-mail: chuvarevan@mail.ru        |oooooo..   /   |    ./yyyyyyyyyyosshhhhhyyyyyyyyyyyyyyyyyyyy|  */
+/* 	|coordinateTransform.cpp           |yysssso////  /syyyyyyyyyyyyyyy0    /yhhhhhyyyyyyyyyyyyyyyyyy|  */
+/*	|__________________________________|yyyyyyyso+   /ssyyyyyyyyyyyyso    0yhhhhhhhhyhyyyyyyyyyyyyyy|  */
 /*	|syyyyyys+.     ++osy      ...sssoosssssssoo+ +o/osssyyyyso+//s/ /oyyyhyhhhhhhhyyyyyyyyyyyyyyyyy|  */
 /*	|syyyyyysooo+/::/+/  ++++oooo+++ooooosssssshhyyyyyooo+//+oo++/ /:os+++++++++++++yyhhhyyyyyyyyyyy|  */
 /*	|ssssyyyyyys+/    ///////yyyyyys:--::/syo+//:/::::::/ooo+///  /oys\.          /ossyyyyyyyyyy'sss|  */
@@ -35,13 +35,17 @@
 vectDouble_t	convertGeoElipseToGeoNormal(const vectDouble_t *coordinateGeoElipse)
 {
 	vectDouble_t	coordinateGeoNormal((*coordinateGeoElipse).size());
-	double			N;
-	
-	N = a / sqrt((1 - squaring(e) * squaring(sin((*coordinateGeoElipse)[0]))));
-	coordinateGeoNormal[0] = (N + (*coordinateGeoElipse)[2]) * cos((*coordinateGeoElipse)[0]) * cos((*coordinateGeoElipse)[1]);
-	coordinateGeoNormal[1] = (N + (*coordinateGeoElipse)[2]) * cos((*coordinateGeoElipse)[0]) * sin((*coordinateGeoElipse)[1]);
-	coordinateGeoNormal[2] = (N + (*coordinateGeoElipse)[2] - N * squaring(e)) * sin((*coordinateGeoElipse)[1]);
+	double			N; // радиус кривизны первого вертикала
+	double			radLatitude; // широта
+	double			radLongtitude; // долгота
 
+	radLatitude = degToRad((*coordinateGeoElipse)[0]);
+	radLongtitude = degToRad((*coordinateGeoElipse)[1]);
+	N = a / sqrt((1 - squaring(e) * squaring(sin((*coordinateGeoElipse)[0]))));
+	coordinateGeoNormal[0] = (N + (*coordinateGeoElipse)[2]) * cos(radLatitude) * cos(radLongtitude);
+	coordinateGeoNormal[1] = (N + (*coordinateGeoElipse)[2]) * cos(radLatitude) * sin(radLongtitude);
+	coordinateGeoNormal[2] = ((squaring(b)/squaring(a)) * N + (*coordinateGeoElipse)[2]) * sin(radLongtitude);
+	// coordinateGeoNormal[2] = ((squaring(b)/squaring(a)) * N + (*coordinateGeoElipse)[2] - N * squaring(e)) * sin(radLongtitude);
 	return (coordinateGeoNormal);
 }
 
