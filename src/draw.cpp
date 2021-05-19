@@ -133,7 +133,7 @@ void	drawLine(const Vec *time, const double *data, std::string nameGraph, bool s
  * @param palette палитра
  * @param lineWidth толщина линии
  */
-void	drawLine(const Vec *time, const double *data, Plot *plot, std::string nameGraph, bool show, std::string palette, int lineWidth)
+void	drawLine(const vectDouble_t *time, const double *data, Plot *plot, std::string nameGraph, bool show, std::string palette, int lineWidth)
 {
 	(*plot).legend()
         .atOutsideBottom()

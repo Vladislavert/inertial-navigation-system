@@ -26,7 +26,7 @@
 
 #include "applicationStart.hpp"
 
-// #define DEBUG
+#define DEBUG
 
 #ifdef DEBUG
 	#include "iostream"
@@ -56,8 +56,8 @@ void	applicationStart()
 
 	// nameFile = DIR_RESOURCES + "orientation360_2_chear (useful data).csv";
 	// nameFile = DIR_RESOURCES + "Move(orientation_30, 6 meters).csv";
-	// nameFile = DIR_RESOURCES + "move(stability).csv";
-	nameFile = DIR_RESOURCES + "notRotationNoise_230.csv";
+	// nameFile = DIR_RESOURCES + "move_long_meters.csv";
+	nameFile = DIR_RESOURCES + "initCondition2.csv";
 	nameFileInitExhibition = DIR_RESOURCES + "initCondition2.csv";
 	file.open(nameFile);
 	fileInit.open(nameFileInitExhibition);
@@ -136,14 +136,33 @@ void	applicationStart()
 			for (unsigned int j = 0; j < dataIMUInit.size(); j++)
 				dataIMUTransposeInit[i].push_back(dataIMUInit[j][i]);
 
-		drawGraph(&dataTime, &dataIMUTranspose[0], &plotPositionX, "xAccelerationNotFilters", 0);
-		drawGraph(&dataTime, &dataIMUTranspose[1], &plotPositionY, "yAccelerationNotFilters", 0);
-		drawGraph(&dataTime, &dataIMUTranspose[2], &plotPositionZ, "zAccelerationNotFilters", 0);
+		drawGraph(&dataTime, &dataIMUTranspose[0], &plotPositionX, "x acceleration not filters", 0);
+		drawGraph(&dataTime, &dataIMUTranspose[1], &plotPositionY, "y acceleration not filters", 0);
+		drawGraph(&dataTime, &dataIMUTranspose[2], &plotPositionZ, "z acceleration not filters", 0);
+		double valueMean = -0.0384793;
+		double valueDispersion =  0.0307339;
+		drawLine(&dataTime, &(valueMean), &plotPositionX, "mean accelerometer x", 0);
+		drawLine(&dataTime, &(valueDispersion += valueMean), &plotPositionX, "3 sigma accelerometer x", 0);
+		drawLine(&dataTime, &(((valueDispersion -= valueMean) *= -1) += valueMean), &plotPositionX, "-3 sigma accelerometer x", 0);
+		valueMean = -0.0123196;
+		valueDispersion =  0.0317942;
+		drawLine(&dataTime, &(valueMean), &plotPositionY, "mean accelerometer y", 0);
+		drawLine(&dataTime, &(valueDispersion += valueMean), &plotPositionY, "3 sigma accelerometer y", 0);
+		drawLine(&dataTime, &(((valueDispersion -= valueMean) *= -1) += valueMean), &plotPositionY, "-3 sigma accelerometer y", 0);
+		valueMean =  9.87194;
+		valueDispersion =  0.0412238;
+		drawLine(&dataTime, &(valueMean), &plotPositionZ, "mean accelerometer z", 0);
+		drawLine(&dataTime, &(valueDispersion += valueMean), &plotPositionZ, "3 sigma accelerometer z", 0);
+		drawLine(&dataTime, &(((valueDispersion -= valueMean) *= -1) += valueMean), &plotPositionZ, "-3 sigma accelerometer z", 0);
+		plotPositionX.grid().show();
+		plotPositionY.grid().show();
+		plotPositionZ.grid().show();
 		plotPositionXYZ[0].push_back(plotPositionX);
 		plotPositionXYZ[1].push_back(plotPositionY);
 		plotPositionXYZ[2].push_back(plotPositionZ);
 		Figure				figPosition = plotPositionXYZ;
-		figPosition.size(600, 600);
+		figPosition.size(1200, 800);
+		// figPosition.save("accel.png");
 		figPosition.show();
 
 		drawGraph(&dataTimeInit, &dataIMUTransposeInit[0], &plotPositionXInit, "xAccelerationNotFiltersInit", 0);
@@ -160,22 +179,52 @@ void	applicationStart()
 	getCorrectData(dataIMU, dataIMUInit, g);
 	#ifdef DEBUG
 		vectDouble2d_t 		dataIMUTranspose1(dataIMU[0].size()); // данные с БИНС(акселерометр(X, Y, Z), гироскоп(X, Y, Z), магнетометр(X, Y))
+		for	(unsigned int i = 0; i < dataIMU[0].size(); i++)
+			for (unsigned int j = 0; j < dataIMU.size(); j++)
+				dataIMUTranspose1[i].push_back(dataIMU[j][i]);
+		// lowPassFilter(&dataIMUTranspose1[0], &dataTime, 0.02);
+		// lowPassFilter(&dataIMUTranspose1[1], &dataTime, 0.02);
+		// lowPassFilter(&dataIMUTranspose1[2], &dataTime, 0.02);
+	#endif
+	
+
+	
+	#ifdef DEBUG
+		
 		Plot				plotPositionX1;
 		Plot				plotPositionY1;
 		Plot				plotPositionZ1;
 		vectPlot2d_t		plotPositionXYZ1(3);
 
-		for	(unsigned int i = 0; i < dataIMU[0].size(); i++)
-			for (unsigned int j = 0; j < dataIMU.size(); j++)
-			dataIMUTranspose1[i].push_back(dataIMU[j][i]);
-		drawGraph(&dataTime, &dataIMUTranspose1[0], &plotPositionX1, "xAccelerationFilters", 0);
-		drawGraph(&dataTime, &dataIMUTranspose1[1], &plotPositionY1, "yAccelerationFilters", 0);
-		drawGraph(&dataTime, &dataIMUTranspose1[2], &plotPositionZ1, "zAccelerationFilters", 0);
+
+		drawGraph(&dataTime, &dataIMUTranspose1[0], &plotPositionX1, "x acceleration not filters", 0);
+		drawGraph(&dataTime, &dataIMUTranspose1[1], &plotPositionY1, "yAcceleration not filters", 0);
+		drawGraph(&dataTime, &dataIMUTranspose1[2], &plotPositionZ1, "zAcceleration not filters", 0);
+		double valueMean1 = 0;
+		double valueDispersion1 = 0.0307339;
+		drawLine(&dataTime, &(valueMean1), &plotPositionX1, "mean accelerometer x", 0);
+		drawLine(&dataTime, &(valueDispersion1 += valueMean1), &plotPositionX1, "3 sigma accelerometer x", 0);
+		drawLine(&dataTime, &(((valueDispersion1 -= valueMean1) *= -1) += valueMean1), &plotPositionX1, "-3 sigma accelerometer x", 0);
+		valueMean1 = 0;
+		valueDispersion1 = 0.0317942;
+		drawLine(&dataTime, &(valueMean1), &plotPositionY1, "mean accelerometer x", 0);
+		drawLine(&dataTime, &(valueDispersion1 += valueMean1), &plotPositionY1, "3 sigma accelerometer x", 0);
+		drawLine(&dataTime, &(((valueDispersion1 -= valueMean1) *= -1) += valueMean1), &plotPositionY1, "-3 sigma accelerometer x", 0);
+		valueMean1 = g;
+		valueDispersion1 = 0.0412238;
+		drawLine(&dataTime, &(valueMean1), &plotPositionZ1, "mean accelerometer x", 0);
+		drawLine(&dataTime, &(valueDispersion1 += valueMean1), &plotPositionZ1, "3 sigma accelerometer x", 0);
+		drawLine(&dataTime, &(((valueDispersion1 -= valueMean1) *= -1) += valueMean1), &plotPositionZ1, "-3 sigma accelerometer x", 0);
+		plotPositionX1.grid().show();
+		plotPositionY1.grid().show();
+		plotPositionZ1.grid().show();
 		plotPositionXYZ1[0].push_back(plotPositionX1);
 		plotPositionXYZ1[1].push_back(plotPositionY1);
 		plotPositionXYZ1[2].push_back(plotPositionZ1);
 		Figure				figPosition1 = plotPositionXYZ1;
 		figPosition1.size(600, 600);
+		figPosition1.size(1200, 800);
+		figPosition1.save("accelFilters.png");
 		figPosition1.show();
 	#endif
 	positionWGS = estimatePositionWGS(&dataIMU, &dataGNSS, &dataTime);
@@ -203,18 +252,18 @@ void	applicationStart()
 		zPositionWGS.push_back(positionWGS[i][2]);
 		// std::cout << std::endl;
 	}	
-	vectPlot2d_t		plotPositionXYZ(3);
-	Plot				plotPositionX;
-	Plot				plotPositionY;
-	Plot				plotPositionZ;
-	drawGraph(&dataTime, &xPositionWGS, &plotPositionX, "xPosition", 0);
-	drawGraph(&dataTime, &yPositionWGS, &plotPositionY, "yPosition", 0);
-	drawGraph(&dataTime, &zPositionWGS, &plotPositionZ, "zPosition", 0);
-	plotPositionXYZ[0].push_back(plotPositionX);
-	plotPositionXYZ[1].push_back(plotPositionY);
-	plotPositionXYZ[2].push_back(plotPositionZ);
-	Figure				figPosition = plotPositionXYZ;
-	figPosition.size(600, 600);
-	figPosition.show();
+	// vectPlot2d_t		plotPositionXYZ(3);
+	// Plot				plotPositionX;
+	// Plot				plotPositionY;
+	// Plot				plotPositionZ;
+	// drawGraph(&dataTime, &xPositionWGS, &plotPositionX, "xPosition", 0);
+	// drawGraph(&dataTime, &yPositionWGS, &plotPositionY, "yPosition", 0);
+	// drawGraph(&dataTime, &zPositionWGS, &plotPositionZ, "zPosition", 0);
+	// plotPositionXYZ[0].push_back(plotPositionX);
+	// plotPositionXYZ[1].push_back(plotPositionY);
+	// plotPositionXYZ[2].push_back(plotPositionZ);
+	// Figure				figPosition = plotPositionXYZ;
+	// figPosition.size(600, 600);
+	// figPosition.show();
 
 }

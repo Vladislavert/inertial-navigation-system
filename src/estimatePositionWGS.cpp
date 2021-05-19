@@ -104,7 +104,7 @@ vectDouble2d_t	estimatePositionWGS(vectDouble2d_t *dataIMU, const vectDouble2d_t
 		plotOrientationZ.save("magnetometer.png");
 		Figure				figOrientation = plotOrientationXYZ;
 
-		figOrientation.size(600, 600);
+		figOrientation.size(1200, 800);
 		figOrientation.show();
 	#endif
 	// for	(unsigned int i = 0; i < (*dataIMU).size(); i++)
@@ -135,19 +135,25 @@ vectDouble2d_t	estimatePositionWGS(vectDouble2d_t *dataIMU, const vectDouble2d_t
 		vectPlot2d_t		plotPositionXYZ(3);
 		vectPlot2d_t		plotVeloucityXYZ(3);
 
-		drawGraph(dataTime, &positionVec.x, &plotPositionX, "xPosition", 0);
-		drawGraph(dataTime, &positionVec.y, &plotPositionY, "yPosition", 0);
-		drawGraph(dataTime, &positionVec.z, &plotPositionZ, "zPosition", 0);
+		drawGraph(dataTime, &positionVec.x, &plotPositionX, "x position 3 * sigma", 0);
+		drawGraph(dataTime, &positionVec.y, &plotPositionY, "y position 3 * sigma", 0);
+		drawGraph(dataTime, &positionVec.z, &plotPositionZ, "z position 3 * sigma", 0);
+		plotPositionX.grid().show();
+		plotPositionY.grid().show();
+		plotPositionZ.grid().show();
 		plotPositionXYZ[0].push_back(plotPositionX);
 		plotPositionXYZ[1].push_back(plotPositionY);
 		plotPositionXYZ[2].push_back(plotPositionZ);
 		Figure				figPosition = plotPositionXYZ;
-		figPosition.size(600, 600);
+		figPosition.size(1200, 800);
+		figPosition.save("pos.png");
 		figPosition.show();
 
 		drawGraph(dataTime, &accelerationVec.x, &plotVeloucityX, "xAcceleration", 0);
 		drawGraph(dataTime, &accelerationVec.y, &plotVeloucityY, "yAcceleration", 0);
 		drawGraph(dataTime, &accelerationVec.z, &plotVeloucityZ, "zAcceleration", 0);
+		double value = -0.0384793;
+		drawLine(dataTime, &(value), &plotVeloucityX, "mean accelerometer x", 0);
 		plotVeloucityXYZ[0].push_back(plotVeloucityX);
 		plotVeloucityXYZ[1].push_back(plotVeloucityY);
 		plotVeloucityXYZ[2].push_back(plotVeloucityZ);
