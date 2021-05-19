@@ -56,7 +56,8 @@ void	applicationStart()
 
 	// nameFile = DIR_RESOURCES + "orientation360_2_chear (useful data).csv";
 	// nameFile = DIR_RESOURCES + "Move(orientation_30, 6 meters).csv";
-	nameFile = DIR_RESOURCES + "move(stability).csv";
+	// nameFile = DIR_RESOURCES + "move(stability).csv";
+	nameFile = DIR_RESOURCES + "notRotationNoise_230.csv";
 	nameFileInitExhibition = DIR_RESOURCES + "initCondition2.csv";
 	file.open(nameFile);
 	fileInit.open(nameFileInitExhibition);

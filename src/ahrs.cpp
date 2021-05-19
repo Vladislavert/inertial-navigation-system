@@ -48,22 +48,29 @@ vectDouble2d_t	getOrientation(const vectDouble_t initOrientation, const vectDoub
 	for (unsigned int j = 0; j < 3; j++)
 	{
 		dataAccelerometer.push_back((*dataIMU)[0][j]);
-		dataGyroscopePast.push_back((*dataIMU)[0][j + 3]);
+		
 		if (j < 2)
+		{
+			dataGyroscopePast.push_back((*dataIMU)[0][j + 3]);
 			dataMagnetometer.push_back((*dataIMU)[0][j + 6]);
+		}
 	}
+	dataGyroscopePast.push_back(4.01426);
 	resOrientation.push_back(dataGyroscopePast);
+	// дописать интегирование значения ориентации
+	// доавбить +230 градусов для проведения эксперимента с магнитометром
 	angleAccelerometer = getAngleAccelerometer(&dataAccelerometer);
-	for	(unsigned int i = 1; i < (*dataIMU).size(); i++)
+	for	(unsigned int i = 1; i < (*dataIMU).size() - 1; i++)
 	{
 		dataAccelerometer.clear();
 		dataMagnetometer.clear();
 		for (unsigned int j = 0; j < 3; j++)
 		{
-			dataAccelerometer.push_back((*dataIMU)[i][j]);
-			dataGyroscopeCurrent.push_back((*dataIMU)[i][j + 3]);
+			dataAccelerometer.push_back((*dataIMU)[i][j + indxAcc]);
+			dataGyroscopePast.push_back((*dataIMU)[i][j + indxGyro]);
+			dataGyroscopeCurrent.push_back((*dataIMU)[i][j + indxGyro]);
 			if (j < 2)
-				dataMagnetometer.push_back((*dataIMU)[i][j + 6]);
+				dataMagnetometer.push_back((*dataIMU)[i][j + indxMagnet]);
 		}
 		angleAccelerometer = getAngleAccelerometer(&dataAccelerometer);
 		angleMagnetometer = getAngleMagnetometer(&dataMagnetometer);
@@ -71,7 +78,7 @@ vectDouble2d_t	getOrientation(const vectDouble_t initOrientation, const vectDoub
 		resOrientation.push_back(complementaryFilter(&angleAccelerometer , &angleGyroscope, &angleMagnetometer));
 		dataGyroscopeCurrent.clear();
 		angleAccelerometer.clear();
-		angleMagnetometer.clear();
+		angleMagnetometer.clear(); 
 		angleGyroscope.clear();
 
 	}

@@ -81,9 +81,15 @@ vectDouble_t	complementaryFilter(const vectDouble_t *angleAccelerometer, const v
 
 	orientation.push_back(wAccelerometer * (*angleAccelerometer)[0] + wGyroscope * (*angleGyroscope)[0]);
 	orientation.push_back(wAccelerometer * (*angleAccelerometer)[1] + wGyroscope * (*angleGyroscope)[1]);
-	// проверить данные с магнетометра
-	// orientation[2] = wMagnetometr * (*angleMagnetometer)[0] + wGyroscope * (*angleGyroscope)[2];
-	orientation.push_back((*angleGyroscope)[2]);
+	orientation.push_back(wMagnetometr * (*angleMagnetometer)[0] + wGyroscope * (*angleGyroscope)[2]);
+	
+	// orientation.push_back(wGyroscope * (*angleGyroscope)[0]);
+	// orientation.push_back(wGyroscope * (*angleGyroscope)[1]);
+	// orientation.push_back((*angleGyroscope)[2]);// проверить данные с магнетометра
+	
+	// orientation.push_back((*angleAccelerometer)[0]);
+	// orientation.push_back((*angleAccelerometer)[1]);
+	// orientation.push_back((*angleMagnetometer)[0]);// проверить данные с магнетометра
 
 	return (orientation);
 }

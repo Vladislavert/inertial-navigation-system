@@ -59,9 +59,9 @@ vectDouble2d_t	estimatePositionWGS(vectDouble2d_t *dataIMU, const vectDouble2d_t
 	double					g;
 
 
-	// for	(unsigned int i = 0; i < (*dataIMU)[0].size(); i++)
-	// 	for (unsigned int j = 0; j < (*dataIMU).size(); j++)
-	// 		dataIMUTranspose[i].push_back((*dataIMU)[j][i]);
+	for	(unsigned int i = 0; i < (*dataIMU)[0].size(); i++)
+		for (unsigned int j = 0; j < (*dataIMU).size(); j++)
+			dataIMUTranspose[i].push_back((*dataIMU)[j][i]);
 	g = gravitationalAccelerationCalc(55.813984, 230);
 	gravityAcceleration << 0, 0, g;
 	temp.push_back(0);
@@ -95,16 +95,20 @@ vectDouble2d_t	estimatePositionWGS(vectDouble2d_t *dataIMU, const vectDouble2d_t
 		}
 		drawGraph(dataTime, &xOrientation, &plotOrientationX, "xOrientation", 0);
 		drawGraph(dataTime, &yOrientation, &plotOrientationY, "yOrientation", 0);
-		drawGraph(dataTime, &zOrientation, &plotOrientationZ, "zOrientation", 0);
+		drawGraph(dataTime, &zOrientation, &plotOrientationZ, "zOrientation", 1);
 		plotOrientationXYZ[0].push_back(plotOrientationX);
 		plotOrientationXYZ[1].push_back(plotOrientationY);
 		plotOrientationXYZ[2].push_back(plotOrientationZ);
+		plotOrientationZ.grid().show();
+		plotOrientationZ.size(1200, 600);
+		plotOrientationZ.save("magnetometer.png");
 		Figure				figOrientation = plotOrientationXYZ;
 
 		figOrientation.size(600, 600);
 		figOrientation.show();
 	#endif
-	for	(unsigned int i = 0; i < (*dataIMU).size(); i++)
+	// for	(unsigned int i = 0; i < (*dataIMU).size(); i++)
+	for	(unsigned int i = 0; i < orientation.size(); i++)
 	{
 		apparentAcceleration << (*dataIMU)[i][0], (*dataIMU)[i][1], (*dataIMU)[i][2];
 		// orientation = getOrientation(orientation[i], dataIMU, dataTime);

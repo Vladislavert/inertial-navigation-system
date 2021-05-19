@@ -26,7 +26,7 @@
 
 #include "initialExhibition.hpp"
 
-#define DEBUG
+// #define DEBUG
 
 #ifdef DEBUG
 	#include "draw.hpp"
