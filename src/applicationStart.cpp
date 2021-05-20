@@ -131,6 +131,9 @@ void	applicationStart()
 	drawGraph(&dataTime, &xPositionWGS, &plotPositionX, "xPosition", 0);
 	drawGraph(&dataTime, &yPositionWGS, &plotPositionY, "yPosition", 0);
 	drawGraph(&dataTime, &zPositionWGS, &plotPositionZ, "zPosition", 0);
+	plotPositionX.grid().show();
+	plotPositionY.grid().show();
+	plotPositionZ.grid().show();
 	plotPositionXYZ[0].push_back(plotPositionX);
 	plotPositionXYZ[1].push_back(plotPositionY);
 	plotPositionXYZ[2].push_back(plotPositionZ);
