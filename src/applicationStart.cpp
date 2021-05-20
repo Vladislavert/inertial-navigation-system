@@ -39,9 +39,10 @@ void	applicationStart()
 	const std::string	DIR_RESOURCES = "./resource/";
 	std::ifstream		file;
 	std::ifstream		fileInit;
-	std::string			nameFile;
-	std::string			nameFileInitExhibition;
-	vectString_t		str;
+	std::string			nameFile; // название файла с основными данными
+	std::string			nameFileInitExhibition; // название файла, где проводится определения ошибок датчиков(переименовать??)
+	std::string			nameFileInitGNSS; // название файла с ГНСС, для накопления начальной позиции
+	vectString_t		strTemp;
 	vectDouble2d_t		dataSensors; // данные с датчиков
 	vectDouble2d_t		dataSensorsInit; // данные с датчиков во время начальной инициалзиации
 	vectDouble2d_t		positionWGS; // оценка позиции в WGS84(X, Y, Z)
@@ -57,20 +58,21 @@ void	applicationStart()
 	// nameFile = DIR_RESOURCES + "orientation360_2_chear (useful data).csv";
 	// nameFile = DIR_RESOURCES + "Move(orientation_30, 6 meters).csv";
 	// nameFile = DIR_RESOURCES + "move_long_meters.csv";
+	// добавить файл, который будет накапливать данные с ГНСС
 	nameFile = DIR_RESOURCES + "initCondition2.csv";
 	nameFileInitExhibition = DIR_RESOURCES + "initCondition2.csv";
 	file.open(nameFile);
 	fileInit.open(nameFileInitExhibition);
 	if (checkOpenFile(file) && checkOpenFile(fileInit))
 	{
-		readStrFile(file, str);
-		inputData(str, dataSensors, 1);
-		str.clear();
+		readStrFile(file, strTemp);
+		inputData(strTemp, dataSensors, 1);
+		strTemp.clear();
 		file.close();
-		readStrFile(fileInit, str);
-		inputData(str, dataSensorsInit, 1);
+		readStrFile(fileInit, strTemp);
+		inputData(strTemp, dataSensorsInit, 1);
 		fileInit.close();
-		str.clear();
+		strTemp.clear();
 	}
 	else
 	{
@@ -182,12 +184,10 @@ void	applicationStart()
 		for	(unsigned int i = 0; i < dataIMU[0].size(); i++)
 			for (unsigned int j = 0; j < dataIMU.size(); j++)
 				dataIMUTranspose1[i].push_back(dataIMU[j][i]);
-		// lowPassFilter(&dataIMUTranspose1[0], &dataTime, 0.02);
-		// lowPassFilter(&dataIMUTranspose1[1], &dataTime, 0.02);
-		// lowPassFilter(&dataIMUTranspose1[2], &dataTime, 0.02);
+		lowPassFilter(&dataIMUTranspose1[0], &dataTime, 0.02);
+		lowPassFilter(&dataIMUTranspose1[1], &dataTime, 0.02);
+		lowPassFilter(&dataIMUTranspose1[2], &dataTime, 0.02);
 	#endif
-	
-
 	
 	#ifdef DEBUG
 		

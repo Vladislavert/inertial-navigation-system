@@ -101,9 +101,9 @@ void	getCorrectData(vectDouble2d_t &dataIMU, const vectDouble2d_t &dataInitIMU, 
 			}
 			dataIMU[i][indxGyro + j] = dataIMU[i][indxGyro + j] - meanGyro[j];
 
-			// if (dataIMU[i][indxAcc + j] < (threeCovAcc[j] + valueInit) && dataIMU[i][indxAcc + j] > (-threeCovAcc[j] + valueInit))
-			// 	dataIMU[i][indxAcc + j] = valueInit;
-			// if (dataIMU[i][indxGyro + j] < (threeCovGyro[j] + valueInit) && dataIMU[i][indxGyro + j] > (-threeCovGyro[j] + valueInit))
-			// 	dataIMU[i][indxGyro + j] = valueInit;
+			if (dataIMU[i][indxAcc + j] < (threeCovAcc[j] + valueInit) && dataIMU[i][indxAcc + j] > (-threeCovAcc[j] + valueInit))
+				dataIMU[i][indxAcc + j] = valueInit;
+			if (dataIMU[i][indxGyro + j] < (threeCovGyro[j] + valueInit) && dataIMU[i][indxGyro + j] > (-threeCovGyro[j] + valueInit))
+				dataIMU[i][indxGyro + j] = valueInit;
 		}
 }
