@@ -26,7 +26,7 @@
 
 #include "applicationStart.hpp"
 
-#define DEBUG
+// #define DEBUG
 
 #ifdef DEBUG
 	#include "iostream"
@@ -100,7 +100,7 @@ void	applicationStart()
 		dataIMU.push_back(temp);
 		temp.clear();
 		for (unsigned int j = 0; j < 3; j++)
-			temp.push_back(0);
+			temp.push_back(dataSensors[i][indxGNSS + j]);
 		dataGNSS.push_back(temp);
 		dataTime.push_back(dataSensors[i][indxTime] / 1000);
 		temp.clear();
@@ -252,18 +252,18 @@ void	applicationStart()
 		zPositionWGS.push_back(positionWGS[i][2]);
 		// std::cout << std::endl;
 	}	
-	// vectPlot2d_t		plotPositionXYZ(3);
-	// Plot				plotPositionX;
-	// Plot				plotPositionY;
-	// Plot				plotPositionZ;
-	// drawGraph(&dataTime, &xPositionWGS, &plotPositionX, "xPosition", 0);
-	// drawGraph(&dataTime, &yPositionWGS, &plotPositionY, "yPosition", 0);
-	// drawGraph(&dataTime, &zPositionWGS, &plotPositionZ, "zPosition", 0);
-	// plotPositionXYZ[0].push_back(plotPositionX);
-	// plotPositionXYZ[1].push_back(plotPositionY);
-	// plotPositionXYZ[2].push_back(plotPositionZ);
-	// Figure				figPosition = plotPositionXYZ;
-	// figPosition.size(600, 600);
-	// figPosition.show();
+	vectPlot2d_t		plotPositionXYZ(3);
+	Plot				plotPositionX;
+	Plot				plotPositionY;
+	Plot				plotPositionZ;
+	drawGraph(&dataTime, &xPositionWGS, &plotPositionX, "xPosition", 0);
+	drawGraph(&dataTime, &yPositionWGS, &plotPositionY, "yPosition", 0);
+	drawGraph(&dataTime, &zPositionWGS, &plotPositionZ, "zPosition", 0);
+	plotPositionXYZ[0].push_back(plotPositionX);
+	plotPositionXYZ[1].push_back(plotPositionY);
+	plotPositionXYZ[2].push_back(plotPositionZ);
+	Figure				figPosition = plotPositionXYZ;
+	figPosition.size(600, 600);
+	figPosition.show();
 
 }

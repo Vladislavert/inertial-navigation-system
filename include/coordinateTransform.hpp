@@ -31,9 +31,13 @@
 #include "math.hpp"
 
 // параметры Земли
-const double a = 6378137; // большая полуось эллипсоида
-const double b = 6356752.314245; // малая полуось эллипсоида
 const double e =  0.081819190842613; // эксцентриситет
+const double f = 1/298.257223563; // геометрическое сжатие
+const double a = 6378137; // большая полуось эллипсоида
+// const double b = 6356752.314245; // малая полуось эллипсоида
+const double b = a * (1 - f); // малая полуось эллипсоида
+
+
 
 vectDouble_t	convertGeoElipseToGeoNormal(const vectDouble_t *coordinateGeoElipse);
 vectDouble_t	convertGeoNormalToGeoElipse(const vectDouble_t *coordinateGeoNormal);

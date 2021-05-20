@@ -27,7 +27,7 @@
 #include "estimatePositionWGS.hpp"
 
 // #define DEBUG
-
+#include "iostream"
 #ifdef DEBUG
 	#include "iostream"
 	#include "draw.hpp"
@@ -164,19 +164,33 @@ vectDouble2d_t	estimatePositionWGS(vectDouble2d_t *dataIMU, const vectDouble2d_t
 	#endif
 	// перевод из эллипсоидальной геоцентрической СК(ГСК) в прямоугольную ГСК
 	// начальная выставка, для получения координат стартовой СК в геоцентрической СК(WGS-84)
+	std::cout << "широта c ГНСС = " << (*dataGNSS)[0][0] << std::endl;
+	std::cout << "долгота c ГНСС = " << (*dataGNSS)[0][1] << std::endl;
+	std::cout << "высота c ГНСС = " << (*dataGNSS)[0][2] << std::endl;
+
 	startCoordinateGeoNormal = convertGeoElipseToGeoNormal(&(*dataGNSS)[0]); // передавать значения полученные в результате начальной выставки(средние значения)
-	
+	std::cout << "X c ГНСС = " << startCoordinateGeoNormal[0] << std::endl;
+	std::cout << "Y c ГНСС = " << startCoordinateGeoNormal[1] << std::endl;
+	std::cout << "Z c ГНСС = " << startCoordinateGeoNormal[2] << std::endl;
 	// перевод из связанной СК(ССК) в связанные нормальные оси(СНС), с помощью матрицы поворотов, для опеределения позиции в стартовой СК
 	// определение позиции путём интегрирования данных с акселерометра, а также коррекция позиции с помощью ГНСС
 	// перевод из стартовой СК в ГСК
 	for (unsigned int i = 0; i < positionVec.x.size(); i++)
 	{		
 		temp.clear();
-		temp.push_back(positionVec.x[i]);
-		temp.push_back(positionVec.y[i]);
-		temp.push_back(positionVec.z[i]);
+		temp.push_back(positionVec.x[i] + startCoordinateGeoNormal[0]);
+		temp.push_back(positionVec.y[i] + startCoordinateGeoNormal[1]);
+		temp.push_back(positionVec.z[i] + startCoordinateGeoNormal[2]);
+		// temp.push_back(positionVec.x[i] + 2849769.209);
+		// temp.push_back(positionVec.y[i] + 2186739.831);
+		// temp.push_back(positionVec.z[i] + 5252970.023);
 		resCoordinateWGS.push_back(temp);
 	}
 	
+	for	(unsigned int i = 0; i < resCoordinateWGS.size(); i++)
+		resCoordinateWGS[i] = convertGeoNormalToGeoElipse(&resCoordinateWGS[i]);
+	std::cout << "широта = " << resCoordinateWGS[0][0] << std::endl;
+	std::cout << "долгота = " << resCoordinateWGS[0][1] << std::endl;
+	std::cout << "высота = " << resCoordinateWGS[0][2] << std::endl;
 	return (resCoordinateWGS);
 }
