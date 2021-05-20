@@ -26,7 +26,7 @@
 
 #include "estimatePositionWGS.hpp"
 
-#define DEBUG
+// #define DEBUG
 
 #ifdef DEBUG
 	#include "iostream"

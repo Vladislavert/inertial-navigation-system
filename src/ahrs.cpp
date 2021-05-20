@@ -58,7 +58,6 @@ vectDouble2d_t	getOrientation(const vectDouble_t initOrientation, const vectDoub
 	dataGyroscopePast.push_back(initOrientation[2]);
 	resOrientation.push_back(dataGyroscopePast);
 	// дописать интегирование значения ориентации
-	// доавбить +230 градусов для проведения эксперимента с магнитометром
 	angleAccelerometer = getAngleAccelerometer(&dataAccelerometer);
 	for	(unsigned int i = 1; i < (*dataIMU).size() - 1; i++)
 	{
