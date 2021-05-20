@@ -36,38 +36,26 @@
  * @param palette палитра
  * @param lineWidth толщина линии
  */
-void	drawGraph(const Vec *time, const Vec *data, std::string nameGraph, bool show, std::string palette, int lineWidth)
+void	drawGraph(const Vec *time, const Vec *data, std::string nameGraph, bool show, int lineWidth)
 {
 	Plot plot;
-	// plot.xrange(0.0, (*time)[(*time).size() - 1]);
-   	// plot.yrange(-0.1, 0.1);
 	plot.legend()
         .atOutsideBottom()
         .displayHorizontal()
         .displayExpandWidthBy(2);
-	// plot.palette(palette);
-	// plot.size(600, 600);
 	plot.drawCurve(*time, *data).label(nameGraph).lineWidth(lineWidth);
-	// plot.drawCurve(time, data).lineWidth(lineWidth);
-
 	if (show == true)
     	plot.show();
 }
 
-void	drawGraph(const vectDouble_t *time, const vectDouble_t *data, std::string nameGraph, bool show, std::string palette, int lineWidth)
+void	drawGraph(const vectDouble_t *time, const vectDouble_t *data, std::string nameGraph, bool show, int lineWidth)
 {
 	Plot plot;
-	// plot.xrange(0.0, (*time)[(*time).size() - 1]);
-   	// plot.yrange(-0.1, 0.1);
 	plot.legend()
         .atOutsideBottom()
         .displayHorizontal()
         .displayExpandWidthBy(2);
-	// plot.palette(palette);
-	// plot.size(600, 600);
 	plot.drawCurve(*time, *data).label(nameGraph).lineWidth(lineWidth);
-	// plot.drawCurve(time, data).lineWidth(lineWidth);
-
 	if (show == true)
     	plot.show();
 }
@@ -117,7 +105,7 @@ void	drawLine(const Vec *time, const double *data, std::string nameGraph, bool s
 	plot.palette(palette);
 	Vec x = {(*time)[0], (*time)[(*time).size() - 1]};
     Vec y = {*data, *data};
-	plot.drawBrokenCurveWithPoints(x, y).label("broken lines");
+	plot.drawBrokenCurveWithPoints(x, y).label(nameGraph).lineWidth(lineWidth);
 	if (show == true)
     	plot.show();
 }

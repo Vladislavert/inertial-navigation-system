@@ -26,13 +26,6 @@
 
 #include "initialExhibition.hpp"
 
-#define DEBUG
-
-#ifdef DEBUG
-	#include "draw.hpp"
-	#include "iostream"
-#endif
-
 /**
  * @brief Корректирует данные с учётом математичесокго ожиание и дисперсии
  * 
@@ -77,15 +70,6 @@ void	getCorrectData(vectDouble2d_t &dataIMU, const vectDouble2d_t &dataInitIMU, 
 		threeCovAcc[i] = 3 * sqrt(dispersionAcc[i]);
 		threeCovGyro[i] = 3 * sqrt(dispersionGyro[i]);
 	}
-	#ifdef DEBUG
-		for (size_t i = 0; i < 3; i++)
-		{
-			std::cout << "математическое ожидание[" << i << "] = " << meanAcc[i] << std::endl;
-			std::cout << "дисперсия[" << i << "] = " << dispersionAcc[i] << std::endl;
-			std::cout << "КОВАРИАЦИЯ[" << i << "] = " << threeCovAcc[i] << std::endl;
-			std::cout << "----------------------------------------------------" << std::endl;
-		}
-	#endif
 	for (unsigned int i = 0; i < dataIMU.size(); i++)
 		for (unsigned int j = 0; j < quantityAxes; j++)
 		{
@@ -100,7 +84,6 @@ void	getCorrectData(vectDouble2d_t &dataIMU, const vectDouble2d_t &dataInitIMU, 
 				valueInit = 0;
 			}
 			dataIMU[i][indxGyro + j] = dataIMU[i][indxGyro + j] - meanGyro[j];
-
 			if (dataIMU[i][indxAcc + j] < (threeCovAcc[j] + valueInit) && dataIMU[i][indxAcc + j] > (-threeCovAcc[j] + valueInit))
 				dataIMU[i][indxAcc + j] = valueInit;
 			if (dataIMU[i][indxGyro + j] < (threeCovGyro[j] + valueInit) && dataIMU[i][indxGyro + j] > (-threeCovGyro[j] + valueInit))

@@ -48,14 +48,14 @@ vectDouble2d_t	getOrientation(const vectDouble_t initOrientation, const vectDoub
 	for (unsigned int j = 0; j < 3; j++)
 	{
 		dataAccelerometer.push_back((*dataIMU)[0][j]);
-		
 		if (j < 2)
 		{
 			dataGyroscopePast.push_back((*dataIMU)[0][j + 3]);
 			dataMagnetometer.push_back((*dataIMU)[0][j + 6]);
 		}
 	}
-	dataGyroscopePast.push_back(4.01426);
+	// проверить начальную инициализацию
+	dataGyroscopePast.push_back(initOrientation[2]);
 	resOrientation.push_back(dataGyroscopePast);
 	// дописать интегирование значения ориентации
 	// доавбить +230 градусов для проведения эксперимента с магнитометром

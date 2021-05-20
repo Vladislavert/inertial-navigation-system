@@ -27,7 +27,7 @@
 #include "estimatePositionWGS.hpp"
 
 // #define DEBUG
-#include "iostream"
+
 #ifdef DEBUG
 	#include "iostream"
 	#include "draw.hpp"
@@ -58,7 +58,6 @@ vectDouble2d_t	estimatePositionWGS(vectDouble2d_t *dataIMU, const vectDouble2d_t
 	Eigen::Matrix3d			matrixRotation;
 	double					g;
 
-
 	for	(unsigned int i = 0; i < (*dataIMU)[0].size(); i++)
 		for (unsigned int j = 0; j < (*dataIMU).size(); j++)
 			dataIMUTranspose[i].push_back((*dataIMU)[j][i]);
@@ -78,42 +77,10 @@ vectDouble2d_t	estimatePositionWGS(vectDouble2d_t *dataIMU, const vectDouble2d_t
 	orientation.push_back(temp);
 	matrixRotation = rotationMatrix(orientation[0]);
 	orientation = getOrientation(orientation[0], dataIMU, dataTime);
-	#ifdef DEBUG
-		vectDouble_t		xOrientation;
-		vectDouble_t		yOrientation;
-		vectDouble_t		zOrientation;
-		Plot				plotOrientationX;
-		Plot				plotOrientationY;
-		Plot				plotOrientationZ;
-		vectPlot2d_t		plotOrientationXYZ(3);
-
-		for	(unsigned int i = 0; i < orientation.size(); i++)
-		{
-			xOrientation.push_back(radToDeg(orientation[i][0]));
-			yOrientation.push_back(radToDeg(orientation[i][1]));
-			zOrientation.push_back(radToDeg(orientation[i][2]));
-		}
-		drawGraph(dataTime, &xOrientation, &plotOrientationX, "xOrientation", 0);
-		drawGraph(dataTime, &yOrientation, &plotOrientationY, "yOrientation", 0);
-		drawGraph(dataTime, &zOrientation, &plotOrientationZ, "zOrientation", 1);
-		plotOrientationXYZ[0].push_back(plotOrientationX);
-		plotOrientationXYZ[1].push_back(plotOrientationY);
-		plotOrientationXYZ[2].push_back(plotOrientationZ);
-		plotOrientationZ.grid().show();
-		plotOrientationZ.size(1200, 600);
-		plotOrientationZ.save("magnetometer.png");
-		Figure				figOrientation = plotOrientationXYZ;
-
-		figOrientation.size(1200, 800);
-		figOrientation.show();
-	#endif
-	// for	(unsigned int i = 0; i < (*dataIMU).size(); i++)
 	for	(unsigned int i = 0; i < orientation.size(); i++)
 	{
 		apparentAcceleration << (*dataIMU)[i][0], (*dataIMU)[i][1], (*dataIMU)[i][2];
-		// orientation = getOrientation(orientation[i], dataIMU, dataTime);
 		matrixRotation = rotationMatrix(orientation[i]);
-		// acceleration = apparentAcceleration - (matrixRotation * gravityAcceleration);
 		acceleration = (matrixRotation.inverse() * apparentAcceleration) - gravityAcceleration;
 		accelerationVec.x.push_back(acceleration[0]);
 		accelerationVec.y.push_back(acceleration[1]);
@@ -125,72 +92,29 @@ vectDouble2d_t	estimatePositionWGS(vectDouble2d_t *dataIMU, const vectDouble2d_t
 	positionVec.x = integralEuler(dataTime, &veloucityVec.x);
 	positionVec.y = integralEuler(dataTime, &veloucityVec.y);
 	positionVec.z = integralEuler(dataTime, &veloucityVec.z);
-	#ifdef DEBUG
-		Plot				plotPositionX;
-		Plot				plotPositionY;
-		Plot				plotPositionZ;
-		Plot				plotVeloucityX;
-		Plot				plotVeloucityY;
-		Plot				plotVeloucityZ;
-		vectPlot2d_t		plotPositionXYZ(3);
-		vectPlot2d_t		plotVeloucityXYZ(3);
-
-		drawGraph(dataTime, &positionVec.x, &plotPositionX, "x position 3 * sigma", 0);
-		drawGraph(dataTime, &positionVec.y, &plotPositionY, "y position 3 * sigma", 0);
-		drawGraph(dataTime, &positionVec.z, &plotPositionZ, "z position 3 * sigma", 0);
-		plotPositionX.grid().show();
-		plotPositionY.grid().show();
-		plotPositionZ.grid().show();
-		plotPositionXYZ[0].push_back(plotPositionX);
-		plotPositionXYZ[1].push_back(plotPositionY);
-		plotPositionXYZ[2].push_back(plotPositionZ);
-		Figure				figPosition = plotPositionXYZ;
-		figPosition.size(1200, 800);
-		figPosition.save("pos.png");
-		figPosition.show();
-
-		drawGraph(dataTime, &accelerationVec.x, &plotVeloucityX, "xAcceleration", 0);
-		drawGraph(dataTime, &accelerationVec.y, &plotVeloucityY, "yAcceleration", 0);
-		drawGraph(dataTime, &accelerationVec.z, &plotVeloucityZ, "zAcceleration", 0);
-		double value = -0.0384793;
-		drawLine(dataTime, &(value), &plotVeloucityX, "mean accelerometer x", 0);
-		plotVeloucityXYZ[0].push_back(plotVeloucityX);
-		plotVeloucityXYZ[1].push_back(plotVeloucityY);
-		plotVeloucityXYZ[2].push_back(plotVeloucityZ);
-		Figure				figVeloucity = plotVeloucityXYZ;
-		figVeloucity.size(600, 600);
-		figVeloucity.show();
-
-	#endif
 	// перевод из эллипсоидальной геоцентрической СК(ГСК) в прямоугольную ГСК
 	// начальная выставка, для получения координат стартовой СК в геоцентрической СК(WGS-84)
-	std::cout << "широта c ГНСС = " << (*dataGNSS)[0][0] << std::endl;
-	std::cout << "долгота c ГНСС = " << (*dataGNSS)[0][1] << std::endl;
-	std::cout << "высота c ГНСС = " << (*dataGNSS)[0][2] << std::endl;
-
 	startCoordinateGeoNormal = convertGeoElipseToGeoNormal(&(*dataGNSS)[0]); // передавать значения полученные в результате начальной выставки(средние значения)
-	std::cout << "X c ГНСС = " << startCoordinateGeoNormal[0] << std::endl;
-	std::cout << "Y c ГНСС = " << startCoordinateGeoNormal[1] << std::endl;
-	std::cout << "Z c ГНСС = " << startCoordinateGeoNormal[2] << std::endl;
-	// перевод из связанной СК(ССК) в связанные нормальные оси(СНС), с помощью матрицы поворотов, для опеределения позиции в стартовой СК
+	#ifdef DEBUG
+		std::cout << "X c ГНСС = " << startCoordinateGeoNormal[0] << std::endl;
+		std::cout << "Y c ГНСС = " << startCoordinateGeoNormal[1] << std::endl;
+		std::cout << "Z c ГНСС = " << startCoordinateGeoNormal[2] << std::endl;
+	#endif
 	// определение позиции путём интегрирования данных с акселерометра, а также коррекция позиции с помощью ГНСС
-	// перевод из стартовой СК в ГСК
 	for (unsigned int i = 0; i < positionVec.x.size(); i++)
 	{		
 		temp.clear();
 		temp.push_back(positionVec.x[i] + startCoordinateGeoNormal[0]);
 		temp.push_back(positionVec.y[i] + startCoordinateGeoNormal[1]);
 		temp.push_back(positionVec.z[i] + startCoordinateGeoNormal[2]);
-		// temp.push_back(positionVec.x[i] + 2849769.209);
-		// temp.push_back(positionVec.y[i] + 2186739.831);
-		// temp.push_back(positionVec.z[i] + 5252970.023);
 		resCoordinateWGS.push_back(temp);
 	}
-	
 	for	(unsigned int i = 0; i < resCoordinateWGS.size(); i++)
 		resCoordinateWGS[i] = convertGeoNormalToGeoElipse(&resCoordinateWGS[i]);
-	std::cout << "широта = " << resCoordinateWGS[0][0] << std::endl;
-	std::cout << "долгота = " << resCoordinateWGS[0][1] << std::endl;
-	std::cout << "высота = " << resCoordinateWGS[0][2] << std::endl;
+	#ifdef DEBUG
+		std::cout << "широта = " << resCoordinateWGS[0][0] << std::endl;
+		std::cout << "долгота = " << resCoordinateWGS[0][1] << std::endl;
+		std::cout << "высота = " << resCoordinateWGS[0][2] << std::endl;
+	#endif
 	return (resCoordinateWGS);
 }
