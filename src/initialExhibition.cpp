@@ -90,3 +90,26 @@ void	getCorrectData(vectDouble2d_t &dataIMU, const vectDouble2d_t &dataInitIMU, 
 				dataIMU[i][indxGyro + j] = valueInit;
 		}
 }
+
+/**
+ * @brief накопление позиции по ГНСС
+ * 
+ * @param dataInitGNSS данные с ГНСС приёмника
+ * @return среднее значение широты, долготы, высоты
+ */
+double	*accumulationPositionGNSS(vectDouble2d_t &dataInitGNSS)
+{
+	double *meanResult;
+
+	meanResult = new double[3];
+	for (unsigned int i = 0; i < dataInitGNSS.size(); i++)
+	{
+		meanResult[0] += dataInitGNSS[i][0];
+		meanResult[1] += dataInitGNSS[i][1];
+		meanResult[2] += dataInitGNSS[i][2];
+	}
+	meanResult[0] /= dataInitGNSS.size();
+	meanResult[1] /= dataInitGNSS.size();
+	meanResult[2] /= dataInitGNSS.size();
+	return (meanResult);
+}

@@ -54,6 +54,4 @@ struct vector3d
 	T y;
 	T z;
 };
-
-
 #endif

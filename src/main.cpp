@@ -31,6 +31,3 @@ int main()
 	applicationStart();
 	return (0);
 }
-
-
-

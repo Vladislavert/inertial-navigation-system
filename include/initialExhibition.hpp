@@ -32,5 +32,6 @@
 #include "calcProbabilityCharact.hpp"
 
 void	getCorrectData(vectDouble2d_t &dataIMU, const vectDouble2d_t &dataInitIMU, double g);
+double	*accumulationPositionGNSS(vectDouble2d_t &dataInitGNSS);
 
 #endif
