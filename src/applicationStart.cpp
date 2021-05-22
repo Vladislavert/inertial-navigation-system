@@ -57,8 +57,8 @@ void	applicationStart()
 	// добавить файл, который будет накапливать данные с ГНСС
 	// nameFile = DIR_RESOURCES + "initCondition2.csv";
 	// nameFile = DIR_RESOURCES + "RotationX_360.csv";
-	nameFile = DIR_RESOURCES + "GNSSup_1.csv";
-	nameFileInitGNSS = DIR_RESOURCES + "initGNSSup_1.csv";
+	nameFile = DIR_RESOURCES + "GNSSup_0.csv";
+	nameFileInitGNSS = DIR_RESOURCES + "initGNSSup_0.csv";
 	nameFileInitExhibition = DIR_RESOURCES + "initCondition2.csv";
 	file.open(nameFile);
 	fileInit.open(nameFileInitExhibition);
@@ -129,7 +129,6 @@ void	applicationStart()
 		dataTimeInit.push_back(dataSensorsInit[i][indxTime] / 1000);
 		tempInit.clear();
 	}
-	// функция для инициализации начала стартовой СК  (ДОПИСАТЬ)
 	meanGNSS = new double[3];
 	meanGNSS = accumulationPositionGNSS(dataInitGNSS);
 	g = gravitationalAccelerationCalc(meanGNSS[0], meanGNSS[2]); // данные для начальной выставки

@@ -34,7 +34,8 @@
 double			degToRad(const double &deg);
 double			radToDeg(const double &rad);
 double			squaring(const double &argument);
-vectDouble_t	integralEuler(const vectDouble_t *time, const vectDouble_t *data);
-double			integralEuler(const double dataPast, const double dataCurrent, double dt);
+vectDouble_t	integralEuler(const vectDouble_t *time, const vectDouble_t *data, const double initialData);
+double			integralEuler(const double dataPast, const double dataCurrent, double dt)
+;
 
 #endif

@@ -17,7 +17,7 @@ SRCS	= $(SRC_DIR)main.cpp $(SRC_DIR)applicationStart.cpp $(SRC_DIR)convert.cpp $
  
 OBJS	= $(patsubst $(SRC_DIR)%.cpp, $(OBJ_DIR)%.o, $(SRCS))
 
-CFLAGS	= -Wall -Wextra -Werror 
+CFLAGS	= -g #-Wall -Wextra -Werror 
 
 $(OBJ_DIR)%.o:	$(SRC_DIR)%.cpp
 	$(CC) $(CFLAGS) -c $< -I $(SCIPLOT_DIR) -I $(INC_DIR) -o $@ -std=c++17	

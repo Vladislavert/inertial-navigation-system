@@ -27,10 +27,15 @@
 #include "estimatePositionWGS.hpp"
 
 // #define DEBUG
+#define DEBUG1
 
 #ifdef DEBUG
 	#include "iostream"
 	#include "draw.hpp"
+#endif
+
+#ifdef DEBUG1
+	#include "iostream"
 #endif
 
 /**
@@ -47,6 +52,7 @@ vectDouble2d_t	estimatePositionWGS(vectDouble2d_t *dataIMU, const vectDouble2d_t
 	vectDouble2d_t			resCoordinateWGS; // результат оценки положения в ГСК
 	vectDouble2d_t 			dataIMUTranspose((*dataIMU)[0].size()); // данные с БИНС(акселерометр(X, Y, Z), гироскоп(X, Y, Z), магнетометр(X, Y))
 	vectDouble_t			startCoordinateGeoNormal; // координаты начала стартовой СК в геоцентрической нормальной СК
+	vectDouble_t			initialData;
 	vectDouble2d_t			coordGeoNormalGNSS(dataGNSS[0].size());
 	Eigen::Vector3d			acceleration; // ускорение
 	vector3d<vectDouble_t>	accelerationVec;
@@ -56,9 +62,12 @@ vectDouble2d_t	estimatePositionWGS(vectDouble2d_t *dataIMU, const vectDouble2d_t
 	vectDouble2d_t			orientation;
 	vectDouble_t			temp;
 	Eigen::Vector3d			gravityAcceleration;
-	Eigen::Matrix3d			matrixRotation;
+	Eigen::Matrix3d			matrixRotation; 
 	double					g;
 	double					*error;
+	double					time; // прошедшее время
+	double					isSecond; // прошла ли секунда
+	double					dt;
 
 	for	(unsigned int i = 0; i < (*dataIMU)[0].size(); i++)
 		for (unsigned int j = 0; j < (*dataIMU).size(); j++)
@@ -88,12 +97,48 @@ vectDouble2d_t	estimatePositionWGS(vectDouble2d_t *dataIMU, const vectDouble2d_t
 		accelerationVec.y.push_back(acceleration[1]);
 		accelerationVec.z.push_back(acceleration[2]);
 	}
-	veloucityVec.x = integralEuler(dataTime, &accelerationVec.x);
-	veloucityVec.y = integralEuler(dataTime, &accelerationVec.y);
-	veloucityVec.z = integralEuler(dataTime, &accelerationVec.z);
-	positionVec.x = integralEuler(dataTime, &veloucityVec.x);
-	positionVec.y = integralEuler(dataTime, &veloucityVec.y);
-	positionVec.z = integralEuler(dataTime, &veloucityVec.z);
+	veloucityVec.x = integralEuler(dataTime, &accelerationVec.x, 0);
+	veloucityVec.y = integralEuler(dataTime, &accelerationVec.y, 0);
+	veloucityVec.z = integralEuler(dataTime, &accelerationVec.z, 0);
+	time = 0;
+	isSecond = 1;
+	dt = (*dataTime)[1] - (*dataTime)[0];
+	initialData = convertGeoElipseToGeoNormal(meanInitGNSS);
+	positionVec.x.push_back(integralEuler(initialData[0], veloucityVec.x[0], dt));
+	positionVec.y.push_back(integralEuler(initialData[1], veloucityVec.y[0], dt));
+	positionVec.z.push_back(integralEuler(initialData[2], veloucityVec.z[0], dt));
+	for (size_t i = 1; i < veloucityVec.x.size() - 1; i++)
+	{
+		if (time >= isSecond)
+		{
+			// initialData.clear();
+			// initialData = convertGeoElipseToGeoNormal(&(*dataGNSS)[i]);
+			positionVec.x.push_back(integralEuler(initialData[0], veloucityVec.x[i], dt));
+			positionVec.y.push_back(integralEuler(initialData[1], veloucityVec.y[i], dt));
+			positionVec.z.push_back(integralEuler(initialData[2], veloucityVec.z[i], dt));
+			// positionVec.x.push_back(integralEuler(positionVec.x[i - 1], veloucityVec.x[i], dt));
+			// positionVec.y.push_back(integralEuler(positionVec.y[i - 1], veloucityVec.y[i], dt));
+			// positionVec.z.push_back(integralEuler(positionVec.z[i - 1], veloucityVec.z[i], dt));
+			#ifdef DEBUG1
+				std::cout << "initialData[0] = " << initialData[0] << std::endl;
+				std::cout << "initialData[1] = " << initialData[1] << std::endl;
+				std::cout << "initialData[2] = " << initialData[2] << std::endl;
+				std::cout << "time = " << time << std::endl;
+				std::cout << "second = " << isSecond<< std::endl;
+				std::cout << i << std::endl;
+			#endif
+			isSecond += 1;
+		}
+		else
+		{
+			positionVec.x.push_back(integralEuler(positionVec.x[i - 1], veloucityVec.x[i], dt));
+			positionVec.y.push_back(integralEuler(positionVec.y[i - 1], veloucityVec.y[i], dt));
+			positionVec.z.push_back(integralEuler(positionVec.z[i - 1], veloucityVec.z[i], dt));
+		}
+		time += dt;
+		dt = (*dataTime)[i + 1] - (*dataTime)[i];
+	}
+
 	// перевод из эллипсоидальной геоцентрической СК(ГСК) в прямоугольную ГСК
 	// начальная выставка, для получения координат стартовой СК в геоцентрической СК(WGS-84)
 	for	(unsigned int i = 0; i < dataGNSS[0].size(); i ++)
@@ -114,12 +159,12 @@ vectDouble2d_t	estimatePositionWGS(vectDouble2d_t *dataIMU, const vectDouble2d_t
 	for (unsigned int i = 0; i < positionVec.x.size(); i++)
 	{		
 		temp.clear();
-		error[0] = positionVec.x[i] + startCoordinateGeoNormal[0] - coordGeoNormalGNSS[i][0];
-		error[1] = positionVec.y[i] + startCoordinateGeoNormal[1] - coordGeoNormalGNSS[i][1];
-		error[2] = positionVec.z[i] + startCoordinateGeoNormal[2] - coordGeoNormalGNSS[i][2];
-		temp.push_back(positionVec.x[i] + startCoordinateGeoNormal[0] - error[0]);
-		temp.push_back(positionVec.y[i] + startCoordinateGeoNormal[1] - error[1]);
-		temp.push_back(positionVec.z[i] + startCoordinateGeoNormal[2] - error[2]);
+		error[0] = 0;//positionVec.x[i] + startCoordinateGeoNormal[0] - coordGeoNormalGNSS[i][0];
+		error[1] = 0;//positionVec.y[i] + startCoordinateGeoNormal[1] - coordGeoNormalGNSS[i][1];
+		error[2] = 0;//positionVec.z[i] + startCoordinateGeoNormal[2] - coordGeoNormalGNSS[i][2];
+		temp.push_back(positionVec.x[i]);// + startCoordinateGeoNormal[0] - error[0]);
+		temp.push_back(positionVec.y[i]);// + startCoordinateGeoNormal[1] - error[1]);
+		temp.push_back(positionVec.z[i]);// + startCoordinateGeoNormal[2] - error[2]);
 		resCoordinateWGS.push_back(temp);
 	}
 	delete[] error;
