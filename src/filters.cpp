@@ -55,7 +55,7 @@ void			lowPassFilter(vectDouble_t *input, const vectDouble_t *time, const double
  * @param input входные данные 
  * @param time время
  * @param T постоянная времени
- * @return отфильтрованные даннные
+ * @return отфильтрованные данные
  */
 // vectDouble_t	highPassFilter(const vectDouble_t *input, const vectDouble_t *time, const double T)
 // {
@@ -77,11 +77,11 @@ vectDouble_t	complementaryFilter(const vectDouble_t *angleAccelerometer, const v
 	vectDouble_t orientation;
 	double		wGyroscope = 0.98;
 	double		wAccelerometer = 1 - wGyroscope;
-	double		wMagnetometr = 1 - wGyroscope;
+	double		wMagnetometer = 1 - wGyroscope;
 
 	orientation.push_back(wAccelerometer * (*angleAccelerometer)[0] + wGyroscope * (*angleGyroscope)[0]);
 	orientation.push_back(wAccelerometer * (*angleAccelerometer)[1] + wGyroscope * (*angleGyroscope)[1]);
-	orientation.push_back(wMagnetometr * (*angleMagnetometer)[0] + wGyroscope * (*angleGyroscope)[2]);
+	orientation.push_back(wMagnetometer * (*angleMagnetometer)[0] + wGyroscope * (*angleGyroscope)[2]);
 	
 	// orientation.push_back(wGyroscope * (*angleGyroscope)[0]);
 	// orientation.push_back(wGyroscope * (*angleGyroscope)[1]);

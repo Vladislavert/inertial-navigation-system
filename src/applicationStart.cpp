@@ -38,7 +38,7 @@ void	applicationStart()
 	vectString_t		strTemp;
 	vectDouble2d_t		dataSensors; // данные с датчиков
 	vectDouble2d_t		dataFileInitGNSS; // данные для определения позиции
-	vectDouble2d_t		dataSensorsInit; // данные с датчиков во время начальной инициалзиации
+	vectDouble2d_t		dataSensorsInit; // данные с датчиков во время начальной инициализации
 	vectDouble2d_t		positionWGS; // оценка позиции в WGS84(X, Y, Z)
 	vectDouble_t		xPositionWGS;
 	vectDouble_t		yPositionWGS;
@@ -76,15 +76,15 @@ void	applicationStart()
 		std::cout << "error open file" << std::endl;
 		std::exit(0);
 	}
-	// запись данных с сенсоров из общего вектора в вектор соответсвующие типу датчик
+	// запись данных с сенсоров из общего вектора в вектор соответствующие типу датчик
 	vectDouble2d_t 		dataIMU; // данные с БИНС(акселерометр(X, Y, Z), гироскоп(X, Y, Z), магнетометр(X, Y))
 	vectDouble2d_t 		dataIMUInit; // данные с БИНС(акселерометр(X, Y, Z), гироскоп(X, Y, Z), магнетометр(X, Y)) для начальной выставки
 	vectDouble2d_t		dataGNSS; // данные с ГНСС(широта, долгота, высота)
 	vectDouble2d_t		dataInitGNSS; // данные с ГНСС(широта, долгота, высота)
 	vectDouble_t		dataTime; // время с начала замера данных с датчиков
 	vectDouble_t		dataTimeInit; // время с начала замера данных с датчиков
-	vectDouble_t		temp; // временый вектор, для заполнения
-	vectDouble_t		tempInit; // временый вектор, для заполнения данных начальной выставки
+	vectDouble_t		temp; // временный вектор, для заполнения
+	vectDouble_t		tempInit; // временный вектор, для заполнения данных начальной выставки
 
 	for	(unsigned int i = 0; i < dataSensors.size(); i++)
 	{

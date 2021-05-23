@@ -29,44 +29,44 @@
 /**
  * @brief перевод из эллипсоидальной геоцентрической СК(ГСК) в прямоугольную ГСК
  * 
- * @param coordinateGeoElipse координаты в эллипсоидальной ГСК(B - широта, L - долгота, H - высота) [град]
+ * @param coordinateGeoEllipse координаты в эллипсоидальной ГСК(B - широта, L - долгота, H - высота) [град]
  * @return координаты в прямоугольной ГСК(X, Y, Z)
  */
-vectDouble_t	convertGeoElipseToGeoNormal(const vectDouble_t *coordinateGeoElipse)
+vectDouble_t	convertGeoEllipseToGeoNormal(const vectDouble_t *coordinateGeoEllipse)
 {
-	vectDouble_t	coordinateGeoNormal((*coordinateGeoElipse).size());
+	vectDouble_t	coordinateGeoNormal((*coordinateGeoEllipse).size());
 	double			N; // радиус кривизны первого вертикала
 	double			radLatitude; // широта
-	double			radLongtitude; // долгота
+	double			radLongitude; // долгота
 
-	radLatitude = degToRad((*coordinateGeoElipse)[0]);
-	radLongtitude = degToRad((*coordinateGeoElipse)[1]);
+	radLatitude = degToRad((*coordinateGeoEllipse)[0]);
+	radLongitude = degToRad((*coordinateGeoEllipse)[1]);
 	N = a / sqrt((1 - squaring(e) * squaring(sin(radLatitude))));
-	coordinateGeoNormal[0] = (N + (*coordinateGeoElipse)[2]) * cos(radLatitude) * cos(radLongtitude);
-	coordinateGeoNormal[1] = (N + (*coordinateGeoElipse)[2]) * cos(radLatitude) * sin(radLongtitude);
-	coordinateGeoNormal[2] = ((squaring(b)/squaring(a)) * N + (*coordinateGeoElipse)[2]) * sin(radLatitude);
+	coordinateGeoNormal[0] = (N + (*coordinateGeoEllipse)[2]) * cos(radLatitude) * cos(radLongitude);
+	coordinateGeoNormal[1] = (N + (*coordinateGeoEllipse)[2]) * cos(radLatitude) * sin(radLongitude);
+	coordinateGeoNormal[2] = ((squaring(b)/squaring(a)) * N + (*coordinateGeoEllipse)[2]) * sin(radLatitude);
 	return (coordinateGeoNormal);
 }
 
 /**
  * @brief перевод из эллипсоидальной геоцентрической СК(ГСК) в прямоугольную ГСК
  * 
- * @param coordinateGeoElipse координаты в эллипсоидальной ГСК(B - широта, L - долгота, H - высота) [град]
+ * @param coordinateGeoEllipse координаты в эллипсоидальной ГСК(B - широта, L - долгота, H - высота) [град]
  * @return координаты в прямоугольной ГСК(X, Y, Z)
  */
-vectDouble_t	convertGeoElipseToGeoNormal(const double *coordinateGeoElipse)
+vectDouble_t	convertGeoEllipseToGeoNormal(const double *coordinateGeoEllipse)
 {
 	vectDouble_t	coordinateGeoNormal(3);
 	double			N; // радиус кривизны первого вертикала
 	double			radLatitude; // широта
-	double			radLongtitude; // долгота
+	double			radLongitude; // долгота
 
-	radLatitude = degToRad(coordinateGeoElipse[0]);
-	radLongtitude = degToRad(coordinateGeoElipse[1]);
+	radLatitude = degToRad(coordinateGeoEllipse[0]);
+	radLongitude = degToRad(coordinateGeoEllipse[1]);
 	N = a / sqrt((1 - squaring(e) * squaring(sin(radLatitude))));
-	coordinateGeoNormal[0] = (N + coordinateGeoElipse[2]) * cos(radLatitude) * cos(radLongtitude);
-	coordinateGeoNormal[1] = (N + coordinateGeoElipse[2]) * cos(radLatitude) * sin(radLongtitude);
-	coordinateGeoNormal[2] = ((squaring(b)/squaring(a)) * N + coordinateGeoElipse[2]) * sin(radLatitude);
+	coordinateGeoNormal[0] = (N + coordinateGeoEllipse[2]) * cos(radLatitude) * cos(radLongitude);
+	coordinateGeoNormal[1] = (N + coordinateGeoEllipse[2]) * cos(radLatitude) * sin(radLongitude);
+	coordinateGeoNormal[2] = ((squaring(b)/squaring(a)) * N + coordinateGeoEllipse[2]) * sin(radLatitude);
 	return (coordinateGeoNormal);
 }
 
@@ -76,9 +76,9 @@ vectDouble_t	convertGeoElipseToGeoNormal(const double *coordinateGeoElipse)
  * @param coordinateGeoNormal координаты в прямоугольной ГСК(X, Y, Z)
  * @return координаты в эллипсоидальной ГСК(B - широта, L - долгота, H - высота) [град]
  */
-vectDouble_t	convertGeoNormalToGeoElipse(const vectDouble_t *coordinateGeoNormal)
+vectDouble_t	convertGeoNormalToGeoEllipse(const vectDouble_t *coordinateGeoNormal)
 {
-	vectDouble_t	coordinateGeoElipse((*coordinateGeoNormal).size());
+	vectDouble_t	coordinateGeoEllipse((*coordinateGeoNormal).size());
 	double			eFirstSquare; // квадрат первого эксцентриситета
 	double			eSecondSquare; // квадрат второго эксцентриситета
 	double			rSquare;
@@ -113,12 +113,12 @@ vectDouble_t	convertGeoNormalToGeoElipse(const vectDouble_t *coordinateGeoNormal
 	V = sqrt(tmp + (1 - eFirstSquare) * squaring((*coordinateGeoNormal)[2]));
 	z_0 = (squaring(b) * (*coordinateGeoNormal)[2]) / (a * V);
 	// широта
-	coordinateGeoElipse[0] = radToDeg(atan(((*coordinateGeoNormal)[2] + eSecondSquare * z_0) / r));
+	coordinateGeoEllipse[0] = radToDeg(atan(((*coordinateGeoNormal)[2] + eSecondSquare * z_0) / r));
 	// долгота
-	coordinateGeoElipse[1] = radToDeg(atan2((*coordinateGeoNormal)[1], (*coordinateGeoNormal)[0]));
+	coordinateGeoEllipse[1] = radToDeg(atan2((*coordinateGeoNormal)[1], (*coordinateGeoNormal)[0]));
 	// высота
-	coordinateGeoElipse[2] = U * (1 - squaring(b) / (a * V));
-	return (coordinateGeoElipse);
+	coordinateGeoEllipse[2] = U * (1 - squaring(b) / (a * V));
+	return (coordinateGeoEllipse);
 }
 
 /**
@@ -127,9 +127,9 @@ vectDouble_t	convertGeoNormalToGeoElipse(const vectDouble_t *coordinateGeoNormal
  * @param coordinateGeoNormal координаты в прямоугольной ГСК(X, Y, Z)
  * @return координаты в эллипсоидальной ГСК(B - широта, L - долгота, H - высота) [град]
  */
-vectDouble_t	convertGeoNormalToGeoElipse(const double *coordinateGeoNormal)
+vectDouble_t	convertGeoNormalToGeoEllipse(const double *coordinateGeoNormal)
 {
-	vectDouble_t	coordinateGeoElipse(3);
+	vectDouble_t	coordinateGeoEllipse(3);
 	double			eFirstSquare; // квадрат первого эксцентриситета
 	double			eSecondSquare; // квадрат второго эксцентриситета
 	double			rSquare;
@@ -164,10 +164,10 @@ vectDouble_t	convertGeoNormalToGeoElipse(const double *coordinateGeoNormal)
 	V = sqrt(tmp + (1 - eFirstSquare) * squaring(coordinateGeoNormal[2]));
 	z_0 = (squaring(b) * coordinateGeoNormal[2]) / (a * V);
 	// широта
-	coordinateGeoElipse[0] = radToDeg(atan((coordinateGeoNormal[2] + eSecondSquare * z_0) / r));
+	coordinateGeoEllipse[0] = radToDeg(atan((coordinateGeoNormal[2] + eSecondSquare * z_0) / r));
 	// долгота
-	coordinateGeoElipse[1] = radToDeg(atan2(coordinateGeoNormal[1], coordinateGeoNormal[0]));
+	coordinateGeoEllipse[1] = radToDeg(atan2(coordinateGeoNormal[1], coordinateGeoNormal[0]));
 	// высота
-	coordinateGeoElipse[2] = U * (1 - squaring(b) / (a * V));
-	return (coordinateGeoElipse);
+	coordinateGeoEllipse[2] = U * (1 - squaring(b) / (a * V));
+	return (coordinateGeoEllipse);
 }

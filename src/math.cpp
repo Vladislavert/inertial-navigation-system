@@ -84,12 +84,12 @@ vectDouble_t	integralEuler(const vectDouble_t *time, const vectDouble_t *data, c
 }
 
 /**
- * @brief интегррирование методом Эйлера
+ * @brief интегрирование методом Эйлера
  * 
  * @param dataPast значение на предыдущем шаге
  * @param dataCurrent значение на текущем шаге
  * @param dt шаг интегрирования
- * @return проинтегрпированное значение
+ * @return проинтегрированное значение
  */
 double			integralEuler(const double dataPast, const double dataCurrent, double dt)
 {

@@ -135,7 +135,7 @@ int main()
 
 	for (unsigned int i = 0; i < 3; i++)
 	{
-		orientation[i] = 0;//dataINS[0][6 + i]; // начальная выставкка БИНС (углы ориентации ранвы 0)
+		orientation[i] = 0;//dataINS[0][6 + i]; // начальная выставка БИНС (углы ориентации равны 0)
 		angleGyroscope[i] = 0;
 		dataGyroscope[i] = dataINS[0][indxGyro + i];
 	}

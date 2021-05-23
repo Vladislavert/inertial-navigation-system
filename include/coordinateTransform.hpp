@@ -39,9 +39,9 @@ const double b = a * (1 - f); // малая полуось эллипсоида
 
 
 
-vectDouble_t	convertGeoElipseToGeoNormal(const vectDouble_t *coordinateGeoElipse);
-vectDouble_t	convertGeoElipseToGeoNormal(const double *coordinateGeoElipse);
-vectDouble_t	convertGeoNormalToGeoElipse(const vectDouble_t *coordinateGeoNormal);
-vectDouble_t	convertGeoNormalToGeoElipse(const double *coordinateGeoNormal);
+vectDouble_t	convertGeoEllipseToGeoNormal(const vectDouble_t *coordinateGeoEllipse);
+vectDouble_t	convertGeoEllipseToGeoNormal(const double *coordinateGeoEllipse);
+vectDouble_t	convertGeoNormalToGeoEllipse(const vectDouble_t *coordinateGeoNormal);
+vectDouble_t	convertGeoNormalToGeoEllipse(const double *coordinateGeoNormal);
 
 #endif

@@ -103,7 +103,7 @@ vectDouble_t	getAngleAccelerometer(const vectDouble_t *dataAccelerometer)
  * @param dataGyroscopePast данные с гироскопа(угловая скорость вращения по трём связанным осям) на предыдущем шаге
  * @param dataGyroscopeFuture данные с гироскопа(угловая скорость вращения по трём связанным осям) на текущем шаге
  * @param time шаг между замерами
- * @return углы ориентации(тангжа, крен, рысканье) 
+ * @return углы ориентации(тангажа, крен, рысканье) 
  */
 vectDouble_t	getAngleGyroscope(const vectDouble_t *dataGyroscopePast, const vectDouble_t *dataGyroscopeCurrent, const double dt)
 {
@@ -123,10 +123,10 @@ vectDouble_t	getAngleGyroscope(const vectDouble_t *dataGyroscopePast, const vect
  */
 vectDouble_t	getAngleMagnetometer(const vectDouble_t *dataMagnetometer)
 {
-	vectDouble_t	angleMagnetometr;
+	vectDouble_t	angleMagnetometer;
 
-	angleMagnetometr.push_back(absRad(-std::atan2((*dataMagnetometer)[0], (*dataMagnetometer)[1])));
-	return(angleMagnetometr);
+	angleMagnetometer.push_back(absRad(-std::atan2((*dataMagnetometer)[0], (*dataMagnetometer)[1])));
+	return(angleMagnetometer);
 }
 
 /**
