@@ -45,30 +45,28 @@ vectDouble2d_t	getOrientation(const vectDouble_t initOrientation, const vectDoub
 	vectDouble_t	angleGyroscope; // углы получаемы с гироскопа
 	vectDouble_t	angleMagnetometer; // углы получаемые с магнитометра
 
-	for (unsigned int j = 0; j < 3; j++)
+	for (unsigned int j = 0; j < quantityAxes; j++)
 	{
 		dataAccelerometer.push_back((*dataIMU)[0][j]);
-		if (j < 2)
+		if (j < quantityAxes - 1)
 		{
 			dataGyroscopePast.push_back((*dataIMU)[0][j + 3]);
 			dataMagnetometer.push_back((*dataIMU)[0][j + 6]);
 		}
 	}
-	// проверить начальную инициализацию
 	dataGyroscopePast.push_back(initOrientation[2]);
 	resOrientation.push_back(dataGyroscopePast);
-	// дописать интегирование значения ориентации
 	angleAccelerometer = getAngleAccelerometer(&dataAccelerometer);
 	for	(unsigned int i = 1; i < (*dataIMU).size() - 1; i++)
 	{
 		dataAccelerometer.clear();
 		dataMagnetometer.clear();
-		for (unsigned int j = 0; j < 3; j++)
+		for (unsigned int j = 0; j < quantityAxes; j++)
 		{
 			dataAccelerometer.push_back((*dataIMU)[i][j + indxAcc]);
 			dataGyroscopePast.push_back((*dataIMU)[i][j + indxGyro]);
 			dataGyroscopeCurrent.push_back((*dataIMU)[i][j + indxGyro]);
-			if (j < 2)
+			if (j < quantityAxes - 1)
 				dataMagnetometer.push_back((*dataIMU)[i][j + indxMagnet]);
 		}
 		angleAccelerometer = getAngleAccelerometer(&dataAccelerometer);
@@ -94,8 +92,7 @@ vectDouble_t	getAngleAccelerometer(const vectDouble_t *dataAccelerometer)
 {
 	vectDouble_t	angleAccelerometer;
 
-	// for (unsigned int i = 0; i < 2; i++)
-	for (unsigned int i = 0; i < 2; i++)
+	for (unsigned int i = 0; i < quantityAxes - 1; i++)
 		angleAccelerometer.push_back(std::atan2((*dataAccelerometer)[i], (*dataAccelerometer)[2]));
 	return (angleAccelerometer);
 }
@@ -112,7 +109,7 @@ vectDouble_t	getAngleGyroscope(const vectDouble_t *dataGyroscopePast, const vect
 {
 	vectDouble_t	angleGyroscope;
 
-	for (unsigned int i = 0; i < 2; i++)
+	for (unsigned int i = 0; i < quantityAxes - 1; i++)
 		angleGyroscope.push_back(integralEuler((*dataGyroscopePast)[i], (*dataGyroscopeCurrent)[i], dt));
 	angleGyroscope.push_back(absRad(integralEuler((*dataGyroscopePast)[2], (*dataGyroscopeCurrent)[2], dt))); 
 	return(angleGyroscope);

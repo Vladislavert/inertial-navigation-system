@@ -28,6 +28,7 @@
 #define INITIALEXHIBITION_HPP
 
 #include "math.hpp"
+#include "initParams.hpp"
 #include "typesData.hpp"
 #include "calcProbabilityCharact.hpp"
 

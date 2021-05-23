@@ -3,3 +3,5 @@ obj/
 estimatePositionWGS
 *.png
 test
+*.kml
+*.txt

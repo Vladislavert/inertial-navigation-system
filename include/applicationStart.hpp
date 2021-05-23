@@ -29,6 +29,7 @@
 
 #include "inputData.hpp"
 #include "readFile.hpp"
+#include "writeToFile.hpp"
 #include "draw.hpp"
 #include <../libraries/eigen3/Eigen/Dense>
 #include "estimatePositionWGS.hpp"

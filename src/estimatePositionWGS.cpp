@@ -78,9 +78,9 @@ vectDouble2d_t	estimatePositionWGS(vectDouble2d_t *dataIMU, const vectDouble2d_t
 	temp.push_back(0);
 	temp.push_back(0.12);
 	// фильтрация данных с БИНС
-	// lowPassFilter(&dataIMUTranspose[0], dataTime, 0.02);
-	// lowPassFilter(&dataIMUTranspose[1], dataTime, 0.02);
-	// lowPassFilter(&dataIMUTranspose[2], dataTime, 0.02);
+	// lowPassFilter(&dataIMUTranspose[0], dataTime, 1);
+	// lowPassFilter(&dataIMUTranspose[1], dataTime, 1);
+	// lowPassFilter(&dataIMUTranspose[2], dataTime, 1);
 	// for	(unsigned int i = 0; i < (*dataIMU).size(); i++)
 	// 	for (unsigned int j = 0; j < (*dataIMU)[i].size(); j++)
 	// 		(*dataIMU)[i][j] = dataIMUTranspose[j][i];
@@ -111,8 +111,8 @@ vectDouble2d_t	estimatePositionWGS(vectDouble2d_t *dataIMU, const vectDouble2d_t
 	{
 		if (time >= isSecond)
 		{
-			// initialData.clear();
-			// initialData = convertGeoElipseToGeoNormal(&(*dataGNSS)[i]);
+			initialData.clear();
+			initialData = convertGeoElipseToGeoNormal(&(*dataGNSS)[i]);
 			positionVec.x.push_back(integralEuler(initialData[0], veloucityVec.x[i], dt));
 			positionVec.y.push_back(integralEuler(initialData[1], veloucityVec.y[i], dt));
 			positionVec.z.push_back(integralEuler(initialData[2], veloucityVec.z[i], dt));

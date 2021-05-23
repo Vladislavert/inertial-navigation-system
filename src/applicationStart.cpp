@@ -27,8 +27,7 @@
 #include "applicationStart.hpp"
 
 void	applicationStart()
-{	
-	
+{
 	const std::string	DIR_RESOURCES = "./resource/";
 	std::ifstream		file;
 	std::ifstream		fileInit;
@@ -44,19 +43,13 @@ void	applicationStart()
 	vectDouble_t		xPositionWGS;
 	vectDouble_t		yPositionWGS;
 	vectDouble_t		zPositionWGS;
-	vectPlot2d_t		plotPositionXYZ(3);
+	vectPlot2d_t		plotPositionXYZ(quantityAxes);
 	Plot				plotPositionX;
 	Plot				plotPositionY;
 	Plot				plotPositionZ;
 	double				g;
 	double				*meanGNSS;
 
-	// nameFile = DIR_RESOURCES + "orientation360_2_chear (useful data).csv";
-	// nameFile = DIR_RESOURCES + "Move(orientation_30, 6 meters).csv";
-	// nameFile = DIR_RESOURCES + "move_long_meters.csv";
-	// добавить файл, который будет накапливать данные с ГНСС
-	// nameFile = DIR_RESOURCES + "initCondition2.csv";
-	// nameFile = DIR_RESOURCES + "RotationX_360.csv";
 	nameFile = DIR_RESOURCES + "GNSSup_0.csv";
 	nameFileInitGNSS = DIR_RESOURCES + "initGNSSup_0.csv";
 	nameFileInitExhibition = DIR_RESOURCES + "initCondition2.csv";
@@ -95,15 +88,15 @@ void	applicationStart()
 
 	for	(unsigned int i = 0; i < dataSensors.size(); i++)
 	{
-		for (unsigned int j = 0; j < 3; j++)
+		for (unsigned int j = 0; j < quantityAxes; j++)
 			temp.push_back(dataSensors[i][indxAcc + j]);
-		for (unsigned int j = 0; j < 3; j++)
+		for (unsigned int j = 0; j < quantityAxes; j++)
 			temp.push_back(dataSensors[i][indxGyro + j]);
-		for (unsigned int j = 0; j < 2; j++)
+		for (unsigned int j = 0; j < quantityAxes - 1; j++)
 			temp.push_back(dataSensors[i][indxMagnet + j]);
 		dataIMU.push_back(temp);
 		temp.clear();
-		for (unsigned int j = 0; j < 3; j++)
+		for (unsigned int j = 0; j < quantityAxes; j++)
 			temp.push_back(dataSensors[i][indxGNSS + j]);
 		dataGNSS.push_back(temp);
 		dataTime.push_back(dataSensors[i][indxTime] / 1000);
@@ -112,26 +105,26 @@ void	applicationStart()
 	for	(unsigned int i = 0; i < dataFileInitGNSS.size(); i++)
 	{	
 		temp.clear();
-		for (unsigned int j = 0; j < 3; j++)
+		for (unsigned int j = 0; j < quantityAxes; j++)
 			temp.push_back(dataFileInitGNSS[i][indxInitGNSS + j]);
 		dataInitGNSS.push_back(temp);
 	}
 	for	(unsigned int i = 0; i < dataSensorsInit.size(); i++)
 	{
-		for (unsigned int j = 0; j < 3; j++)
+		for (unsigned int j = 0; j < quantityAxes; j++)
 			tempInit.push_back(dataSensorsInit[i][indxAcc + j]);
-		for (unsigned int j = 0; j < 3; j++)
+		for (unsigned int j = 0; j < quantityAxes; j++)
 			tempInit.push_back(dataSensorsInit[i][indxGyro + j]);
-		for (unsigned int j = 0; j < 2; j++)
+		for (unsigned int j = 0; j < quantityAxes - 1; j++)
 			tempInit.push_back(dataSensorsInit[i][indxMagnet + j]);
 		dataIMUInit.push_back(tempInit);
 		tempInit.clear();
 		dataTimeInit.push_back(dataSensorsInit[i][indxTime] / 1000);
 		tempInit.clear();
 	}
-	meanGNSS = new double[3];
+	meanGNSS = new double[quantityAxes];
 	meanGNSS = accumulationPositionGNSS(dataInitGNSS);
-	g = gravitationalAccelerationCalc(meanGNSS[0], meanGNSS[2]); // данные для начальной выставки
+	g = gravitationalAccelerationCalc(meanGNSS[0], meanGNSS[2]);
 	getCorrectData(dataIMU, dataIMUInit, g);
 	positionWGS = estimatePositionWGS(&dataIMU, &dataGNSS, meanGNSS, &dataTime);
 	delete[] meanGNSS;
@@ -148,6 +141,7 @@ void	applicationStart()
 		yPositionWGS.push_back(positionWGS[i][1]);
 		zPositionWGS.push_back(positionWGS[i][2]);
 	}
+	writeToFile(&positionWGS);
 	drawGraph(&dataTime, &xPositionWGS, &plotPositionX, "xPosition", 0);
 	drawGraph(&dataTime, &yPositionWGS, &plotPositionY, "yPosition", 0);
 	drawGraph(&dataTime, &zPositionWGS, &plotPositionZ, "zPosition", 0);

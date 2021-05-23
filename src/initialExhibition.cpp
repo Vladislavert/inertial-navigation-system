@@ -36,9 +36,6 @@
 void	getCorrectData(vectDouble2d_t &dataIMU, const vectDouble2d_t &dataInitIMU, const double g)
 {
 	vectDouble2d_t 		dataIMUTranspose(dataInitIMU[0].size()); // данные с БИНС(акселерометр(X, Y, Z), гироскоп(X, Y, Z), магнетометр(X, Y))
-	const unsigned int	indxGyro = 3; // значение индекса под которым начинаются измерения гироскопа
-	const unsigned int	indxAcc = 0; // значение индекса под которым начинаются измерения акселерометра
-	const unsigned int	quantityAxes = 3; // количество осей по которым производятся измерения
 	double				*meanAcc; // математическое ожидание акселерометра по трём связанным осям
 	double				*dispersionAcc; // дисперсия данных с акселерометра по трём связанным осям
 	double				*threeCovAcc; // 3*sigma акселерометра по трём связанным осям
@@ -89,6 +86,12 @@ void	getCorrectData(vectDouble2d_t &dataIMU, const vectDouble2d_t &dataInitIMU, 
 			if (dataIMU[i][indxGyro + j] < (threeCovGyro[j] + valueInit) && dataIMU[i][indxGyro + j] > (-threeCovGyro[j] + valueInit))
 				dataIMU[i][indxGyro + j] = valueInit;
 		}
+	delete[] meanAcc;
+	delete[] dispersionAcc;
+	delete[] threeCovAcc;
+	delete[] meanGyro;
+	delete[] dispersionGyro;
+	delete[] threeCovGyro;
 }
 
 /**
