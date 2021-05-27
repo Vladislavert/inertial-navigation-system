@@ -26,6 +26,8 @@
 
 #include "applicationStart.hpp"
 
+#define DEBUG
+
 void	applicationStart()
 {
 	const std::string	DIR_RESOURCES = "./resource/";
@@ -50,8 +52,19 @@ void	applicationStart()
 	double				g;
 	double				*meanGNSS;
 
-	nameFile = DIR_RESOURCES + "GNSSup_0.csv";
-	nameFileInitGNSS = DIR_RESOURCES + "initGNSSup_0.csv";
+	// nameFile = DIR_RESOURCES + "GNSSup_0.csv";
+	// nameFileInitGNSS = DIR_RESOURCES + "initGNSSup_0.csv";
+	// nameFileInitExhibition = DIR_RESOURCES + "initCondition2.csv";
+	// временные имена файлов
+	nameFile = DIR_RESOURCES + "initCondition2.csv";
+	nameFileInitGNSS = DIR_RESOURCES + "initCondition2.csv";
+	//------------------------------------------------
+	// Тестирование магнитометра
+	// nameFile = DIR_RESOURCES + "testMagnetometer.csv";
+	// nameFileInitGNSS = DIR_RESOURCES + "testMagnetometerExhibition.csv";
+	// END---------------------------------------
+	// nameFile = DIR_RESOURCES + "car_60kmh.csv";
+	// nameFileInitGNSS = DIR_RESOURCES + "carExhibition_60kmh.csv";
 	nameFileInitExhibition = DIR_RESOURCES + "initCondition2.csv";
 	file.open(nameFile);
 	fileInit.open(nameFileInitExhibition);
@@ -125,7 +138,67 @@ void	applicationStart()
 	meanGNSS = new double[quantityAxes];
 	meanGNSS = accumulationPositionGNSS(dataInitGNSS);
 	g = gravitationalAccelerationCalc(meanGNSS[0], meanGNSS[2]);
+	#ifdef DEBUG
+		vectPlot2d_t		plotAccelerationXYZFilter(quantityAxes);
+		Plot				plotAccelerationVecXFilter;
+		Plot				plotAccelerationVecYFilter;
+		Plot				plotAccelerationVecZFilter;
+
+		vectDouble_t		accelerationXFilter;
+		vectDouble_t		accelerationYFilter;
+		vectDouble_t		accelerationZFilter;
+
+		for	(int i = 0; i < dataIMU.size(); i++)
+		{
+			accelerationXFilter.push_back(dataIMU[i][0]);
+			accelerationYFilter.push_back(dataIMU[i][1]);
+			accelerationZFilter.push_back(dataIMU[i][2]);
+		}
+		drawGraph(&dataTime, &accelerationXFilter, &plotAccelerationVecXFilter, "xAcceleration", 0);
+		drawGraph(&dataTime, &accelerationYFilter, &plotAccelerationVecYFilter, "yAcceleration", 0);
+		drawGraph(&dataTime, &accelerationZFilter, &plotAccelerationVecZFilter, "zAcceleration", 0);
+		plotAccelerationVecXFilter.grid().show();
+		plotAccelerationVecYFilter.grid().show();
+		plotAccelerationVecZFilter.grid().show();
+		plotAccelerationXYZFilter[0].push_back(plotAccelerationVecXFilter);
+		plotAccelerationXYZFilter[1].push_back(plotAccelerationVecYFilter);
+		plotAccelerationXYZFilter[2].push_back(plotAccelerationVecZFilter);
+		Figure				figAccelerationFilter = plotAccelerationXYZFilter;
+		figAccelerationFilter.size(600, 700);
+		figAccelerationFilter.show();
+		figAccelerationFilter.save("accelerationNoFilter.png");
+	#endif
 	getCorrectData(dataIMU, dataIMUInit, g);
+	#ifdef DEBUG
+		vectPlot2d_t		plotAccelerationXYZ(quantityAxes);
+		Plot				plotAccelerationVecX;
+		Plot				plotAccelerationVecY;
+		Plot				plotAccelerationVecZ;
+
+		vectDouble_t		accelerationX;
+		vectDouble_t		accelerationY;
+		vectDouble_t		accelerationZ;
+
+		for	(int i = 0; i < dataIMU.size(); i++)
+		{
+			accelerationX.push_back(dataIMU[i][0]);
+			accelerationY.push_back(dataIMU[i][1]);
+			accelerationZ.push_back(dataIMU[i][2]);
+		}
+		drawGraph(&dataTime, &accelerationX, &plotAccelerationVecX, "xAcceleration", 0);
+		drawGraph(&dataTime, &accelerationY, &plotAccelerationVecY, "yAcceleration", 0);
+		drawGraph(&dataTime, &accelerationZ, &plotAccelerationVecZ, "zAcceleration", 0);
+		plotAccelerationVecX.grid().show();
+		plotAccelerationVecY.grid().show();
+		plotAccelerationVecZ.grid().show();
+		plotAccelerationXYZ[0].push_back(plotAccelerationVecX);
+		plotAccelerationXYZ[1].push_back(plotAccelerationVecY);
+		plotAccelerationXYZ[2].push_back(plotAccelerationVecZ);
+		Figure				figAcceleration = plotAccelerationXYZ;
+		figAcceleration.size(600, 700);
+		figAcceleration.show();
+		figAcceleration.save("acceleration.png");
+	#endif
 	positionWGS = estimatePositionWGS(&dataIMU, &dataGNSS, meanGNSS, &dataTime);
 	delete[] meanGNSS;
 	std::cout << "Широта в начальный момент времени\t= " << positionWGS[0][0] << std::endl;
@@ -141,7 +214,7 @@ void	applicationStart()
 		yPositionWGS.push_back(positionWGS[i][1]);
 		zPositionWGS.push_back(positionWGS[i][2]);
 	}
-	writeToFile(&positionWGS);
+	writeToFile(&positionWGS, "positionWGS");
 	drawGraph(&dataTime, &xPositionWGS, &plotPositionX, "xPosition", 0);
 	drawGraph(&dataTime, &yPositionWGS, &plotPositionY, "yPosition", 0);
 	drawGraph(&dataTime, &zPositionWGS, &plotPositionZ, "zPosition", 0);

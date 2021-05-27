@@ -36,6 +36,7 @@
 
 #ifdef DEBUG1
 	#include "iostream"
+	#include "writeToFile.hpp"
 #endif
 
 /**
@@ -74,20 +75,33 @@ vectDouble2d_t	estimatePositionWGS(vectDouble2d_t *dataIMU, const vectDouble2d_t
 			dataIMUTranspose[i].push_back((*dataIMU)[j][i]);
 	g = gravitationalAccelerationCalc(meanInitGNSS[0], meanInitGNSS[2]);
 	gravityAcceleration << 0, 0, g;
-	temp.push_back(0);
-	temp.push_back(0);
-	temp.push_back(0.12);
+	for (size_t i = 0; i < (*dataIMU).size(); i++)
+	{
+			temp.push_back(0);
+		temp.push_back(0);
+		// temp.push_back(2.37365);
+		// temp.push_back(0.925025);
+		temp.push_back(2.478367537825799882);
+		orientation.push_back(temp);
+
+		temp.clear();
+	}
+	
+
 	// фильтрация данных с БИНС
-	// lowPassFilter(&dataIMUTranspose[0], dataTime, 1);
-	// lowPassFilter(&dataIMUTranspose[1], dataTime, 1);
-	// lowPassFilter(&dataIMUTranspose[2], dataTime, 1);
-	// for	(unsigned int i = 0; i < (*dataIMU).size(); i++)
-	// 	for (unsigned int j = 0; j < (*dataIMU)[i].size(); j++)
-	// 		(*dataIMU)[i][j] = dataIMUTranspose[j][i];
+	lowPassFilter(&dataIMUTranspose[0], dataTime, 1);
+	lowPassFilter(&dataIMUTranspose[1], dataTime, 1);
+	lowPassFilter(&dataIMUTranspose[2], dataTime, 1);
+	for	(unsigned int i = 0; i < (*dataIMU).size(); i++)
+		for (unsigned int j = 0; j < (*dataIMU)[i].size(); j++)
+			(*dataIMU)[i][j] = dataIMUTranspose[j][i];
 	// определение ориентации с помощью Attitude and Heading Reference System(AHRS)
-	orientation.push_back(temp);
+	// orientation.push_back(temp);
 	matrixRotation = rotationMatrix(orientation[0]);
-	orientation = getOrientation(orientation[0], dataIMU, dataTime);
+	// orientation = getOrientation(orientation[0], dataIMU, dataTime);
+	#ifdef DEBUG1
+		writeToFile(&orientation, "orientation.txt");
+	#endif
 	for	(unsigned int i = 0; i < orientation.size(); i++)
 	{
 		apparentAcceleration << (*dataIMU)[i][0], (*dataIMU)[i][1], (*dataIMU)[i][2];
@@ -113,12 +127,12 @@ vectDouble2d_t	estimatePositionWGS(vectDouble2d_t *dataIMU, const vectDouble2d_t
 		{
 			initialData.clear();
 			initialData = convertGeoEllipseToGeoNormal(&(*dataGNSS)[i]);
-			positionVec.x.push_back(integralEuler(initialData[0], velocityVec.x[i], dt));
-			positionVec.y.push_back(integralEuler(initialData[1], velocityVec.y[i], dt));
-			positionVec.z.push_back(integralEuler(initialData[2], velocityVec.z[i], dt));
-			// positionVec.x.push_back(integralEuler(positionVec.x[i - 1], velocityVec.x[i], dt));
-			// positionVec.y.push_back(integralEuler(positionVec.y[i - 1], velocityVec.y[i], dt));
-			// positionVec.z.push_back(integralEuler(positionVec.z[i - 1], velocityVec.z[i], dt));
+			// positionVec.x.push_back(integralEuler(initialData[0], velocityVec.x[i], dt));
+			// positionVec.y.push_back(integralEuler(initialData[1], velocityVec.y[i], dt));
+			// positionVec.z.push_back(integralEuler(initialData[2], velocityVec.z[i], dt));
+			positionVec.x.push_back(integralEuler(positionVec.x[i - 1], velocityVec.x[i], dt));
+			positionVec.y.push_back(integralEuler(positionVec.y[i - 1], velocityVec.y[i], dt));
+			positionVec.z.push_back(integralEuler(positionVec.z[i - 1], velocityVec.z[i], dt));
 			#ifdef DEBUG1
 				std::cout << "initialData[0] = " << initialData[0] << std::endl;
 				std::cout << "initialData[1] = " << initialData[1] << std::endl;
@@ -150,9 +164,27 @@ vectDouble2d_t	estimatePositionWGS(vectDouble2d_t *dataIMU, const vectDouble2d_t
 	}
 	startCoordinateGeoNormal = convertGeoEllipseToGeoNormal(meanInitGNSS); // передавать значения полученные в результате начальной выставки(средние значения)
 	#ifdef DEBUG
-		std::cout << "X c ГНСС = " << startCoordinateGeoNormal[0] << std::endl;
-		std::cout << "Y c ГНСС = " << startCoordinateGeoNormal[1] << std::endl;
-		std::cout << "Z c ГНСС = " << startCoordinateGeoNormal[2] << std::endl;
+		// std::cout << "X c ГНСС = " << startCoordinateGeoNormal[0] << std::endl;
+		// std::cout << "Y c ГНСС = " << startCoordinateGeoNormal[1] << std::endl;
+		// std::cout << "Z c ГНСС = " << startCoordinateGeoNormal[2] << std::endl;
+
+		vectPlot2d_t		plotPositionXYZ(quantityAxes);
+		Plot				plotAccelerationVecX;
+		Plot				plotAccelerationVecY;
+		Plot				plotAccelerationVecZ;
+		drawGraph(dataTime, &accelerationVec.x, &plotAccelerationVecX, "xAcceleration", 0);
+		drawGraph(dataTime, &accelerationVec.x, &plotAccelerationVecY, "yAcceleration", 0);
+		drawGraph(dataTime, &accelerationVec.x, &plotAccelerationVecZ, "zAcceleration", 0);
+		plotAccelerationVecX.grid().show();
+		plotAccelerationVecY.grid().show();
+		plotAccelerationVecZ.grid().show();
+		plotPositionXYZ[0].push_back(plotAccelerationVecX);
+		plotPositionXYZ[1].push_back(plotAccelerationVecY);
+		plotPositionXYZ[2].push_back(plotAccelerationVecZ);
+		Figure				figPosition = plotPositionXYZ;
+		figPosition.size(600, 600);
+		figPosition.show();
+		figPosition.save("acceleration.png");
 	#endif
 	// определение позиции путём интегрирования данных с акселерометра, а также коррекция позиции с помощью ГНСС
 	error = new double[3];

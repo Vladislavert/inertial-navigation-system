@@ -26,11 +26,11 @@
 
 #include "writeToFile.hpp"
 
-void	writeToFile(vectDouble2d_t *data)
+void	writeToFile(vectDouble2d_t *data, std::string nameFile)
 {
 	std::ofstream		fileOutputData;
 
-	fileOutputData.open("test.txt");
+	fileOutputData.open(nameFile);
 	for	(unsigned int i = 0; i < (*data).size(); i++)
 	{
 		fileOutputData << std::fixed << (*data)[i][1] << ","

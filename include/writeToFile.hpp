@@ -29,6 +29,6 @@
 
 #include "typesData.hpp"
 
-void	writeToFile(vectDouble2d_t *data);
+void	writeToFile(vectDouble2d_t *data, std::string nameFile);
 
 #endif

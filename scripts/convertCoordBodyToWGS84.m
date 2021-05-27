@@ -101,6 +101,7 @@ Rotation = ((R))*Vector %- VectorAccel
 
 plot3([0,Vector(1)],[0,Vector(2)],[0,Vector(3)])
 hold on
+grid on
 plot3([0,Rotation(1)],[0,Rotation(2)],[0,Rotation(3)])
 xlabel('x')
 ylabel('z')
