@@ -1,6 +1,6 @@
-<mxfile>
+<mxfile host="65bd71144e">
     <diagram id="uiAKNhMBBpsM2vkuvCDe" name="Page-1">
-        <mxGraphModel dx="975" dy="564" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="1" shadow="0">
+        <mxGraphModel dx="1315" dy="565" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="1" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -61,14 +61,11 @@
                 <mxCell id="27" value="$$\varphi, \lambda, h$$" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;" parent="1" vertex="1">
                     <mxGeometry x="540" y="300" width="40" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="28" value="Text" style="text;html=1;resizable=0;autosize=1;align=center;verticalAlign=middle;points=[];fillColor=none;strokeColor=none;rounded=0;" parent="1" vertex="1">
-                    <mxGeometry x="400" y="310" width="40" height="20" as="geometry"/>
-                </mxCell>
             </root>
         </mxGraphModel>
     </diagram>
     <diagram id="h3aEvO4AbJVzIlha7t-1" name="Page-2">
-        <mxGraphModel dx="975" dy="564" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="1" shadow="0">
+        <mxGraphModel dx="1118" dy="480" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="1" shadow="0">
             <root>
                 <mxCell id="M8gKZYO5L-6JeLcKQIqH-0"/>
                 <mxCell id="M8gKZYO5L-6JeLcKQIqH-1" parent="M8gKZYO5L-6JeLcKQIqH-0"/>
@@ -157,7 +154,7 @@
         </mxGraphModel>
     </diagram>
     <diagram id="YT7Eb4l32kN6Ms-JGzpp" name="Page-3">
-        <mxGraphModel dx="975" dy="564" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="1" shadow="0">
+        <mxGraphModel dx="1118" dy="480" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="1" shadow="0">
             <root>
                 <mxCell id="1-tvEk5X5YaPW3hFx_XC-0"/>
                 <mxCell id="1-tvEk5X5YaPW3hFx_XC-1" parent="1-tvEk5X5YaPW3hFx_XC-0"/>

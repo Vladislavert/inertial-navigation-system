@@ -1,0 +1,4 @@
+/home/vladislav/Documents/learning/institut/4_course/2_semester/Синтез_систем_бортовых_алгоритмов/courseWorking/inertial-navigation-system/build/CMakeFiles/inertial_navigation_system.dir
+/home/vladislav/Documents/learning/institut/4_course/2_semester/Синтез_систем_бортовых_алгоритмов/courseWorking/inertial-navigation-system/build/CMakeFiles/main.dir
+/home/vladislav/Documents/learning/institut/4_course/2_semester/Синтез_систем_бортовых_алгоритмов/courseWorking/inertial-navigation-system/build/CMakeFiles/edit_cache.dir
+/home/vladislav/Documents/learning/institut/4_course/2_semester/Синтез_систем_бортовых_алгоритмов/courseWorking/inertial-navigation-system/build/CMakeFiles/rebuild_cache.dir

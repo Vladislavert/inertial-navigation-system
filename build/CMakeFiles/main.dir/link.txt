@@ -1,0 +1,1 @@
+/usr/bin/c++ -Wall -Werror -Wextra -rdynamic CMakeFiles/main.dir/src/main.cpp.o -o main  libinertial_navigation_system.a /usr/lib/x86_64-linux-gnu/libyaml-cpp.so.0.7.0 
