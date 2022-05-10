@@ -7,6 +7,8 @@
 
 #include "draw.hpp"
 
+#include <utility>
+
 /**
  * @brief построение графиков по множеству точек
  * 
@@ -17,7 +19,7 @@
  * @param palette палитра
  * @param lineWidth толщина линии
  */
-void	drawGraph(const Vec *time, const Vec *data, std::string nameGraph, bool show, int lineWidth)
+void	drawGraph(const Vec *time, const Vec *data, const std::string& nameGraph, bool show, int lineWidth)
 {
 	Plot plot;
 	plot.legend()
@@ -29,7 +31,7 @@ void	drawGraph(const Vec *time, const Vec *data, std::string nameGraph, bool sho
     	plot.show();
 }
 
-void	drawGraph(const vectDouble_t *time, const vectDouble_t *data, std::string nameGraph, bool show, int lineWidth)
+void	drawGraph(const vectDouble_t *time, const vectDouble_t *data, const std::string& nameGraph, bool show, int lineWidth)
 {
 	Plot plot;
 	plot.legend()
@@ -52,7 +54,7 @@ void	drawGraph(const vectDouble_t *time, const vectDouble_t *data, std::string n
  * @param palette палитра
  * @param lineWidth толщина линии
  */
-void	drawGraph(const vectDouble_t *time, const vectDouble_t *data, Plot *plot, std::string nameGraph, bool show, std::string palette, int lineWidth)
+void	drawGraph(const vectDouble_t *time, const vectDouble_t *data, Plot *plot, const std::string& nameGraph, bool show, const std::string& palette, int lineWidth)
 {
 // 	(*plot).xrange(0.0, time[time.size() - 1]);
 //    (*plot).yrange(-0.1, 0.1);
@@ -76,7 +78,7 @@ void	drawGraph(const vectDouble_t *time, const vectDouble_t *data, Plot *plot, s
  * @param palette палитра
  * @param lineWidth толщина линии
  */
-void	drawLine(const Vec *time, const double *data, std::string nameGraph, bool show, std::string palette, int lineWidth)
+void	drawLine(const Vec *time, const double *data, const std::string& nameGraph, bool show, const std::string& palette, int lineWidth)
 {
 	Plot plot;
 	plot.legend()
@@ -102,7 +104,7 @@ void	drawLine(const Vec *time, const double *data, std::string nameGraph, bool s
  * @param palette палитра
  * @param lineWidth толщина линии
  */
-void	drawLine(const vectDouble_t *time, const double *data, Plot *plot, std::string nameGraph, bool show, std::string palette, int lineWidth)
+void	drawLine(const vectDouble_t *time, const double *data, Plot *plot, const std::string& nameGraph, bool show, const std::string& palette, int lineWidth)
 {
 	(*plot).legend()
         .atOutsideBottom()

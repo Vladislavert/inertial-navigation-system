@@ -10,8 +10,8 @@
 
 #include "math.hpp"
 
-Eigen::Matrix3d	rotationMatrix(const vectDouble_t &angl);
-double			c(const double angl);
-double			s(const double angl);
+Eigen::Matrix3d	rotationMatrix(const vectDouble_t& angl);
+double			c(double angl);
+double			s(double angl);
 
 #endif // INERTIAL_NAVIGATION_SYSTEM_MATH_ROTATION_MATRIX_HPP_

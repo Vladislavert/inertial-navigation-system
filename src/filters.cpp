@@ -14,19 +14,19 @@
  * @param time время
  * @param T постоянная времени
  */
-void			lowPassFilter(vectDouble_t *input, const vectDouble_t *time, const double T)
+void			lowPassFilter(vectDouble_t& input, const vectDouble_t& time, const double T)
 {
 	double alpha;
 	double dt;
 	
-	dt = (*time)[1] - (*time)[0];
+	dt = time[1] - time[0];
 	alpha = dt/(T + dt);
-	(*input)[0] = alpha * (*input)[0];
-	for	(size_t i = 1; i < (*input).size() - 1; i++)
+	input[0] = alpha * input[0];
+	for	(size_t i = 1; i < input.size() - 1; i++)
 	{
-		dt = (*time)[i + 1] - (*time)[i];
+		dt = time[i + 1] - time[i];
 		alpha = dt/(T + dt);
-		(*input)[i] = alpha * (*input)[i] + (1 - alpha) * (*input)[i - 1];
+		input[i] = alpha * input[i] + (1 - alpha) * input[i - 1];
 	}
 }
 
@@ -53,24 +53,16 @@ void			lowPassFilter(vectDouble_t *input, const vectDouble_t *time, const double
  * @param angleMagnetometer данные об углах полученные с магнитометра
  * @return значение оценки ориентации(тангаж, крен, рысканье)
  */
-vectDouble_t	complementaryFilter(const vectDouble_t *angleAccelerometer, const vectDouble_t *angleGyroscope, const vectDouble_t *angleMagnetometer)
+vectDouble_t	complementaryFilter(const vectDouble_t& angleAccelerometer, const vectDouble_t& angleGyroscope, const vectDouble_t& angleMagnetometer)
 {
 	vectDouble_t orientation;
 	double		wGyroscope = 0.98;
 	double		wAccelerometer = 1 - wGyroscope;
 	double		wMagnetometer = 1 - wGyroscope;
 
-	orientation.push_back(wAccelerometer * (*angleAccelerometer)[0] + wGyroscope * (*angleGyroscope)[0]);
-	orientation.push_back(wAccelerometer * (*angleAccelerometer)[1] + wGyroscope * (*angleGyroscope)[1]);
-	orientation.push_back(wMagnetometer * (*angleMagnetometer)[0] + wGyroscope * (*angleGyroscope)[2]);
-	
-	// orientation.push_back(wGyroscope * (*angleGyroscope)[0]);
-	// orientation.push_back(wGyroscope * (*angleGyroscope)[1]);
-	// orientation.push_back((*angleGyroscope)[2]);// проверить данные с магнетометра
-	
-	// orientation.push_back((*angleAccelerometer)[0]);
-	// orientation.push_back((*angleAccelerometer)[1]);
-	// orientation.push_back((*angleMagnetometer)[0]);// проверить данные с магнетометра
+	orientation.push_back(wAccelerometer * angleAccelerometer[0] + wGyroscope * angleGyroscope[0]);
+	orientation.push_back(wAccelerometer * angleAccelerometer[1] + wGyroscope * angleGyroscope[1]);
+	orientation.push_back(wMagnetometer * angleMagnetometer[0] + wGyroscope * angleGyroscope[2]);
 
 	return (orientation);
 }

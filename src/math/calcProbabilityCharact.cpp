@@ -13,13 +13,14 @@
  * @param dataArray массив измерений
  * @return математическое ожидание СВ
  */
-double	meanCalculate(const vectDouble_t &dataArray)
+double	meanCalculate(const vectDouble_t& dataArray)
 {
 	double mean;
 
-	for (size_t i = 0; i < dataArray.size(); i++)
-		mean += dataArray[i];
+	for (double measurement : dataArray)
+		mean += measurement;
 	mean /= dataArray.size();
+
 	return (mean);
 }
 
@@ -30,12 +31,13 @@ double	meanCalculate(const vectDouble_t &dataArray)
  * @param mean математическое ожидание
  * @return дисперсия СВ
  */
-double	dispersionCalculate(const vectDouble_t &dataArray, const double &mean)
+double	dispersionCalculate(const vectDouble_t& dataArray, double mean)
 {
 	double dispersion;
 
-	for (size_t i = 0; i < dataArray.size(); i++)
-		dispersion += squaring(dataArray[i] - mean);
+	for (double measurement : dataArray)
+		dispersion += squaring(measurement - mean);
 	dispersion /= dataArray.size();
+
 	return (dispersion);
 }

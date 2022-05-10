@@ -13,7 +13,7 @@
  * @param input входная строка
  * @param writeVect вектор, в который запишется значение из входной строки
  */
-void	stringToVectDouble(const std::string &input, vectDouble_t &writeVect)
+void	stringToVectDouble(const std::string& input, vectDouble_t& writeVect)
 {
 	std::istringstream	iss(input);
 	std::string			temp;
@@ -28,7 +28,7 @@ void	stringToVectDouble(const std::string &input, vectDouble_t &writeVect)
  * @param input входная строка
  * @param writeVect двумерный вектор, в который запишется значение из входной строки
  */
-void	stringToVectDouble(const std::string &input, vectDouble2d_t &writeVect)
+void	stringToVectDouble(const std::string& input, vectDouble2d_t& writeVect)
 {
 	vectDouble_t 	tempVect;
 
@@ -42,14 +42,13 @@ void	stringToVectDouble(const std::string &input, vectDouble2d_t &writeVect)
  * @param input входной вектор
  * @return строка, в которую запишется значение из входного вектора
  */
-std::string	vectDoubleToString(const vectDouble_t &input)
+std::string	vectDoubleToString(const vectDouble_t& input)
 {
 	std::string	tempStr;
 
-	for (size_t i = 0; i < input.size(); i++)
-	{
-		tempStr += std::to_string(input[i]); 
-	}	
+	for (double i : input)
+		tempStr += std::to_string(i);
+
 	return (tempStr);
 }
 
@@ -59,12 +58,13 @@ std::string	vectDoubleToString(const vectDouble_t &input)
  * @param writeVect двумерный вектор
  * @return одномерный вектор, в который запишется значение из двумерного вектора
  */
-vectDouble_t	vect2ToVect(const vectDouble2d_t &writeVect)
+vectDouble_t	vect2ToVect(const vectDouble2d_t& writeVect)
 {
 	vectDouble_t	tempVect;
 	
-	for (size_t i = 0; i < writeVect.size(); i++)
-		for (size_t j = 0; j < writeVect[i].size(); j++)
-			tempVect.push_back(writeVect[i][j]);
+	for (const auto & vect : writeVect)
+		for (double j : vect)
+			tempVect.push_back(j);
+
 	return (tempVect);
 }

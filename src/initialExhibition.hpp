@@ -13,7 +13,7 @@
 #include "typesData.hpp"
 #include "calcProbabilityCharact.hpp"
 
-void	getCorrectData(vectDouble2d_t &dataIMU, const vectDouble2d_t &dataInitIMU, double g);
-double	*accumulationPositionGNSS(vectDouble2d_t &dataInitGNSS);
+void	getCorrectData(vectDouble2d_t& dataIMU, const vectDouble2d_t &dataInitIMU, double g);
+double	*accumulationPositionGNSS(const vectDouble2d_t& dataInitGNSS);
 
 #endif // INERTIAL_NAVIGATION_SYSTEM_INITIAL_EXHIBITION_HPP_

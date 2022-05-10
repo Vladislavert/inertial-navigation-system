@@ -20,9 +20,9 @@ const double b = a * (1 - f); // малая полуось эллипсоида
 
 
 
-vectDouble_t	convertGeoEllipseToGeoNormal(const vectDouble_t *coordinateGeoEllipse);
+vectDouble_t	convertGeoEllipseToGeoNormal(const vectDouble_t& coordinateGeoEllipse);
 vectDouble_t	convertGeoEllipseToGeoNormal(const double *coordinateGeoEllipse);
-vectDouble_t	convertGeoNormalToGeoEllipse(const vectDouble_t *coordinateGeoNormal);
+vectDouble_t	convertGeoNormalToGeoEllipse(const vectDouble_t& coordinateGeoNormal);
 vectDouble_t	convertGeoNormalToGeoEllipse(const double *coordinateGeoNormal);
 
 #endif // INERTIAL_NAVIGATION_SYSTEM_MATH_COORDINATE_TRANSFORM_HPP_

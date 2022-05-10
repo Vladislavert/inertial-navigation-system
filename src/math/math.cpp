@@ -13,7 +13,7 @@
  * @param deg градусы
  * @return радианы
  */
-double			degToRad(const double &deg)
+double			degToRad(double deg)
 {
 	double	rad;
 
@@ -27,7 +27,7 @@ double			degToRad(const double &deg)
  * @param rad радианы
  * @return градусы
  */
-double			radToDeg(const double &rad)
+double			radToDeg(double rad)
 {
 	double deg;
 
@@ -40,7 +40,7 @@ double			radToDeg(const double &rad)
  * @param argument аргумент, который возводят в квадрат
  * @return значение аргумента в квадрате
  */
-double	squaring(const double &argument)
+double	squaring(double argument)
 {
 	return (argument * argument);
 }
@@ -52,14 +52,14 @@ double	squaring(const double &argument)
  * @param data аргумент, который интегрируется
  * @return проинтегрированные значения
  */
-vectDouble_t	integralEuler(const vectDouble_t *time, const vectDouble_t *data, const double initialData)
+vectDouble_t	integralEuler(const vectDouble_t& time, const vectDouble_t& data, double initialData)
 {
-	vectDouble_t	result((*time).size());
+	vectDouble_t	result(time.size());
 
-	result[0] = initialData + (*data)[0] * ((*time)[1] - (*time)[0]);
-	for (size_t i = 1; i < (*time).size() - 1; i++)
+	result[0] = initialData + data[0] * (time[1] - time[0]);
+	for (size_t i = 1; i < time.size() - 1; i++)
 	{
-		result[i] += result[i - 1] + ((*data)[i] * ((*time)[i + 1] - (*time)[i]));
+		result[i] += result[i - 1] + (data[i] * (time[i + 1] - time[i]));
 	}
 	return (result);
 }

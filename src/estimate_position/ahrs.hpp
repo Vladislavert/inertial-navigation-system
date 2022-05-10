@@ -13,10 +13,10 @@
 #include <math.hpp>
 #include "initParams.hpp"
 
-vectDouble2d_t	getOrientation(const vectDouble_t initOrientation, const vectDouble2d_t *dataIMU, const vectDouble_t *dataTime);
-vectDouble_t	getAngleAccelerometer(const vectDouble_t *dataAccelerometer);
-vectDouble_t	getAngleGyroscope(const vectDouble_t *dataGyroscopePast, const vectDouble_t *dataGyroscopeCurrent, const double dt);
-vectDouble_t	getAngleMagnetometer(const vectDouble_t *dataMagnetometer);
-double			absRad(const double rad);
+vectDouble2d_t	getOrientation(const vectDouble_t& initOrientation, const vectDouble2d_t& dataIMU, const vectDouble_t& dataTime);
+vectDouble_t	getAngleAccelerometer(const vectDouble_t& dataAccelerometer);
+vectDouble_t	getAngleGyroscope(const vectDouble_t& dataGyroscopePast, const vectDouble_t& dataGyroscopeCurrent, double dt);
+vectDouble_t	getAngleMagnetometer(const vectDouble_t& dataMagnetometer);
+double			absRad(double rad);
 
 #endif // INERTIAL_NAVIGATION_SYSTEM_ESTIMATE_POSITION_AHRS_HPP_

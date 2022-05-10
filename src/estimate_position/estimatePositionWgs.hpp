@@ -17,6 +17,6 @@
 #include "calcProbabilityCharact.hpp"
 #include "gravitationalAccelerationCalc.hpp"
 
-vectDouble2d_t	estimatePositionWgs(vectDouble2d_t *dataIMU, const vectDouble2d_t *dataGNSS, const double *meanInitGNSS, const vectDouble_t *dataTime);	
+vectDouble2d_t	estimatePositionWgs(vectDouble2d_t& dataIMU, const vectDouble2d_t& dataGNSS, const double* meanInitGNSS, const vectDouble_t& dataTime);
 
 #endif // INERTIAL_NAVIGATION_SYSTEM_ESTIMATE_POSITION_ESTIMATE_POSITION_WGS_HPP_

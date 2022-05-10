@@ -13,7 +13,7 @@
  * @param ang углы ориентации(кен, тангаж, рысканье)
  * @return матрица поворотов
  */
-Eigen::Matrix3d	rotationMatrix(const vectDouble_t &ang)
+Eigen::Matrix3d	rotationMatrix(const vectDouble_t& ang)
 {
 	Eigen::Matrix3d R;
 
@@ -32,7 +32,7 @@ Eigen::Matrix3d	rotationMatrix(const vectDouble_t &ang)
  * @param angl угол в радианах
  * @return значение косинуса
  */
-double			c(const double angl)
+double			c(double angl)
 {
 	return (cos(angl));
 }
@@ -43,7 +43,7 @@ double			c(const double angl)
  * @param angl угол в радианах
  * @return значение синуса
  */
-double			s(const double angl)
+double			s(double angl)
 {
 	return (sin(angl));
 }

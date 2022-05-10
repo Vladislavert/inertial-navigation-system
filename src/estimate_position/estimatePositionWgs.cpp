@@ -29,10 +29,10 @@
  * @param dataTime время с начала замера данных с датчиков
  * @return координаты в геоцентрической СК(WGS-84)(X, Y, Z)
  */
-vectDouble2d_t	estimatePositionWgs(vectDouble2d_t *dataIMU, const vectDouble2d_t *dataGNSS, const double *meanInitGNSS, const vectDouble_t *dataTime)
+vectDouble2d_t	estimatePositionWgs(vectDouble2d_t& dataIMU, const vectDouble2d_t& dataGNSS, const double* meanInitGNSS, const vectDouble_t& dataTime)
 {
 	vectDouble2d_t			resCoordinateWGS; // результат оценки положения в ГСК
-	vectDouble2d_t 			dataIMUTranspose((*dataIMU)[0].size()); // данные с БИНС(акселерометр(X, Y, Z), гироскоп(X, Y, Z), магнетометр(X, Y))
+	vectDouble2d_t 			dataIMUTranspose(dataIMU[0].size()); // данные с БИНС(акселерометр(X, Y, Z), гироскоп(X, Y, Z), магнетометр(X, Y))
 	vectDouble_t			startCoordinateGeoNormal; // координаты начала стартовой СК в геоцентрической нормальной СК
 	vectDouble_t			initialData;
 	vectDouble2d_t			coordGeoNormalGNSS(dataGNSS[0].size());
@@ -51,9 +51,9 @@ vectDouble2d_t	estimatePositionWgs(vectDouble2d_t *dataIMU, const vectDouble2d_t
 	double					isSecond; // прошла ли секунда
 	double					dt;
 
-	for	(unsigned int i = 0; i < (*dataIMU)[0].size(); i++)
-		for (unsigned int j = 0; j < (*dataIMU).size(); j++)
-			dataIMUTranspose[i].push_back((*dataIMU)[j][i]);
+	for	(unsigned int i = 0; i < dataIMU[0].size(); i++)
+		for (auto & j : dataIMU)
+			dataIMUTranspose[i].push_back(j[i]);
 	g = gravitationalAccelerationCalc(meanInitGNSS[0], meanInitGNSS[2]);
 	gravityAcceleration << 0, 0, g;
 	temp.push_back(0);
@@ -72,19 +72,19 @@ vectDouble2d_t	estimatePositionWgs(vectDouble2d_t *dataIMU, const vectDouble2d_t
 	orientation = getOrientation(orientation[0], dataIMU, dataTime);
 	for	(unsigned int i = 0; i < orientation.size(); i++)
 	{
-		apparentAcceleration << (*dataIMU)[i][0], (*dataIMU)[i][1], (*dataIMU)[i][2];
+		apparentAcceleration << dataIMU[i][0], dataIMU[i][1], dataIMU[i][2];
 		matrixRotation = rotationMatrix(orientation[i]);
 		acceleration = (matrixRotation.inverse() * apparentAcceleration) - gravityAcceleration;
 		accelerationVec.x.push_back(acceleration[0]);
 		accelerationVec.y.push_back(acceleration[1]);
 		accelerationVec.z.push_back(acceleration[2]);
 	}
-	velocityVec.x = integralEuler(dataTime, &accelerationVec.x, 0);
-	velocityVec.y = integralEuler(dataTime, &accelerationVec.y, 0);
-	velocityVec.z = integralEuler(dataTime, &accelerationVec.z, 0);
+	velocityVec.x = integralEuler(dataTime, accelerationVec.x, 0);
+	velocityVec.y = integralEuler(dataTime, accelerationVec.y, 0);
+	velocityVec.z = integralEuler(dataTime, accelerationVec.z, 0);
 	time = 0;
 	isSecond = 1;
-	dt = (*dataTime)[1] - (*dataTime)[0];
+	dt = dataTime[1] - dataTime[0];
 	initialData = convertGeoEllipseToGeoNormal(meanInitGNSS);
 	positionVec.x.push_back(integralEuler(initialData[0], velocityVec.x[0], dt));
 	positionVec.y.push_back(integralEuler(initialData[1], velocityVec.y[0], dt));
@@ -94,7 +94,7 @@ vectDouble2d_t	estimatePositionWgs(vectDouble2d_t *dataIMU, const vectDouble2d_t
 		if (time >= isSecond)
 		{
 			initialData.clear();
-			initialData = convertGeoEllipseToGeoNormal(&(*dataGNSS)[i]);
+			initialData = convertGeoEllipseToGeoNormal(dataGNSS[i]);
 			positionVec.x.push_back(integralEuler(initialData[0], velocityVec.x[i], dt));
 			positionVec.y.push_back(integralEuler(initialData[1], velocityVec.y[i], dt));
 			positionVec.z.push_back(integralEuler(initialData[2], velocityVec.z[i], dt));
@@ -118,14 +118,14 @@ vectDouble2d_t	estimatePositionWgs(vectDouble2d_t *dataIMU, const vectDouble2d_t
 			positionVec.z.push_back(integralEuler(positionVec.z[i - 1], velocityVec.z[i], dt));
 		}
 		time += dt;
-		dt = (*dataTime)[i + 1] - (*dataTime)[i];
+		dt = dataTime[i + 1] - dataTime[i];
 	}
 
 	// перевод из эллипсоидальной геоцентрической СК(ГСК) в прямоугольную ГСК
 	// начальная выставка, для получения координат стартовой СК в геоцентрической СК(WGS-84)
 	for	(unsigned int i = 0; i < dataGNSS[0].size(); i ++)
 	{
-		coordGeoNormalGNSS[i] = convertGeoEllipseToGeoNormal(&(*dataGNSS)[i]);
+		coordGeoNormalGNSS[i] = convertGeoEllipseToGeoNormal(dataGNSS[i]);
 		#ifdef DEBUG
 			std::cout << "GNSS = " << (*dataGNSS)[i][0] << std::endl;
 		#endif
@@ -151,7 +151,7 @@ vectDouble2d_t	estimatePositionWgs(vectDouble2d_t *dataIMU, const vectDouble2d_t
 	}
 	delete[] error;
 	for	(unsigned int i = 0; i < resCoordinateWGS.size(); i++)
-		resCoordinateWGS[i] = convertGeoNormalToGeoEllipse(&resCoordinateWGS[i]);
+		resCoordinateWGS[i] = convertGeoNormalToGeoEllipse(resCoordinateWGS[i]);
 	#ifdef DEBUG
 		std::cout << "широта = " << resCoordinateWGS[0][0] << std::endl;
 		std::cout << "долгота = " << resCoordinateWGS[0][1] << std::endl;

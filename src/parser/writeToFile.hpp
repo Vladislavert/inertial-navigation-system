@@ -10,6 +10,6 @@
 
 #include "typesData.hpp"
 
-void	writeToFile(vectDouble2d_t *data);
+void	writeToFile(const vectDouble2d_t& data);
 
 #endif // INERTIAL_NAVIGATION_SYSTEM_PARSER_WRITE_TO_FILE_HPP_

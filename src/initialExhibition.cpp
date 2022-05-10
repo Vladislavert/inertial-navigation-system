@@ -14,7 +14,7 @@
  * @param dataInitIMU данные с БИНС(акселерометр(X, Y, Z), гироскоп(X, Y, Z), магнетометр(X, Y)) для начальной выставки
  * @param g ускорение свободного падения во время начальной выставки
  */
-void	getCorrectData(vectDouble2d_t &dataIMU, const vectDouble2d_t &dataInitIMU, const double g)
+void	getCorrectData(vectDouble2d_t& dataIMU, const vectDouble2d_t& dataInitIMU, const double g)
 {
 	vectDouble2d_t 		dataIMUTranspose(dataInitIMU[0].size()); // данные с БИНС(акселерометр(X, Y, Z), гироскоп(X, Y, Z), магнетометр(X, Y))
 	double				*meanAcc; // математическое ожидание акселерометра по трём связанным осям
@@ -32,8 +32,8 @@ void	getCorrectData(vectDouble2d_t &dataIMU, const vectDouble2d_t &dataInitIMU, 
 	dispersionGyro = new double[quantityAxes];
 	threeCovGyro = new double[quantityAxes];
 	for	(unsigned int i = 0; i < dataInitIMU[0].size(); i++)
-		for (unsigned int j = 0; j < dataInitIMU.size(); j++)
-			dataIMUTranspose[i].push_back(dataInitIMU[j][i]);
+		for (const auto & j : dataInitIMU)
+			dataIMUTranspose[i].push_back(j[i]);
 	for	(unsigned int i = 0; i < quantityAxes; i++)
 		meanAcc[i] = meanCalculate(dataIMUTranspose[indxAcc + i]);
 	for	(unsigned int i = 0; i < quantityAxes; i++)
@@ -48,24 +48,24 @@ void	getCorrectData(vectDouble2d_t &dataIMU, const vectDouble2d_t &dataInitIMU, 
 		threeCovAcc[i] = 3 * sqrt(dispersionAcc[i]);
 		threeCovGyro[i] = 3 * sqrt(dispersionGyro[i]);
 	}
-	for (unsigned int i = 0; i < dataIMU.size(); i++)
+	for (auto & measurement : dataIMU)
 		for (unsigned int j = 0; j < quantityAxes; j++)
 		{
 			if (j == quantityAxes - 1)
 			{
-				dataIMU[i][indxAcc + j] = dataIMU[i][indxAcc + j] - (meanAcc[j] - g);
+				measurement[indxAcc + j] = measurement[indxAcc + j] - (meanAcc[j] - g);
 				valueInit = g;
 			}
 			else
 			{
-				dataIMU[i][indxAcc + j] = dataIMU[i][indxAcc + j] - meanAcc[j];
+				measurement[indxAcc + j] = measurement[indxAcc + j] - meanAcc[j];
 				valueInit = 0;
 			}
-			dataIMU[i][indxGyro + j] = dataIMU[i][indxGyro + j] - meanGyro[j];
-			if (dataIMU[i][indxAcc + j] < (threeCovAcc[j] + valueInit) && dataIMU[i][indxAcc + j] > (-threeCovAcc[j] + valueInit))
-				dataIMU[i][indxAcc + j] = valueInit;
-			if (dataIMU[i][indxGyro + j] < (threeCovGyro[j] + valueInit) && dataIMU[i][indxGyro + j] > (-threeCovGyro[j] + valueInit))
-				dataIMU[i][indxGyro + j] = valueInit;
+			measurement[indxGyro + j] = measurement[indxGyro + j] - meanGyro[j];
+			if (measurement[indxAcc + j] < (threeCovAcc[j] + valueInit) && measurement[indxAcc + j] > (-threeCovAcc[j] + valueInit))
+				measurement[indxAcc + j] = valueInit;
+			if (measurement[indxGyro + j] < (threeCovGyro[j] + valueInit) && measurement[indxGyro + j] > (-threeCovGyro[j] + valueInit))
+				measurement[indxGyro + j] = valueInit;
 		}
 	delete[] meanAcc;
 	delete[] dispersionAcc;
@@ -81,16 +81,16 @@ void	getCorrectData(vectDouble2d_t &dataIMU, const vectDouble2d_t &dataInitIMU, 
  * @param dataInitGNSS данные с ГНСС приёмника
  * @return среднее значение широты, долготы, высоты
  */
-double	*accumulationPositionGNSS(vectDouble2d_t &dataInitGNSS)
+double	*accumulationPositionGNSS(const vectDouble2d_t& dataInitGNSS)
 {
 	double *meanResult;
 
 	meanResult = new double[3];
-	for (unsigned int i = 0; i < dataInitGNSS.size(); i++)
+	for (auto & measurementGnss : dataInitGNSS)
 	{
-		meanResult[0] += dataInitGNSS[i][0];
-		meanResult[1] += dataInitGNSS[i][1];
-		meanResult[2] += dataInitGNSS[i][2];
+		meanResult[0] += measurementGnss[0];
+		meanResult[1] += measurementGnss[1];
+		meanResult[2] += measurementGnss[2];
 	}
 	meanResult[0] /= dataInitGNSS.size();
 	meanResult[1] /= dataInitGNSS.size();

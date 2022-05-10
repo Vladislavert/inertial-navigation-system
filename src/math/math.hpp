@@ -12,11 +12,11 @@
 #include "typesData.hpp"
 #include "cmath"
 
-double			degToRad(const double &deg);
-double			radToDeg(const double &rad);
-double			squaring(const double &argument);
-vectDouble_t	integralEuler(const vectDouble_t *time, const vectDouble_t *data, const double initialData);
-double			integralEuler(const double dataPast, const double dataCurrent, double dt)
+double			degToRad(double deg);
+double			radToDeg(double rad);
+double			squaring(double argument);
+vectDouble_t	integralEuler(const vectDouble_t& time, const vectDouble_t& data, double initialData);
+double			integralEuler(double dataPast, double dataCurrent, double dt)
 ;
 
 #endif // INERTIAL_NAVIGATION_SYSTEM_MATH_MATH_HPP_

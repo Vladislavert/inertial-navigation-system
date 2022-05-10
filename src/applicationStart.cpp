@@ -67,47 +67,47 @@ void	applicationStart()
 	vectDouble_t		temp; // временный вектор, для заполнения
 	vectDouble_t		tempInit; // временный вектор, для заполнения данных начальной выставки
 
-	for	(unsigned int i = 0; i < dataSensors.size(); i++)
+	for	(auto & dataSensor : dataSensors)
 	{
 		for (unsigned int j = 0; j < quantityAxes; j++)
-			temp.push_back(dataSensors[i][indxAcc + j]);
+			temp.push_back(dataSensor[indxAcc + j]);
 		for (unsigned int j = 0; j < quantityAxes; j++)
-			temp.push_back(dataSensors[i][indxGyro + j]);
+			temp.push_back(dataSensor[indxGyro + j]);
 		for (unsigned int j = 0; j < quantityAxes - 1; j++)
-			temp.push_back(dataSensors[i][indxMagnet + j]);
+			temp.push_back(dataSensor[indxMagnet + j]);
 		dataIMU.push_back(temp);
 		temp.clear();
 		for (unsigned int j = 0; j < quantityAxes; j++)
-			temp.push_back(dataSensors[i][indxGNSS + j]);
+			temp.push_back(dataSensor[indxGNSS + j]);
 		dataGNSS.push_back(temp);
-		dataTime.push_back(dataSensors[i][indxTime] / 1000);
+		dataTime.push_back(dataSensor[indxTime] / 1000);
 		temp.clear();		
 	}
-	for	(unsigned int i = 0; i < dataFileInitGNSS.size(); i++)
+	for	(auto & i : dataFileInitGNSS)
 	{	
 		temp.clear();
 		for (unsigned int j = 0; j < quantityAxes; j++)
-			temp.push_back(dataFileInitGNSS[i][indxInitGNSS + j]);
+			temp.push_back(i[indxInitGNSS + j]);
 		dataInitGNSS.push_back(temp);
 	}
-	for	(unsigned int i = 0; i < dataSensorsInit.size(); i++)
+	for	(auto & dataSensorInit : dataSensorsInit)
 	{
 		for (unsigned int j = 0; j < quantityAxes; j++)
-			tempInit.push_back(dataSensorsInit[i][indxAcc + j]);
+			tempInit.push_back(dataSensorInit[indxAcc + j]);
 		for (unsigned int j = 0; j < quantityAxes; j++)
-			tempInit.push_back(dataSensorsInit[i][indxGyro + j]);
+			tempInit.push_back(dataSensorInit[indxGyro + j]);
 		for (unsigned int j = 0; j < quantityAxes - 1; j++)
-			tempInit.push_back(dataSensorsInit[i][indxMagnet + j]);
+			tempInit.push_back(dataSensorInit[indxMagnet + j]);
 		dataIMUInit.push_back(tempInit);
 		tempInit.clear();
-		dataTimeInit.push_back(dataSensorsInit[i][indxTime] / 1000);
+		dataTimeInit.push_back(dataSensorInit[indxTime] / 1000);
 		tempInit.clear();
 	}
 	meanGNSS = new double[quantityAxes];
 	meanGNSS = accumulationPositionGNSS(dataInitGNSS);
 	g = gravitationalAccelerationCalc(meanGNSS[0], meanGNSS[2]);
 	getCorrectData(dataIMU, dataIMUInit, g);
-	positionWGS = estimatePositionWgs(&dataIMU, &dataGNSS, meanGNSS, &dataTime);
+	positionWGS = estimatePositionWgs(dataIMU, dataGNSS, meanGNSS, dataTime);
 	delete[] meanGNSS;
 	std::cout << "Широта в начальный момент времени\t= " << positionWGS[0][0] << std::endl;
 	std::cout << "Долгота в начальный момент времени\t= " << positionWGS[0][1] << std::endl;
@@ -116,13 +116,14 @@ void	applicationStart()
 	std::cout << "Широта в конечный момент времени\t= " << positionWGS[positionWGS.size() - 10][0] << std::endl;
 	std::cout << "Долгота в конечный момент времени\t= " << positionWGS[positionWGS.size() - 10][1] << std::endl;
 	std::cout << "Высота в конечный момент времени\t= " << positionWGS[positionWGS.size() - 10][2] << std::endl;
-	for	(unsigned int i = 0; i < positionWGS.size(); i++)
+	for	(auto & position : positionWGS)
 	{
-		xPositionWGS.push_back(positionWGS[i][0]);
-		yPositionWGS.push_back(positionWGS[i][1]);
-		zPositionWGS.push_back(positionWGS[i][2]);
+		xPositionWGS.push_back(position[0]);
+		yPositionWGS.push_back(position[1]);
+		zPositionWGS.push_back(position[2]);
 	}
-	writeToFile(&positionWGS);
+	writeToFile(positionWGS);
+
 	drawGraph(&dataTime, &xPositionWGS, &plotPositionX, "xPosition", 0);
 	drawGraph(&dataTime, &yPositionWGS, &plotPositionY, "yPosition", 0);
 	drawGraph(&dataTime, &zPositionWGS, &plotPositionZ, "zPosition", 0);

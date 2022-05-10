@@ -14,14 +14,15 @@
  * @return true файл существует 
  * @return false ошибка открытия файла
  */
-bool	checkOpenFile(std::ifstream &file)
+bool	checkOpenFile(std::ifstream& file)
 {
 	if (!file)
 	{
 		std::cout << "file open error" << std::endl;
-		return (0);
+		return (false);
 	}
-	return (1);
+
+	return (true);
 }
 
 /**
@@ -30,7 +31,7 @@ bool	checkOpenFile(std::ifstream &file)
  * @param file файловый дескриптор
  * @param str vector<string>, в который записались данные из файла
  */
-void	readStrFile(std::ifstream &file, vectString_t &str)
+void	readStrFile(std::ifstream& file, vectString_t& str)
 {
 	std::string temp;
 

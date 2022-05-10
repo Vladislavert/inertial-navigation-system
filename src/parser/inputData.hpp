@@ -12,6 +12,6 @@
 #include "convert.hpp"
 #include "typesData.hpp"
 
-void			inputData(const vectString_t &str, vectDouble2d_t &gtInputVector, const size_t numbeOfLines = 0);
+void			inputData(const vectString_t& str, vectDouble2d_t& gtInputVector, size_t numberOfLines = 0);
 
 #endif // INERTIAL_NAVIGATION_SYSTEM_PARSER_INPUT_DATA_HPP_
