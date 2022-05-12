@@ -60,9 +60,9 @@ vectDouble2d_t	estimatePositionWgs(vectDouble2d_t& dataIMU, const vectDouble2d_t
 	temp.push_back(0);
 	temp.push_back(0.12);
 	// фильтрация данных с БИНС
-	// lowPassFilter(&dataIMUTranspose[0], dataTime, 1);
-	// lowPassFilter(&dataIMUTranspose[1], dataTime, 1);
-	// lowPassFilter(&dataIMUTranspose[2], dataTime, 1);
+	 lowPassFilter(dataIMUTranspose[0], dataTime, 1);
+	 lowPassFilter(dataIMUTranspose[1], dataTime, 1);
+	 lowPassFilter(dataIMUTranspose[2], dataTime, 1);
 	// for	(unsigned int i = 0; i < (*dataIMU).size(); i++)
 	// 	for (unsigned int j = 0; j < (*dataIMU)[i].size(); j++)
 	// 		(*dataIMU)[i][j] = dataIMUTranspose[j][i];

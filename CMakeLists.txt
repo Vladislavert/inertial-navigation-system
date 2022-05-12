@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0.2)
 project(inertial_navigation_system)
 set(CMAKE_CXX_STANDARD 17)
 
-set(COMMON_FLAGS "-Wall -Werror -Wextra")
+#set(COMMON_FLAGS "-Wall -Werror -Wextra")
 # set(COMMON_FLAGS "-g")
 
 set(CMAKE_CXX_FLAGS "${COMMON_FLAGS}")
@@ -14,13 +14,14 @@ find_package(yaml-cpp REQUIRED)
 include_directories(
 	  src/
     inc/
-	  ${EIGEN3_INCLUDE_DIR}
+	${EIGEN3_INCLUDE_DIR}
 	  ${YAML_CPP_INCLUDE_DIR}
-	  src/draw
+	src/draw
 	  src/estimate_position
     src/math
 	  src/parser
-    libraries/sciplot/sciplot
+    libraries/sciplot/
+		libraries/sciplot/sciplot
 )
 
 set(DRAW_CPP_FILES

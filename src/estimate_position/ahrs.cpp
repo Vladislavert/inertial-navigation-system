@@ -62,6 +62,7 @@ vectDouble2d_t	getOrientation(const vectDouble_t& initOrientation, const vectDou
 		angleGyroscope.clear();
 
 	}
+
 	return (resOrientation);
 }
 
@@ -77,6 +78,7 @@ vectDouble_t	getAngleAccelerometer(const vectDouble_t& dataAccelerometer)
 
 	for (unsigned int i = 0; i < quantityAxes - 1; i++)
 		angleAccelerometer.push_back(std::atan2(dataAccelerometer[i], dataAccelerometer[2]));
+
 	return (angleAccelerometer);
 }
 
@@ -95,6 +97,7 @@ vectDouble_t	getAngleGyroscope(const vectDouble_t& dataGyroscopePast, const vect
 	for (unsigned int i = 0; i < quantityAxes - 1; i++)
 		angleGyroscope.push_back(integralEuler(dataGyroscopePast[i], dataGyroscopeCurrent[i], dt));
 	angleGyroscope.push_back(absRad(integralEuler(dataGyroscopePast[2], dataGyroscopeCurrent[2], dt)));
+
 	return(angleGyroscope);
 }
 
@@ -109,6 +112,7 @@ vectDouble_t	getAngleMagnetometer(const vectDouble_t& dataMagnetometer)
 	vectDouble_t	angleMagnetometer;
 
 	angleMagnetometer.push_back(absRad(-std::atan2(dataMagnetometer[0], dataMagnetometer[1])));
+
 	return(angleMagnetometer);
 }
 
